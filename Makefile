@@ -31,8 +31,6 @@ OBJS = \
   $K/virtio_disk.o\
   $K/cslog.o \
   $K/syscslog.o \
-  $K/uartev.o
-
 
 
 
@@ -181,10 +179,6 @@ QEMUOPTS = -machine virt -bios none -kernel $K/kernel -m 128M -smp $(CPUS) -nogr
 QEMUOPTS += -global virtio-mmio.force-legacy=false
 QEMUOPTS += -drive file=fs.img,if=none,format=raw,id=x0
 QEMUOPTS += -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0
-
-QEMUOPTS += -serial mon:stdio 
-QEMUOPTS += -chardev socket,id=ev,path=/tmp/xv6-ev.sock,server=on,wait=off 
-QEMUOPTS += -serial chardev:ev
 
 
 qemu: check-qemu-version $K/kernel fs.img
