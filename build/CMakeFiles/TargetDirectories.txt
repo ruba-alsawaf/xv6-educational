@@ -1,0 +1,5 @@
+/home/ruba/xv6-test/build/CMakeFiles/xv6_events_viewer.dir
+/home/ruba/xv6-test/build/CMakeFiles/edit_cache.dir
+/home/ruba/xv6-test/build/CMakeFiles/rebuild_cache.dir
+/home/ruba/xv6-test/build/CMakeFiles/xv6_events_viewer_autogen_timestamp_deps.dir
+/home/ruba/xv6-test/build/CMakeFiles/xv6_events_viewer_autogen.dir

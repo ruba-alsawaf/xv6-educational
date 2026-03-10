@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+#include "cslog.h"
 
 // bio.c
 void            binit(void);
@@ -183,3 +184,13 @@ void            virtio_disk_intr(void);
 
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
+
+// cslog.c
+void cslog_init(void);
+void cslog_push(struct cs_event *e);
+void cslog_run_start(struct proc *p);
+void cslog_run_end(struct proc *p);
+int  cslog_read_many(struct cs_event *out, int max);
+void uartev_putc_sync(int);
+void uartev_write(const void*, int);
+void uartev_init(void);

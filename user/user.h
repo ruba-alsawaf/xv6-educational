@@ -47,3 +47,9 @@ void printf(const char*, ...) __attribute__ ((format (printf, 1, 2)));
 // umalloc.c
 void* malloc(uint);
 void free(void*);
+
+// لازم يطابق struct cs_event بالكيرنل
+
+#include "kernel/csevent.h"
+int csread(struct cs_event *out, int max);
+
