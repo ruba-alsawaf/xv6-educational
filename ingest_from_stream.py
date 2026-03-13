@@ -34,13 +34,16 @@ def main():
                 continue
 
             line = line.strip()
-
             if not line.startswith("EV "):
                 continue
 
             try:
                 obj = json.loads(line[3:])
-            except Exception:
+            except json.JSONDecodeError:
+                continue
+
+            needed = ("seq", "tick", "cpu", "pid", "name", "state", "type")
+            if not all(k in obj for k in needed):
                 continue
 
             cur.execute(
@@ -50,9 +53,9 @@ def main():
                     int(obj["tick"]),
                     int(obj["cpu"]),
                     int(obj["pid"]),
-                    obj["name"],
+                    str(obj["name"]),
                     int(obj["state"]),
-                    obj["type"],
+                    str(obj["type"]),
                 )
             )
             con.commit()

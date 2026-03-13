@@ -8,6 +8,7 @@
 #include "cslog.h"
 
 static struct ringbuf cs_rb;
+static uint64 cs_seq = 0;
 
 static void
 fill_from_proc(struct cs_event *e, struct proc *p)
@@ -29,6 +30,7 @@ cslog_init(void)
 void
 cslog_push(struct cs_event *e)
 {
+  e->seq = ++cs_seq;
   ringbuf_push(&cs_rb, e);
 }
 
