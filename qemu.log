@@ -13,42 +13,36 @@ xv6 kernel is booting
 hart 2 starting
 hart 1 starting
 init: starting sh
-$ csexport &
-$ EV {"seq":0,"tick":2,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":2,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":2,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":2,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":2,"cpu":2,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+$ csexport
 EV {"seq":0,"tick":3,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":3,"cpu":2,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":3,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":3,"cpu":2,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":3,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":3,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":3,"cpu":2,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":4,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":4,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":2,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":4,"cpu":1,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":4,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":4,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":1,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":4,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":4,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":4,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":4,"cpu":1,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":5,"cpu":1,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":5,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":6,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":6,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
 EV {"seq":0,"tick":6,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":7,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":7,"cpu":2,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":7,"cpu":0,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":148,"cpu":2,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":148,"cpu":2,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":148,"cpu":2,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":0,"pid":1,"name":"init","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":0,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":1,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":1,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":1,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":0,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":149,"cpu":2,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
-EV {"seq":0,"tick":150,"cpu":0,"pid":4,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":6,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":6,"cpu":1,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":6,"cpu":0,"pid":2,"name":"init","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":6,"cpu":2,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":2,"pid":2,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":2,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":0,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":1,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":1,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":151,"cpu":0,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
+EV {"seq":0,"tick":152,"cpu":2,"pid":3,"name":"sh","state":4,"type":"ON_CPU"}
