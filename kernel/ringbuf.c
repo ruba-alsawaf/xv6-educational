@@ -58,9 +58,6 @@ ringbuf_read_many(struct ringbuf *rb, void *out, int max)
   release(&rb->lock);
 
   return n;
-<<<<<<< Updated upstream
-}
-=======
 }
 int
 ringbuf_pop(struct ringbuf *rb, void *dst)
@@ -83,4 +80,3 @@ ringbuf_pop(struct ringbuf *rb, void *dst)
   release(&rb->lock);
   return 0;
 } 
->>>>>>> Stashed changes

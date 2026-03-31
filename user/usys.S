@@ -110,3 +110,8 @@ csread:
  li a7, SYS_csread
  ecall
  ret
+.global fsread
+fsread:
+ li a7, SYS_fsread
+ ecall
+ ret

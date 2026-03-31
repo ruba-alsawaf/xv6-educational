@@ -9,12 +9,13 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "" "MainGUI_autogen/timestamp" "custom" "MainGUI_autogen/deps"
-  "/home/aya/xv6_ruba/gui/MainGUI/build/MainGUI_autogen/mocs_compilation.cpp" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o.d"
-  "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o.d"
-  "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o.d"
-  "/home/aya/xv6_ruba/gui/MainGUI/main.cpp" "CMakeFiles/MainGUI.dir/main.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/main.cpp.o.d"
-  "/home/aya/xv6_ruba/gui/MainGUI/mainwindow.cpp" "CMakeFiles/MainGUI.dir/mainwindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/mainwindow.cpp.o.d"
-  "/home/aya/xv6_ruba/gui/MainGUI/schedulerUi/schedulerWindow.cpp" "CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/build/MainGUI_autogen/mocs_compilation.cpp" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/filesystemUi/filesystemWindow.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/main.cpp" "CMakeFiles/MainGUI.dir/main.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/main.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/mainwindow.cpp" "CMakeFiles/MainGUI.dir/mainwindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/mainwindow.cpp.o.d"
+  "/home/ruba/xv6-test/gui/MainGUI/schedulerUi/schedulerWindow.cpp" "CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o.d"
+  "" "MainGUI" "gcc" "CMakeFiles/MainGUI.dir/link.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

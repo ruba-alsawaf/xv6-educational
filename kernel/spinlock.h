@@ -1,9 +1,5 @@
-<<<<<<< Updated upstream
-#pragma once
-=======
 #ifndef SPINLOCK_H
 #define SPINLOCK_H
->>>>>>> Stashed changes
 
 // Mutual exclusion lock.
 struct spinlock {
@@ -12,10 +8,6 @@ struct spinlock {
   // For debugging:
   char *name;        // Name of lock.
   struct cpu *cpu;   // The cpu holding the lock.
-<<<<<<< Updated upstream
-};
-=======
 };
 
 #endif // SPINLOCK_H
->>>>>>> Stashed changes

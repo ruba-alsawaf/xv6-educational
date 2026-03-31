@@ -31,12 +31,8 @@ OBJS = \
   $K/virtio_disk.o\
   $K/cslog.o \
   $K/syscslog.o \
-<<<<<<< Updated upstream
-  $K/ringbuf.o
-=======
   $K/ringbuf.o \
   $K/fslog.o
->>>>>>> Stashed changes
 
 
 
@@ -168,7 +164,7 @@ clean:
 	*/*.o */*.d */*.asm */*.sym \
 	$K/kernel fs.img \
 	mkfs/mkfs .gdbinit \
-        $U/usys.S \
+	    $U/usys.S \
 	$(UPROGS)
 
 # try to generate a unique GDB port
