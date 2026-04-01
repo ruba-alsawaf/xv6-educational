@@ -22,3 +22,4 @@
 #define SYS_close  21
 #define SYS_csread  22
 #define SYS_fsread  23
+#define SYS_schedread 24

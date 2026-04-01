@@ -54,3 +54,6 @@ void free(void*);
 #include "kernel/csevent.h"
 int csread(struct cs_event *out, int max);
 int fsread(struct fs_event*, int);
+
+struct sched_event;
+int schedread(struct sched_event *buf, int max);

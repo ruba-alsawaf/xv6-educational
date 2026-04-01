@@ -32,7 +32,8 @@ OBJS = \
   $K/cslog.o \
   $K/syscslog.o \
   $K/ringbuf.o \
-  $K/fslog.o
+  $K/fslog.o  \
+  $K/schedlog.o
 
 
 
@@ -150,7 +151,8 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_cscat\
-	$U/_csexport
+	$U/_csexport\
+	$U/_schedexport\
 
 
 

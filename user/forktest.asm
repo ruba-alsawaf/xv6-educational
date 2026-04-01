@@ -45,7 +45,7 @@ forktest(void)
 
   print("fork test\n");
   30:	00000517          	auipc	a0,0x0
-  34:	41050513          	addi	a0,a0,1040 # 440 <fsread+0xe>
+  34:	41850513          	addi	a0,a0,1048 # 448 <schedread+0xe>
   38:	fc9ff0ef          	jal	0 <print>
 
   for(n=0; n<N; n++){
@@ -67,7 +67,7 @@ forktest(void)
   if(n == N){
     print("fork claimed to work N times!\n");
   52:	00000517          	auipc	a0,0x0
-  56:	43e50513          	addi	a0,a0,1086 # 490 <fsread+0x5e>
+  56:	44650513          	addi	a0,a0,1094 # 498 <schedread+0x5e>
   5a:	fa7ff0ef          	jal	0 <print>
     exit(1);
   5e:	4505                	li	a0,1
@@ -80,7 +80,7 @@ forktest(void)
     if(wait(0) < 0){
       print("wait stopped early\n");
   68:	00000517          	auipc	a0,0x0
-  6c:	3e850513          	addi	a0,a0,1000 # 450 <fsread+0x1e>
+  6c:	3f050513          	addi	a0,a0,1008 # 458 <schedread+0x1e>
   70:	f91ff0ef          	jal	0 <print>
       exit(1);
   74:	4505                	li	a0,1
@@ -91,7 +91,7 @@ forktest(void)
   if(wait(0) != -1){
     print("wait got too many\n");
   7a:	00000517          	auipc	a0,0x0
-  7e:	3ee50513          	addi	a0,a0,1006 # 468 <fsread+0x36>
+  7e:	3f650513          	addi	a0,a0,1014 # 470 <schedread+0x36>
   82:	f7fff0ef          	jal	0 <print>
     exit(1);
   86:	4505                	li	a0,1
@@ -114,7 +114,7 @@ forktest(void)
 
   print("fork test OK\n");
   aa:	00000517          	auipc	a0,0x0
-  ae:	3d650513          	addi	a0,a0,982 # 480 <fsread+0x4e>
+  ae:	3de50513          	addi	a0,a0,990 # 488 <schedread+0x4e>
   b2:	f4fff0ef          	jal	0 <print>
 }
   b6:	60e2                	ld	ra,24(sp)
@@ -848,3 +848,13 @@ fsread:
  434:	00000073          	ecall
  ret
  438:	8082                	ret
+
+000000000000043a <schedread>:
+.global schedread
+schedread:
+ li a7, SYS_schedread
+ 43a:	48e1                	li	a7,24
+ ecall
+ 43c:	00000073          	ecall
+ ret
+ 440:	8082                	ret

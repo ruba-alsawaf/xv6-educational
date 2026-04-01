@@ -103,7 +103,7 @@ extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_csread(void);
 extern uint64 sys_fsread(void);
-
+extern uint64 sys_schedread(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -131,6 +131,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_csread]   sys_csread,
 [SYS_fsread]   sys_fsread,
+[SYS_schedread]   sys_schedread,
 
 
 };

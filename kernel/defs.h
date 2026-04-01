@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+struct sched_event;
 #include "cslog.h"
 
 
@@ -198,3 +199,4 @@ void cslog_push(struct cs_event *e);
 void cslog_run_start(struct proc *p);
 int  cslog_read_many(struct cs_event *out, int max);
 
+int  schedread(struct sched_event *dst, int max);

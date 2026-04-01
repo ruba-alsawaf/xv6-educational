@@ -115,3 +115,8 @@ fsread:
  li a7, SYS_fsread
  ecall
  ret
+.global schedread
+schedread:
+ li a7, SYS_schedread
+ ecall
+ ret
