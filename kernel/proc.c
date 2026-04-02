@@ -247,7 +247,7 @@ int growproc(int n) {
   e.kind   = PAGE_USER;
   safestrcpy(e.name, p->name, MEM_NM);
   memlog_push(&e);
-         p->pid, (void*)sz, (void*)(sz + n), p->name);
+
   sz = uvmdealloc(p->pagetable, sz, sz + n);
 }
   p->sz = sz;
