@@ -33,10 +33,10 @@ OBJS = \
   $K/syscslog.o \
   $K/ringbuf.o \
   $K/fslog.o  \
-
   $K/memlog.o \
-  $K/sysmemlog.o
-
+  $K/sysmemlog.o \
+  $K/schedlog.o \
+  
 
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
@@ -155,6 +155,10 @@ UPROGS=\
 	$U/_cscat\
 	$U/_csexport\
 	$U/_schedexport\
+	$U/_memcat \
+	$U/_shrinktest \
+	$U/_faulttest
+	
 
 
 

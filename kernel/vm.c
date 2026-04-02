@@ -7,7 +7,8 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "fs.h"
-
+#include "memevent.h"
+#include "memlog.h"
 /*
  * the kernel's page table.
  */
@@ -160,11 +161,31 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
   a = va;
   last = va + size - PGSIZE;
   for(;;){
-    if((pte = walk(pagetable, a, 1)) == 0)
+       if((pte = walk(pagetable, a, 1)) == 0)
       return -1;
     if(*pte & PTE_V)
       panic("mappages: remap");
+
     *pte = PA2PTE(pa) | perm | PTE_V;
+
+    struct proc *p = myproc();
+    if(p){
+      struct mem_event e;
+      memset(&e, 0, sizeof(e));
+      e.ticks  = ticks;
+      e.cpu    = cpuid();
+      e.type   = MEM_MAP;
+      e.pid    = p->pid;
+      e.state  = p->state;
+      e.va     = a;
+      e.pa     = pa;
+      e.perm   = perm;
+      e.source = SRC_MAPPAGES;
+      e.kind   = PAGE_USER;
+      safestrcpy(e.name, p->name, MEM_NM);
+      memlog_push(&e);
+    }
+
     if(a == last)
       break;
     a += PGSIZE;
@@ -199,12 +220,32 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     panic("uvmunmap: not aligned");
 
   for(a = va; a < va + npages*PGSIZE; a += PGSIZE){
-    if((pte = walk(pagetable, a, 0)) == 0) // leaf page table entry allocated?
-      continue;   
-    if((*pte & PTE_V) == 0)  // has physical page been allocated?
+    if((pte = walk(pagetable, a, 0)) == 0)
       continue;
+    if((*pte & PTE_V) == 0)
+      continue;
+
+    uint64 pa = PTE2PA(*pte);
+
+    struct proc *p = myproc();
+    if(p){
+      struct mem_event e;
+      memset(&e, 0, sizeof(e));
+      e.ticks  = ticks;
+      e.cpu    = cpuid();
+      e.type   = MEM_UNMAP;
+      e.pid    = p->pid;
+      e.state  = p->state;
+      e.va     = a;
+      e.pa     = pa;
+      e.len    = PGSIZE;
+      e.source = SRC_UVMUNMAP;
+      e.kind   = PAGE_USER;
+      safestrcpy(e.name, p->name, MEM_NM);
+      memlog_push(&e);
+    }
+
     if(do_free){
-      uint64 pa = PTE2PA(*pte);
       kfree((void*)pa);
     }
     *pte = 0;
@@ -221,6 +262,22 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
 
   if(newsz < oldsz)
     return oldsz;
+      struct proc *p = myproc();
+  if(p){
+    struct mem_event e;
+    memset(&e, 0, sizeof(e));
+    e.ticks  = ticks;
+    e.cpu    = cpuid();
+    e.type   = MEM_GROW;
+    e.pid    = p->pid;
+    e.state  = p->state;
+    e.oldsz  = oldsz;
+    e.newsz  = newsz;
+    e.source = SRC_UVMALLOC;
+    e.kind   = PAGE_USER;
+    safestrcpy(e.name, p->name, MEM_NM);
+    memlog_push(&e);
+  }
 
   oldsz = PGROUNDUP(oldsz);
   for(a = oldsz; a < newsz; a += PGSIZE){
@@ -256,7 +313,6 @@ uvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz)
 
   return newsz;
 }
-
 // Recursively free page-table pages.
 // All leaf mappings must already have been removed.
 void
@@ -461,9 +517,24 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   if(ismapped(pagetable, va)) {
     return 0;
   }
+
+  struct mem_event e;
+  memset(&e, 0, sizeof(e));
+  e.ticks  = ticks;
+  e.cpu    = cpuid();
+  e.type   = MEM_FAULT;
+  e.pid    = p->pid;
+  e.state  = p->state;
+  e.va     = va;
+  e.source = SRC_VMFAULT;
+  e.kind   = PAGE_USER;
+  safestrcpy(e.name, p->name, MEM_NM);
+  memlog_push(&e);
+
   mem = (uint64) kalloc();
   if(mem == 0)
     return 0;
+
   memset((void *) mem, 0, PGSIZE);
   if (mappages(p->pagetable, va, PGSIZE, mem, PTE_W|PTE_U|PTE_R) != 0) {
     kfree((void *)mem);
@@ -471,7 +542,6 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   }
   return mem;
 }
-
 int
 ismapped(pagetable_t pagetable, uint64 va)
 {
