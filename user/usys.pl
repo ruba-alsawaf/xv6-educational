@@ -44,3 +44,6 @@ entry("pause");
 entry("uptime");
 entry("csread");
 entry("memread");
+entry("fsread");
+entry("schedread");
+

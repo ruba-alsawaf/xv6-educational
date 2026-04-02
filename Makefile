@@ -32,8 +32,13 @@ OBJS = \
   $K/cslog.o \
   $K/syscslog.o \
   $K/ringbuf.o \
+
   $K/memlog.o \
   $K/sysmemlog.o
+
+  $K/fslog.o  \
+  $K/schedlog.o
+
 
 
 
@@ -151,7 +156,8 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_cscat\
-	$U/_csexport
+	$U/_csexport\
+	$U/_schedexport\
 
 
 
@@ -165,7 +171,7 @@ clean:
 	*/*.o */*.d */*.asm */*.sym \
 	$K/kernel fs.img \
 	mkfs/mkfs .gdbinit \
-        $U/usys.S \
+	    $U/usys.S \
 	$(UPROGS)
 
 # try to generate a unique GDB port

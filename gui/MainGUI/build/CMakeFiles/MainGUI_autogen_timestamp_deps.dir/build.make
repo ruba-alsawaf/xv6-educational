@@ -53,10 +53,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/ruba/xv6-educational/gui/MainGUI
+CMAKE_SOURCE_DIR = /home/ruba/xv6-test/gui/MainGUI
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/ruba/xv6-educational/gui/MainGUI/build
+CMAKE_BINARY_DIR = /home/ruba/xv6-test/gui/MainGUI/build
 
 # Utility rule file for MainGUI_autogen_timestamp_deps.
 
@@ -81,6 +81,6 @@ CMakeFiles/MainGUI_autogen_timestamp_deps.dir/clean:
 .PHONY : CMakeFiles/MainGUI_autogen_timestamp_deps.dir/clean
 
 CMakeFiles/MainGUI_autogen_timestamp_deps.dir/depend:
-	cd /home/ruba/xv6-educational/gui/MainGUI/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ruba/xv6-educational/gui/MainGUI /home/ruba/xv6-educational/gui/MainGUI /home/ruba/xv6-educational/gui/MainGUI/build /home/ruba/xv6-educational/gui/MainGUI/build /home/ruba/xv6-educational/gui/MainGUI/build/CMakeFiles/MainGUI_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)" MainGUI_autogen_timestamp_deps
+	cd /home/ruba/xv6-test/gui/MainGUI/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/ruba/xv6-test/gui/MainGUI /home/ruba/xv6-test/gui/MainGUI /home/ruba/xv6-test/gui/MainGUI/build /home/ruba/xv6-test/gui/MainGUI/build /home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/MainGUI_autogen_timestamp_deps.dir/DependInfo.cmake "--color=$(COLOR)" MainGUI_autogen_timestamp_deps
 .PHONY : CMakeFiles/MainGUI_autogen_timestamp_deps.dir/depend
 

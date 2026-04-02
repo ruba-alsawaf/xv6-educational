@@ -3,16 +3,19 @@ import json
 import sqlite3
 import time
 import uuid
+import re
+from pathlib import Path
 
-LOG_PATH = "/mnt/c/Users/ASUS/rubaa/qemu.log"
-DB_PATH = "/mnt/c/Users/ASUS/rubaa/events.db"
+LOG_PATH = "/home/ruba/xv6-test/qemu.log"
+DB_PATH = "/home/ruba/xv6-test/events.db"
 
 SESSION_ID = str(uuid.uuid4())
-
-BATCH_SIZE = 50
+READ_CHUNK_SIZE = 4096
 SLEEP_WHEN_IDLE = 0.1
-DB_RETRY_COUNT = 5
-DB_RETRY_SLEEP = 0.2
+
+
+def clean_payload(payload: str) -> str:
+    return re.sub(r'[\x00-\x1f\x7f-\x9f]', '', payload)
 
 
 def ensure_schema(cur: sqlite3.Cursor) -> None:
@@ -20,24 +23,52 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
     CREATE TABLE IF NOT EXISTS events(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         session_id TEXT NOT NULL,
-        seq INTEGER NOT NULL,
-        tick INTEGER NOT NULL,
-        cpu INTEGER NOT NULL,
-        pid INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        state INTEGER NOT NULL,
+        seq INTEGER UNIQUE,
+        tick INTEGER,
+        cpu INTEGER,
+        pid INTEGER,
+        name TEXT,
+        state INTEGER,
         type TEXT NOT NULL,
-        UNIQUE(session_id, seq)
+        reason INTEGER,
+        scheduler TEXT,
+        cpus INTEGER,
+        time_slice INTEGER
     )
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS fs_events(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT NOT NULL,
+        seq INTEGER,
+        tick INTEGER,
+        fs_type INTEGER,
+        pid INTEGER,
+        inum INTEGER,
+        blockno INTEGER,
+        size INTEGER,
+        name TEXT
+    )
+    """)
 
-def extract_event_payloads(line: str):
-    """
-    ترجع كل substrings من الشكل:
-    EV { ... }
-    حتى لو كان قبلها junk أو بعدها junk.
-    """
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_events_session_seq
+    ON events(session_id, seq)
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_events_type
+    ON events(type)
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_fs_events_session_seq
+    ON fs_events(session_id, seq)
+    """)
+
+
+def extract_event_payloads(line: str) -> list[str]:
     payloads = []
     i = 0
 
@@ -61,114 +92,83 @@ def extract_event_payloads(line: str):
                     end = j
                     break
 
-        if end != -1:
-            payloads.append(line[brace_start:end + 1])
-            i = end + 1
-        else:
-            # ما لقينا closing brace، نوقف هون
+        if end == -1:
             break
+
+        payloads.append(line[brace_start:end + 1])
+        i = end + 1
 
     return payloads
 
 
-def parse_event_payload(payload: str):
-    try:
-        obj = json.loads(payload)
-    except json.JSONDecodeError as e:
-        return None, f"bad_json: {e}"
-
-    if not isinstance(obj, dict):
-        return None, f"bad_type: {type(obj).__name__}"
-
-    needed = ("seq", "tick", "cpu", "pid", "name", "state", "type")
-    missing = [k for k in needed if k not in obj]
-    if missing:
-        return None, f"missing_keys: {missing}"
-
-    try:
-        event = {
-            "seq": int(obj["seq"]),
-            "tick": int(obj["tick"]),
-            "cpu": int(obj["cpu"]),
-            "pid": int(obj["pid"]),
-            "name": str(obj["name"]),
-            "state": int(obj["state"]),
-            "type": str(obj["type"]),
-        }
-    except (ValueError, TypeError) as e:
-        return None, f"bad_fields: {e}"
-
-    return event, None
+def insert_fs_event(cur: sqlite3.Cursor, event: dict) -> None:
+    cur.execute("""
+    INSERT OR IGNORE INTO fs_events
+    (session_id, seq, tick, fs_type, pid, inum, blockno, size, name)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        SESSION_ID,
+        event.get("seq"),
+        event.get("tick"),
+        event.get("fs_type", 0),
+        event.get("pid", 0),
+        event.get("inum", 0),
+        event.get("block", 0),
+        event.get("size", 0),
+        event.get("name", "")
+    ))
 
 
-def insert_event(cur: sqlite3.Cursor, event: dict) -> None:
-    cur.execute(
-        """
-        INSERT OR IGNORE INTO events
-        (session_id, seq, tick, cpu, pid, name, state, type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            SESSION_ID,
-            event["seq"],
-            event["tick"],
-            event["cpu"],
-            event["pid"],
-            event["name"],
-            event["state"],
-            event["type"],
-        ),
-    )
+def insert_general_event(cur: sqlite3.Cursor, event: dict) -> None:
+    cur.execute("""
+    INSERT OR IGNORE INTO events
+    (session_id, seq, tick, cpu, pid, name, state, type, reason, scheduler, cpus, time_slice)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        SESSION_ID,
+        event.get("seq"),
+        event.get("tick"),
+        event.get("cpu"),
+        event.get("pid"),
+        event.get("name", ""),
+        event.get("state"),
+        event.get("type", ""),
+        event.get("reason"),
+        event.get("scheduler"),
+        event.get("cpus"),
+        event.get("time_slice")
+    ))
 
 
-def commit_with_retry(con: sqlite3.Connection) -> bool:
-    for attempt in range(DB_RETRY_COUNT):
-        try:
-            con.commit()
-            return True
-        except sqlite3.OperationalError as e:
-            if "locked" in str(e).lower():
-                print(f"[DB WAIT] database locked, retry {attempt + 1}/{DB_RETRY_COUNT}")
-                time.sleep(DB_RETRY_SLEEP)
-                continue
-            print(f"[DB ERROR] commit failed: {e}")
-            return False
-        except sqlite3.DatabaseError as e:
-            print(f"[DB ERROR] commit failed: {e}")
-            return False
+def handle_event(cur: sqlite3.Cursor, event: dict) -> None:
+    ev_type = event.get("type")
 
-    print("[DB ERROR] commit failed after retries")
-    return False
+    if ev_type == "FS":
+        insert_fs_event(cur, event)
+    else:
+        insert_general_event(cur, event)
 
 
 def main() -> None:
-    con = sqlite3.connect(DB_PATH, timeout=5.0)
+    log_file = Path(LOG_PATH)
+    if not log_file.exists():
+        raise FileNotFoundError(f"Log file not found: {LOG_PATH}")
+
+    con = sqlite3.connect(DB_PATH, timeout=10.0)
     cur = con.cursor()
-
     ensure_schema(cur)
-
-    cur.execute("PRAGMA journal_mode=WAL;")
-    cur.execute("PRAGMA synchronous=NORMAL;")
-    cur.execute("PRAGMA busy_timeout = 5000;")
     con.commit()
 
-    inserted = 0
-    bad = 0
     pending = ""
-    pending_writes = 0
 
-    print(f"[INFO] session_id={SESSION_ID}")
+    print(f"[INFO] Started ingestor. Session: {SESSION_ID}")
+    print(f"[INFO] Log: {LOG_PATH}")
+    print(f"[INFO] DB : {DB_PATH}")
 
     with open(LOG_PATH, "r", encoding="utf-8", errors="ignore") as f:
-        f.seek(0, 0)
-
         while True:
-            chunk = f.read(4096)
-
+            chunk = f.read(READ_CHUNK_SIZE)
             if not chunk:
-                if pending_writes > 0:
-                    if commit_with_retry(con):
-                        pending_writes = 0
                 time.sleep(SLEEP_WHEN_IDLE)
                 continue
 
@@ -176,55 +176,25 @@ def main() -> None:
 
             while "\n" in pending:
                 line, pending = pending.split("\n", 1)
-                line = line.rstrip("\r\n")
-
-                if not line:
-                    continue
 
                 payloads = extract_event_payloads(line)
-
                 if not payloads:
                     continue
 
                 for payload in payloads:
-                    event, err = parse_event_payload(payload)
-
-                    if err is not None:
-                        bad += 1
-                        print(f"[BAD {bad}] {err} :: {repr(payload)}")
-                        continue
-
+                    cleaned = clean_payload(payload)
                     try:
-                        insert_event(cur, event)
-                    except sqlite3.OperationalError as e:
-                        if "locked" in str(e).lower():
-                            print(f"[DB WAIT] insert locked for seq={event['seq']}")
-                            if not commit_with_retry(con):
-                                continue
-                            try:
-                                insert_event(cur, event)
-                            except sqlite3.DatabaseError as e2:
-                                print(f"[DB ERROR] insert failed after retry :: {event} :: {e2}")
-                                continue
-                        else:
-                            print(f"[DB ERROR] insert failed :: {event} :: {e}")
-                            continue
-                    except sqlite3.DatabaseError as e:
-                        print(f"[DB ERROR] insert failed :: {event} :: {e}")
-                        continue
-
-                    if cur.rowcount == 1:
-                        inserted += 1
-                        pending_writes += 1
-                        print(f"[OK] inserted seq={event['seq']} total={inserted}")
-                    else:
-                        print(f"[SKIP] duplicate seq={event['seq']}")
-
-                    if pending_writes >= BATCH_SIZE:
-                        if commit_with_retry(con):
-                            pending_writes = 0
+                        event = json.loads(cleaned)
+                        handle_event(cur, event)
+                        con.commit()
+                        print(f"[OK] Saved seq={event.get('seq')} type={event.get('type')}")
+                    except json.JSONDecodeError as e:
+                        print(f"[ERR] JSON decode failed: {e} | payload={cleaned}")
+                    except sqlite3.Error as e:
+                        print(f"[ERR] SQLite failed: {e} | event={event if 'event' in locals() else cleaned}")
+                    except Exception as e:
+                        print(f"[ERR] Unexpected error: {e} | payload={cleaned}")
 
 
 if __name__ == "__main__":
     main()
-

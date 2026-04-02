@@ -1,2 +1,3 @@
 user/mkdir.o: user/mkdir.c kernel/types.h kernel/stat.h user/user.h \
- kernel/csevent.h kernel/types.h
+ kernel/fslog.h kernel/types.h kernel/ringbuf.h kernel/spinlock.h \
+ kernel/csevent.h
