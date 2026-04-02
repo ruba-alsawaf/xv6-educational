@@ -23,3 +23,4 @@
 #define SYS_csread  22
 #define SYS_fsread  23
 #define SYS_schedread 24
+#define SYS_memread 25

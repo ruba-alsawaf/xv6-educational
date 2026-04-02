@@ -57,3 +57,6 @@ int fsread(struct fs_event*, int);
 
 struct sched_event;
 int schedread(struct sched_event *buf, int max);
+
+#include "kernel/memevent.h"
+int memread(struct mem_event *out, int max);

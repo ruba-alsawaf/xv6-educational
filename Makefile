@@ -33,7 +33,9 @@ OBJS = \
   $K/syscslog.o \
   $K/ringbuf.o \
   $K/fslog.o  \
-  $K/schedlog.o
+
+  $K/memlog.o \
+  $K/sysmemlog.o
 
 
 
