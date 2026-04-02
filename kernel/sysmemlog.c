@@ -17,10 +17,10 @@ sys_memread(void)
 
   if(max <= 0)
     return 0;
-  if(max > 64)
-    max = 64;
+  if(max > 16)
+    max = 16;
 
-  struct mem_event tmp[64];
+  struct mem_event tmp[16];
   int n = memlog_read_many(tmp, max);
 
   int bytes = n * (int)sizeof(struct mem_event);

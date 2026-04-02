@@ -8,6 +8,8 @@
 #include "vm.h"
 #include "cslog.h"
 #include "schedlog.h"
+#include "memevent.h"
+#include "memlog.h"
 
 struct cpu cpus[NCPU];
 
@@ -232,8 +234,22 @@ int growproc(int n) {
       return -1;
     }
   } else if (n < 0) {
-    sz = uvmdealloc(p->pagetable, sz, sz + n);
-  }
+  struct mem_event e;
+  memset(&e, 0, sizeof(e));
+  e.ticks  = ticks;
+  e.cpu    = cpuid();
+  e.type   = MEM_SHRINK;
+  e.pid    = p->pid;
+  e.state  = p->state;
+  e.oldsz  = sz;
+  e.newsz  = sz + n;
+  e.source = SRC_UVMDEALLOC;
+  e.kind   = PAGE_USER;
+  safestrcpy(e.name, p->name, MEM_NM);
+  memlog_push(&e);
+
+  sz = uvmdealloc(p->pagetable, sz, sz + n);
+}
   p->sz = sz;
   return 0;
 }

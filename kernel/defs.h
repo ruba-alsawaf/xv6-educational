@@ -10,9 +10,6 @@ struct stat;
 struct superblock;
 struct sched_event;
 #include "cslog.h"
-#include "memevent.h"
-#include "memlog.h"
-
 
 // bio.c
 void            binit(void);
@@ -206,4 +203,3 @@ int  cslog_read_many(struct cs_event *out, int max);
 uint64 sys_memread(void);
 
 int  schedread(struct sched_event *dst, int max);
-
