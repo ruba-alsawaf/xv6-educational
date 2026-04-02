@@ -53,3 +53,5 @@ void free(void*);
 #include "kernel/csevent.h"
 int csread(struct cs_event *out, int max);
 
+#include "kernel/memevent.h"
+int memread(struct mem_event *out, int max);

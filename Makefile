@@ -31,7 +31,9 @@ OBJS = \
   $K/virtio_disk.o\
   $K/cslog.o \
   $K/syscslog.o \
-  $K/ringbuf.o
+  $K/ringbuf.o \
+  $K/memlog.o \
+  $K/sysmemlog.o
 
 
 
