@@ -506,13 +506,11 @@ sys_pipe(void)
 uint64
 sys_fsread(void)
 {
-  uint64 addr;
-  int n;
+  uint64 uaddr;
+  int max;
 
-  // استدعاء الدوال بدون مقارنتها بـ < 0 لأنها تعيد void
-  argaddr(0, &addr); 
-  argint(1, &n);
+  argaddr(0, &uaddr);   // عنوان اليوزر
+  argint(1, &max);      // عدد العناصر
 
-  // استدعاء الوظيفة الحقيقية وإعادة نتيجتها
-  return fslog_read_many((struct fs_event *)addr, n);
+  return fslog_read_many((struct fs_event *)uaddr, max);
 }

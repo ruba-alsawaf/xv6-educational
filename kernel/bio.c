@@ -33,6 +33,8 @@ struct {
   // head.next is most recent, head.prev is least.
   struct buf head;
 } bcache;
+static int buf_id(struct buf *b);
+static int buf_lru_pos(struct buf *target);
 
 void
 binit(void)
@@ -60,34 +62,61 @@ static struct buf*
 bget(uint dev, uint blockno)
 {
   struct buf *b;
+  int step = 0;
 
   acquire(&bcache.lock);
 
-  // Is the block already cached?
+  // search from MRU side
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
+    fslog_bget_scan(dev, blockno, buf_id(b),
+                    b->refcnt, b->valid, buf_lru_pos(b),
+                    1, step,
+                    (b->dev == dev && b->blockno == blockno));
+
     if(b->dev == dev && b->blockno == blockno){
+      int old_ref = b->refcnt;
+      int lru = buf_lru_pos(b);
+
       b->refcnt++;
       release(&bcache.lock);
       acquiresleep(&b->lock);
-      fslog_push(FS_BGET_HIT, 0, blockno, 0, "BCACHE");
+
+      fslog_bget_hit(dev, blockno, buf_id(b),
+                     old_ref, b->refcnt,
+                     b->valid, lru);
       return b;
     }
+    step++;
   }
 
-  // Not cached.
-  // Recycle the least recently used (LRU) unused buffer.
+  // recycle from LRU side
+  step = 0;
   for(b = bcache.head.prev; b != &bcache.head; b = b->prev){
+    fslog_bget_scan(dev, blockno, buf_id(b),
+                    b->refcnt, b->valid, buf_lru_pos(b),
+                    -1, step,
+                    (b->refcnt == 0));
+
     if(b->refcnt == 0) {
+      int old_block = b->blockno;
+      int old_valid = b->valid;
+      int lru = buf_lru_pos(b);
+
       b->dev = dev;
       b->blockno = blockno;
       b->valid = 0;
       b->refcnt = 1;
+
       release(&bcache.lock);
       acquiresleep(&b->lock);
-      fslog_push(FS_BGET_MISS, 0, blockno, 0, "BCACHE");
+
+      fslog_bget_miss(dev, blockno, old_block, buf_id(b),
+                      old_valid, lru);
       return b;
     }
+    step++;
   }
+
   panic("bget: no buffers");
 }
 
@@ -97,10 +126,13 @@ bread(uint dev, uint blockno)
 {
   struct buf *b;
 
+  fslog_bread_req(dev, blockno);
+
   b = bget(dev, blockno);
   if(!b->valid) {
     virtio_disk_rw(b, 0);
     b->valid = 1;
+    fslog_bread_fill(b->dev, b->blockno, buf_id(b), b->refcnt, buf_lru_pos(b));
   }
   return b;
 }
@@ -111,7 +143,11 @@ bwrite(struct buf *b)
 {
   if(!holdingsleep(&b->lock))
     panic("bwrite");
+
   virtio_disk_rw(b, 1);
+
+  fslog_bwrite_ev(b->dev, b->blockno, buf_id(b),
+                  b->refcnt, b->valid, buf_lru_pos(b));
 }
 
 // Release a locked buffer.
@@ -119,27 +155,44 @@ bwrite(struct buf *b)
 void
 brelse(struct buf *b)
 {
+  int old_ref, new_ref;
+  int old_lru, new_lru;
+  int dev_now, blockno_now, bufid_now, valid_now;
+
   if(!holdingsleep(&b->lock))
     panic("brelse");
+
+  old_ref = b->refcnt;
+  old_lru = buf_lru_pos(b);
 
   releasesleep(&b->lock);
 
   acquire(&bcache.lock);
   b->refcnt--;
+
   if (b->refcnt == 0) {
-    // no one is waiting for it.
     b->next->prev = b->prev;
     b->prev->next = b->next;
     b->next = bcache.head.next;
     b->prev = &bcache.head;
     bcache.head.next->prev = b;
     bcache.head.next = b;
-    fslog_push(FS_BRELEASE, 0, b->blockno, 0, "BCACHE");
   }
-  
-  release(&bcache.lock);
-}
 
+  new_ref = b->refcnt;
+  new_lru = buf_lru_pos(b);
+  dev_now = b->dev;
+  blockno_now = b->blockno;
+  bufid_now = buf_id(b);
+  valid_now = b->valid;
+
+  release(&bcache.lock);
+
+  fslog_brelease_ev(dev_now, blockno_now, bufid_now,
+                    old_ref, new_ref,
+                    valid_now,
+                    old_lru, new_lru);
+}
 void
 bpin(struct buf *b) {
   acquire(&bcache.lock);
@@ -154,4 +207,22 @@ bunpin(struct buf *b) {
   release(&bcache.lock);
 }
 
+static int
+buf_id(struct buf *b)
+{
+  return (int)(b - bcache.buf);
+}
 
+static int
+buf_lru_pos(struct buf *target)
+{
+  int pos = 0;
+  struct buf *b;
+
+  for(b = bcache.head.next; b != &bcache.head; b = b->next){
+    if(b == target)
+      return pos;
+    pos++;
+  }
+  return -1;
+}

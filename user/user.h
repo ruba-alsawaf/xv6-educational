@@ -1,3 +1,4 @@
+#include "kernel/csevent.h"
 #include "kernel/fslog.h"
 #define SBRK_ERROR ((char *)-1)
 
@@ -51,6 +52,5 @@ void free(void*);
 
 // لازم يطابق struct cs_event بالكيرنل
 
-#include "kernel/csevent.h"
 int csread(struct cs_event *out, int max);
-int fsread(struct fs_event*, int);
+int fsread(struct fs_event *out, int max);

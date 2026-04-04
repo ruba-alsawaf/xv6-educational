@@ -31,12 +31,8 @@ OBJS = \
   $K/virtio_disk.o\
   $K/cslog.o \
   $K/syscslog.o \
-<<<<<<< Updated upstream
-  $K/ringbuf.o
-=======
   $K/ringbuf.o \
   $K/fslog.o
->>>>>>> Stashed changes
 
 
 

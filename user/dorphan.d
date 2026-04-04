@@ -1,2 +1,3 @@
 user/dorphan.o: user/dorphan.c kernel/types.h kernel/stat.h \
- kernel/fcntl.h user/user.h kernel/csevent.h kernel/types.h
+ kernel/fcntl.h user/user.h kernel/csevent.h kernel/types.h \
+ kernel/fslog.h kernel/ringbuf.h kernel/spinlock.h

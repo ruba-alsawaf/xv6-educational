@@ -42,9 +42,9 @@ void FileSystemWindow::setupLayout() {
 
     layout->addWidget(tabs);
     layout->addWidget(explanationArea);
-    // داخل setupLayout:
-    BufferCacheWidget *bufWidget = new BufferCacheWidget(this);
-    tabs->addTab(bufWidget, "3. Buffer Cache Monitor");
+   
+BufferCacheWidget *bufWidget = new BufferCacheWidget(this);
+tabs->addTab(bufWidget, "3. Buffer Cache (3 Levels)");
 }
 
 void FileSystemWindow::drawLayers() {

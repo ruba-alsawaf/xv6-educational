@@ -1,5 +1,6 @@
 #include "mainwindow.h"
-#include "schedulerWindow.h" // تأكدي من تضمين الملف الصحيح
+#include "schedulerWindow.h"
+#include "filesystemWindow.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
@@ -16,16 +17,15 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     mainLayout->addWidget(titleLabel);
 
     QGridLayout *grid = new QGridLayout();
-    
+
     btnScheduler = new QPushButton("📊 CPU Scheduling", this);
     btnPageTable = new QPushButton("🧠 Memory (Page Tables)", this);
     btnFileSystem = new QPushButton("📁 File System Explorer", this);
     btnSyscall   = new QPushButton("📞 System Calls Lab", this);
 
-    // ستايل احترافي موحد
     QString btnStyle = "QPushButton { background-color: #3498db; color: white; border-radius: 15px; min-height: 100px; font-size: 18px; font-weight: bold; border: 2px solid #2980b9; } "
                        "QPushButton:hover { background-color: #2ecc71; border: 2px solid #27ae60; }";
-    
+
     btnScheduler->setStyleSheet(btnStyle);
     btnPageTable->setStyleSheet(btnStyle);
     btnFileSystem->setStyleSheet(btnStyle);
@@ -40,7 +40,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     mainLayout->addStretch();
 
     connect(btnScheduler, &QPushButton::clicked, this, &MainWindow::onSchedulerClicked);
-    
+    connect(btnFileSystem, &QPushButton::clicked, this, &MainWindow::onFileSystemClicked);
+    connect(btnPageTable, &QPushButton::clicked, this, &MainWindow::onPageTableClicked);
+    connect(btnSyscall, &QPushButton::clicked, this, &MainWindow::onSyscallClicked);
+
     setWindowTitle("xv6 OS Educational GUI v2.0");
     resize(700, 550);
 }
@@ -51,9 +54,13 @@ void MainWindow::onSchedulerClicked() {
     schedWin->show();
 }
 
-// باقي الدوال تبقى فارغة حالياً
+void MainWindow::onFileSystemClicked() {
+    FileSystemWindow *fsWin = new FileSystemWindow();
+    fsWin->setAttribute(Qt::WA_DeleteOnClose);
+    fsWin->show();
+}
+
 void MainWindow::onPageTableClicked() {}
-void MainWindow::onFileSystemClicked() {}
 void MainWindow::onSyscallClicked() {}
 
 MainWindow::~MainWindow() {}

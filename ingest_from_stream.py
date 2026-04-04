@@ -1,19 +1,23 @@
+
+
 #!/usr/bin/env python3
 import json
 import sqlite3
 import time
 import uuid
-<<<<<<< Updated upstream
+import re
+from pathlib import Path
 
 LOG_PATH = "/mnt/c/Users/ASUS/rubaa/qemu.log"
 DB_PATH = "/mnt/c/Users/ASUS/rubaa/events.db"
 
 SESSION_ID = str(uuid.uuid4())
-
-BATCH_SIZE = 50
+READ_CHUNK_SIZE = 4096
 SLEEP_WHEN_IDLE = 0.1
-DB_RETRY_COUNT = 5
-DB_RETRY_SLEEP = 0.2
+
+
+def clean_payload(payload: str) -> str:
+    return re.sub(r'[\x00-\x1f\x7f-\x9f]', '', payload)
 
 
 def ensure_schema(cur: sqlite3.Cursor) -> None:
@@ -21,24 +25,84 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
     CREATE TABLE IF NOT EXISTS events(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         session_id TEXT NOT NULL,
-        seq INTEGER NOT NULL,
-        tick INTEGER NOT NULL,
-        cpu INTEGER NOT NULL,
-        pid INTEGER NOT NULL,
-        name TEXT NOT NULL,
-        state INTEGER NOT NULL,
+        seq INTEGER UNIQUE,
+        tick INTEGER,
+        cpu INTEGER,
+        pid INTEGER,
+        name TEXT,
+        state INTEGER,
         type TEXT NOT NULL,
-        UNIQUE(session_id, seq)
+        reason INTEGER,
+        scheduler TEXT,
+        cpus INTEGER,
+        time_slice INTEGER
     )
     """)
 
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS fs_events(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        session_id TEXT NOT NULL,
+        seq INTEGER UNIQUE,
+        tick INTEGER,
+        fs_type INTEGER,
+        pid INTEGER,
+        dev INTEGER,
+        blockno INTEGER,
+        old_blockno INTEGER,
+        buf_id INTEGER,
+        ref_before INTEGER,
+        ref_after INTEGER,
+        valid_before INTEGER,
+        valid_after INTEGER,
+        locked_before INTEGER,
+        locked_after INTEGER,
+        lru_before INTEGER,
+        lru_after INTEGER,
+        scan_dir INTEGER,
+        scan_step INTEGER,
+        found INTEGER,
+        size INTEGER,
+        name TEXT
+    )
+    """)
 
-def extract_event_payloads(line: str):
-    """
-    ترجع كل substrings من الشكل:
-    EV { ... }
-    حتى لو كان قبلها junk أو بعدها junk.
-    """
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS buffer_state(
+        buf_id INTEGER PRIMARY KEY,
+        dev INTEGER,
+        blockno INTEGER,
+        refcnt INTEGER,
+        valid INTEGER,
+        locked INTEGER,
+        lru_pos INTEGER,
+        last_event_type INTEGER,
+        last_seq INTEGER,
+        session_id TEXT
+    )
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_events_session_seq
+    ON events(session_id, seq)
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_events_type
+    ON events(type)
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_fs_events_session_seq
+    ON fs_events(session_id, seq)
+    """)
+
+    cur.execute("""
+    CREATE INDEX IF NOT EXISTS idx_fs_events_buf
+    ON fs_events(buf_id)
+    """)
+
+def extract_event_payloads(line: str) -> list[str]:
     payloads = []
     i = 0
 
@@ -56,258 +120,192 @@ def extract_event_payloads(line: str):
         for j in range(brace_start, len(line)):
             if line[j] == "{":
                 depth += 1
-=======
-import re
-
-LOG_PATH = "/mnt/c/Users/ASUS/rubaa/qemu.log"
-DB_PATH = "/mnt/c/Users/ASUS/rubaa/events.db"
-SESSION_ID = str(uuid.uuid4())
-BATCH_SIZE = 1 
-SLEEP_WHEN_IDLE = 0.1
-
-def clean_payload(payload):
-    # إزالة أي أحرف تحكم غير مرئية قد تسبب فشل الـ JSON
-    return re.sub(r'[\x00-\x1f\x7f-\x9f]', '', payload)
-
-def ensure_schema(cur):
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS events(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT, seq INTEGER UNIQUE, tick INTEGER,
-        cpu INTEGER, pid INTEGER, name TEXT, state INTEGER, type TEXT
-    )""")
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS fs_events(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT, seq INTEGER, tick INTEGER, type INTEGER,
-        pid INTEGER, inum INTEGER, blockno INTEGER, size INTEGER, name TEXT
-    )""")
-
-def extract_event_payloads(line):
-    payloads = []
-    i = 0
-    while True:
-        start = line.find("EV {", i)
-        if start == -1: break
-        brace_start = line.find("{", start)
-        depth, end = 0, -1
-        for j in range(brace_start, len(line)):
-            if line[j] == "{": depth += 1
->>>>>>> Stashed changes
             elif line[j] == "}":
                 depth -= 1
                 if depth == 0:
                     end = j
                     break
-<<<<<<< Updated upstream
 
-        if end != -1:
-            payloads.append(line[brace_start:end + 1])
-            i = end + 1
-        else:
-            # ما لقينا closing brace، نوقف هون
+        if end == -1:
             break
+
+        payloads.append(line[brace_start:end + 1])
+        i = end + 1
 
     return payloads
 
-
-def parse_event_payload(payload: str):
-    try:
-        obj = json.loads(payload)
-    except json.JSONDecodeError as e:
-        return None, f"bad_json: {e}"
-
-    if not isinstance(obj, dict):
-        return None, f"bad_type: {type(obj).__name__}"
-
-    needed = ("seq", "tick", "cpu", "pid", "name", "state", "type")
-    missing = [k for k in needed if k not in obj]
-    if missing:
-        return None, f"missing_keys: {missing}"
-
-    try:
-        event = {
-            "seq": int(obj["seq"]),
-            "tick": int(obj["tick"]),
-            "cpu": int(obj["cpu"]),
-            "pid": int(obj["pid"]),
-            "name": str(obj["name"]),
-            "state": int(obj["state"]),
-            "type": str(obj["type"]),
-        }
-    except (ValueError, TypeError) as e:
-        return None, f"bad_fields: {e}"
-
-    return event, None
-
-
-def insert_event(cur: sqlite3.Cursor, event: dict) -> None:
-    cur.execute(
-        """
-        INSERT OR IGNORE INTO events
-        (session_id, seq, tick, cpu, pid, name, state, type)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """,
-        (
-            SESSION_ID,
-            event["seq"],
-            event["tick"],
-            event["cpu"],
-            event["pid"],
-            event["name"],
-            event["state"],
-            event["type"],
-        ),
-    )
-
-
-def commit_with_retry(con: sqlite3.Connection) -> bool:
-    for attempt in range(DB_RETRY_COUNT):
-        try:
-            con.commit()
+def is_important_fs_event(event: dict) -> bool:
+    """
+    تحديد ما إذا كان الحدث يستحق التخزين في جدول التاريخ بناءً على الخطة التعليمية.
+    """
+    fs_type = event.get("fs_type", 0)
+    
+    # 1. دائماً نخزن عمليات: القراءة (1)، الكتابة (5)، التحرير (7)، الحجز (4)، البداية (3)
+    if fs_type in [1, 3, 4, 5, 6, 7]:
+        return True
+    
+    # 2. عمليات البحث (fs_type == 2):
+    # لا نخزنها إلا إذا وجد البلوك (found == 1) 
+    # هذا سيحذف مئات السطور المملة التي تظهر في الـ serial
+    if fs_type == 2:
+        if event.get("found") == 1:
             return True
-        except sqlite3.OperationalError as e:
-            if "locked" in str(e).lower():
-                print(f"[DB WAIT] database locked, retry {attempt + 1}/{DB_RETRY_COUNT}")
-                time.sleep(DB_RETRY_SLEEP)
-                continue
-            print(f"[DB ERROR] commit failed: {e}")
-            return False
-        except sqlite3.DatabaseError as e:
-            print(f"[DB ERROR] commit failed: {e}")
-            return False
+        # إذا أردتِ رؤية أول خطوة في البحث فقط لإظهار أن النظام بدأ يبحث:
+        if event.get("scan_step") == 0:
+            return True
+            
+    return False    
 
-    print("[DB ERROR] commit failed after retries")
-    return False
+
+def insert_fs_event(cur: sqlite3.Cursor, event: dict) -> None:
+    # الفلترة هنا: إذا لم يكن الحدث مهماً، نخرج فوراً ولا نحفظه في التاريخ
+    if not is_important_fs_event(event):
+        return
+
+    cur.execute("""
+    INSERT OR IGNORE INTO fs_events
+    (
+        session_id, seq, tick, fs_type, pid, dev, blockno, old_blockno, buf_id,
+        ref_before, ref_after, valid_before, valid_after,
+        locked_before, locked_after, lru_before, lru_after,
+        scan_dir, scan_step, found, size, name
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        SESSION_ID,
+        event.get("seq"),
+        event.get("tick"),
+        event.get("fs_type", 0),
+        event.get("pid", 0),
+        event.get("dev", 0),
+        event.get("block", -1),
+        event.get("old_block", -1),
+        event.get("buf_id", -1),
+        event.get("ref_before", -1),
+        event.get("ref_after", -1),
+        event.get("valid_before", -1),
+        event.get("valid_after", -1),
+        event.get("locked_before", -1),
+        event.get("locked_after", -1),
+        event.get("lru_before", -1),
+        event.get("lru_after", -1),
+        event.get("scan_dir", 0),
+        event.get("scan_step", 0),
+        event.get("found", 0),
+        event.get("size", 0),
+        event.get("name", "")
+    ))
+
+def update_buffer_state(cur: sqlite3.Cursor, event: dict) -> None:
+    # ملاحظة: هذه الدالة تبقى كما هي لأننا نريد تحديث "حالة البفر الحالية" 
+    # دائماً لنعرف مكانه في الـ LRU، حتى لو لم نسجل الحدث في التاريخ.
+    buf_id = event.get("buf_id", -1)
+    if not isinstance(buf_id, int) or buf_id < 0 or buf_id >= 30:
+        return
+
+    cur.execute("""
+    INSERT INTO buffer_state
+    (buf_id, dev, blockno, refcnt, valid, locked, lru_pos, last_event_type, last_seq, session_id)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(buf_id) DO UPDATE SET
+        dev = excluded.dev,
+        blockno = excluded.blockno,
+        refcnt = excluded.refcnt,
+        valid = excluded.valid,
+        locked = excluded.locked,
+        lru_pos = excluded.lru_pos,
+        last_event_type = excluded.last_event_type,
+        last_seq = excluded.last_seq,
+        session_id = excluded.session_id
+    """, (
+        buf_id, event.get("dev", 0), event.get("block", -1),
+        event.get("ref_after", -1), event.get("valid_after", -1),
+        event.get("locked_after", -1), event.get("lru_after", -1),
+        event.get("fs_type", 0), event.get("seq", 0), SESSION_ID
+    ))
+
+
+def insert_general_event(cur: sqlite3.Cursor, event: dict) -> None:
+    cur.execute("""
+    INSERT OR IGNORE INTO events
+    (session_id, seq, tick, cpu, pid, name, state, type, reason, scheduler, cpus, time_slice)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        SESSION_ID,
+        event.get("seq"),
+        event.get("tick"),
+        event.get("cpu"),
+        event.get("pid"),
+        event.get("name", ""),
+        event.get("state"),
+        event.get("type", ""),
+        event.get("reason"),
+        event.get("scheduler"),
+        event.get("cpus"),
+        event.get("time_slice")
+    ))
+
+
+def handle_event(cur: sqlite3.Cursor, event: dict) -> None:
+    ev_type = event.get("type")
+    if ev_type == "FS":
+        # نقوم بتحديث الحالة الحالية دائماً
+        update_buffer_state(cur, event)
+        # ثم نقرر هل نسجل الحدث في جدول التاريخ (fs_events) أم لا
+        insert_fs_event(cur, event)
+    else:
+        # أحداث الجدولة (Scheduler) وغيرها تبقى كما هي دون تعديل
+        insert_general_event(cur, event)
 
 
 def main() -> None:
-    con = sqlite3.connect(DB_PATH, timeout=5.0)
-    cur = con.cursor()
+    log_file = Path(LOG_PATH)
+    if not log_file.exists():
+        raise FileNotFoundError(f"Log file not found: {LOG_PATH}")
 
-    ensure_schema(cur)
-
-    cur.execute("PRAGMA journal_mode=WAL;")
-    cur.execute("PRAGMA synchronous=NORMAL;")
-    cur.execute("PRAGMA busy_timeout = 5000;")
-    con.commit()
-
-    inserted = 0
-    bad = 0
-    pending = ""
-    pending_writes = 0
-
-    print(f"[INFO] session_id={SESSION_ID}")
-
-    with open(LOG_PATH, "r", encoding="utf-8", errors="ignore") as f:
-        f.seek(0, 0)
-
-        while True:
-            chunk = f.read(4096)
-
-            if not chunk:
-                if pending_writes > 0:
-                    if commit_with_retry(con):
-                        pending_writes = 0
-                time.sleep(SLEEP_WHEN_IDLE)
-                continue
-
-            pending += chunk
-
-            while "\n" in pending:
-                line, pending = pending.split("\n", 1)
-                line = line.rstrip("\r\n")
-
-                if not line:
-                    continue
-
-                payloads = extract_event_payloads(line)
-
-                if not payloads:
-                    continue
-
-                for payload in payloads:
-                    event, err = parse_event_payload(payload)
-
-                    if err is not None:
-                        bad += 1
-                        print(f"[BAD {bad}] {err} :: {repr(payload)}")
-                        continue
-
-                    try:
-                        insert_event(cur, event)
-                    except sqlite3.OperationalError as e:
-                        if "locked" in str(e).lower():
-                            print(f"[DB WAIT] insert locked for seq={event['seq']}")
-                            if not commit_with_retry(con):
-                                continue
-                            try:
-                                insert_event(cur, event)
-                            except sqlite3.DatabaseError as e2:
-                                print(f"[DB ERROR] insert failed after retry :: {event} :: {e2}")
-                                continue
-                        else:
-                            print(f"[DB ERROR] insert failed :: {event} :: {e}")
-                            continue
-                    except sqlite3.DatabaseError as e:
-                        print(f"[DB ERROR] insert failed :: {event} :: {e}")
-                        continue
-
-                    if cur.rowcount == 1:
-                        inserted += 1
-                        pending_writes += 1
-                        print(f"[OK] inserted seq={event['seq']} total={inserted}")
-                    else:
-                        print(f"[SKIP] duplicate seq={event['seq']}")
-
-                    if pending_writes >= BATCH_SIZE:
-                        if commit_with_retry(con):
-                            pending_writes = 0
-
-
-if __name__ == "__main__":
-    main()
-
-=======
-        if end != -1:
-            payloads.append(line[brace_start:end + 1])
-            i = end + 1
-        else: break
-    return payloads
-
-def main():
     con = sqlite3.connect(DB_PATH, timeout=10.0)
     cur = con.cursor()
     ensure_schema(cur)
     con.commit()
 
     pending = ""
-    print(f"[INFO] Started Clean Ingestor. Session: {SESSION_ID}")
+
+    print(f"[INFO] Started ingestor. Session: {SESSION_ID}")
+    print(f"[INFO] Log: {LOG_PATH}")
+    print(f"[INFO] DB : {DB_PATH}")
 
     with open(LOG_PATH, "r", encoding="utf-8", errors="ignore") as f:
         while True:
-            chunk = f.read(4096)
+            chunk = f.read(READ_CHUNK_SIZE)
             if not chunk:
                 time.sleep(SLEEP_WHEN_IDLE)
                 continue
+
             pending += chunk
+
             while "\n" in pending:
                 line, pending = pending.split("\n", 1)
-                for payload in extract_event_payloads(line):
+
+                payloads = extract_event_payloads(line)
+                if not payloads:
+                    continue
+
+                for payload in payloads:
                     cleaned = clean_payload(payload)
                     try:
                         event = json.loads(cleaned)
-                        if event.get("type") == "FS":
-                            cur.execute("INSERT INTO fs_events (session_id, seq, tick, type, pid, inum, blockno, size, name) VALUES (?,?,?,?,?,?,?,?,?)",
-                                (SESSION_ID, event["seq"], event["tick"], event.get("fs_type", 0), event["pid"], event.get("inum", 0), event.get("block", 0), event.get("size", 0), event.get("name", "")))
-                        else:
-                            cur.execute("INSERT OR IGNORE INTO events (session_id, seq, tick, cpu, pid, name, state, type) VALUES (?,?,?,?,?,?,?,?)",
-                                (SESSION_ID, event["seq"], event["tick"], event.get("cpu", 0), event["pid"], event.get("name", "unknown"), event.get("state", 0), event["type"]))
+                        handle_event(cur, event)
                         con.commit()
-                        print(f"[OK] Saved seq={event['seq']}")
+                        print(f"[OK] Saved seq={event.get('seq')} type={event.get('type')}")
+                    except json.JSONDecodeError as e:
+                        print(f"[ERR] JSON decode failed: {e} | payload={cleaned}")
+                    except sqlite3.Error as e:
+                        print(f"[ERR] SQLite failed: {e} | event={event if 'event' in locals() else cleaned}")
                     except Exception as e:
-                        print(f"[ERR] {e}")
+                        print(f"[ERR] Unexpected error: {e} | payload={cleaned}")
+
 
 if __name__ == "__main__":
     main()
->>>>>>> Stashed changes
+
+
