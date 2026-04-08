@@ -6,8 +6,8 @@ import uuid
 import re
 from pathlib import Path
 
-LOG_PATH = "/home/ruba/xv6-test/qemu.log"
-DB_PATH = "/home/ruba/xv6-test/events.db"
+LOG_PATH = "qemu.log"
+DB_PATH = "events.db"
 
 SESSION_ID = str(uuid.uuid4())
 READ_CHUNK_SIZE = 4096

@@ -13,11 +13,11 @@
 #include <QColor>
 #include <QUuid>
 
-static const QString DB_PATH = "/home/ruba/xv6-test/events.db";
-static const QString PROJECT_DIR = "/home/ruba/xv6-test";
-static const QString PYTHON_BIN = "/usr/bin/python3";
-static const QString INGEST_SCRIPT = "/home/ruba/xv6-test/ingest_from_stream.py";
-static const QString BUILD_SCRIPT = "/home/ruba/xv6-test/build_intervals.py";
+static const QString DB_PATH = "events.db";
+static const QString PROJECT_DIR = "";
+static const QString PYTHON_BIN = "/usr/bin/python3.12";
+static const QString INGEST_SCRIPT = "ingest_from_stream.py";
+static const QString BUILD_SCRIPT = "build_intervals.py";
 
 SchedulerWindow::SchedulerWindow(QWidget *parent)
     : QMainWindow(parent),

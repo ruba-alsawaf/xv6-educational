@@ -2,7 +2,7 @@
 import sqlite3
 from pathlib import Path
 
-DB_PATH = "/home/ruba/xv6-test/events.db"
+DB_PATH = "events.db"
 
 
 def get_latest_session_id(cur):

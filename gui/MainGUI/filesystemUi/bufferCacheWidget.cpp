@@ -32,7 +32,7 @@ void BufferCacheWidget::setupUI() {
 
 void BufferCacheWidget::updateFromDB() {
     sqlite3 *db;
-    if (sqlite3_open("/mnt/c/Users/ASUS/rubaa/events.db", &db) != SQLITE_OK) return;
+    if (sqlite3_open("events.db", &db) != SQLITE_OK) return;
 
     const char *query = "SELECT type, blockno FROM fs_events ORDER BY id DESC LIMIT 30";
     sqlite3_stmt *stmt;

@@ -120,3 +120,8 @@ schedread:
  li a7, SYS_schedread
  ecall
  ret
+.global memread
+memread:
+ li a7, SYS_memread
+ ecall
+ ret
