@@ -1,5 +1,5 @@
-/mnt/c/Users/kinannotfound/Documents/xv6-educational/gui/MainGUI/build/CMakeFiles/MainGUI.dir
-/mnt/c/Users/kinannotfound/Documents/xv6-educational/gui/MainGUI/build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/kinannotfound/Documents/xv6-educational/gui/MainGUI/build/CMakeFiles/rebuild_cache.dir
-/mnt/c/Users/kinannotfound/Documents/xv6-educational/gui/MainGUI/build/CMakeFiles/MainGUI_autogen_timestamp_deps.dir
-/mnt/c/Users/kinannotfound/Documents/xv6-educational/gui/MainGUI/build/CMakeFiles/MainGUI_autogen.dir
+/home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/MainGUI.dir
+/home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/edit_cache.dir
+/home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/rebuild_cache.dir
+/home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/MainGUI_autogen_timestamp_deps.dir
+/home/ruba/xv6-test/gui/MainGUI/build/CMakeFiles/MainGUI_autogen.dir

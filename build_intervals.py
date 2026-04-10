@@ -76,8 +76,9 @@ def events_to_intervals(events):
             # إذا في interval مفتوح لنفس المفتاح، سكريه احتياطياً
             if key in open_runs:
                 old = open_runs.pop(key)
-                old["end_tick"] = ev["tick"]
-                old["duration"] = ev["tick"] - old["start_tick"]
+                old["seq_end"] = ev["seq"]
+                old["tick_end"] = ev["tick"]
+                old["duration"] = ev["tick"] - old["tick_start"]
                 old["off_reason"] = None
                 old["closed_implicitly"] = 1
                 intervals.append(old)
@@ -103,7 +104,6 @@ def events_to_intervals(events):
                 run["tick_end"] = ev["tick"]
                 run["duration"] = ev["tick"] - run["tick_start"]
                 run["off_reason"] = ev["reason"]
-                # إذا الاسم بالبداية كان فارغ، خدي الاسم من OFF_CPU
                 if not run["name"] and ev["name"]:
                     run["name"] = ev["name"]
                 intervals.append(run)

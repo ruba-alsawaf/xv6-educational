@@ -12,12 +12,67 @@
 #include <QVariant>
 #include <QColor>
 #include <QUuid>
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfo>
+#include <QProcess>
+#include <QTimer>
+#include <QPushButton>
+#include <QTabWidget>
+#include <QTextEdit>
+#include <QTableWidget>
+#include <QComboBox>
+#include <QAbstractItemView>
 
 static const QString DB_PATH = "events.db";
-static const QString PROJECT_DIR = "";
-static const QString PYTHON_BIN = "/usr/bin/python3.12";
 static const QString INGEST_SCRIPT = "ingest_from_stream.py";
 static const QString BUILD_SCRIPT = "build_intervals.py";
+
+static QString findProjectRoot()
+{
+    QDir dir(QCoreApplication::applicationDirPath());
+
+    // اصعد عدة مستويات وابحث عن السكربتات/قاعدة البيانات
+    for (int i = 0; i < 8; ++i) {
+        bool hasIngest = QFileInfo::exists(dir.filePath(INGEST_SCRIPT));
+        bool hasBuild = QFileInfo::exists(dir.filePath(BUILD_SCRIPT));
+
+        if (hasIngest && hasBuild) {
+            return dir.absolutePath();
+        }
+
+        if (!dir.cdUp()) {
+            break;
+        }
+    }
+
+    // fallback: مكان تشغيل التطبيق
+    return QCoreApplication::applicationDirPath();
+}
+
+static QString resolvePythonBinary()
+{
+    QDir root(findProjectRoot());
+
+    QString venvPython = root.filePath(".venv/bin/python");
+    if (QFileInfo::exists(venvPython)) {
+        return venvPython;
+    }
+
+    return "python3";
+}
+
+static QString resolveDbPath()
+{
+    QDir root(findProjectRoot());
+    return root.filePath(DB_PATH);
+}
+
+static QString resolveScriptPath(const QString &scriptName)
+{
+    QDir root(findProjectRoot());
+    return root.filePath(scriptName);
+}
 
 SchedulerWindow::SchedulerWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -102,7 +157,7 @@ SchedulerWindow::~SchedulerWindow() {
 
 void SchedulerWindow::setupDatabase() {
     db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
-    db.setDatabaseName(DB_PATH);
+    db.setDatabaseName(resolveDbPath());
 
     if (!db.open()) {
         showDbError("Opening scheduler database");
@@ -747,13 +802,26 @@ void SchedulerWindow::startLiveCapture() {
         return;
     }
 
-    ingestorProcess->setWorkingDirectory(PROJECT_DIR);
-    ingestorProcess->start(PYTHON_BIN, QStringList() << INGEST_SCRIPT);
+    QString projectRoot = findProjectRoot();
+    QString pythonBin = resolvePythonBinary();
+    QString scriptPath = resolveScriptPath(INGEST_SCRIPT);
+
+    ingestorProcess->setWorkingDirectory(projectRoot);
+    ingestorProcess->start(pythonBin, QStringList() << scriptPath);
 
     if (!ingestorProcess->waitForStarted(1200)) {
+        QString err = ingestorProcess->errorString();
+
         updateStatusLabel("Failed to start live capture", "#c0392b");
-        QMessageBox::warning(this, "Start Live Capture",
-                             "Could not start ingest_from_stream.py");
+        QMessageBox::warning(
+            this,
+            "Start Live Capture",
+            "Could not start ingest_from_stream.py\n\n"
+            "Project root: " + projectRoot + "\n"
+            "Python: " + pythonBin + "\n"
+            "Script: " + scriptPath + "\n"
+            "Error: " + err
+        );
         return;
     }
 }
@@ -800,15 +868,26 @@ void SchedulerWindow::rebuildIntervals() {
         return;
     }
 
+    QString projectRoot = findProjectRoot();
+    QString pythonBin = resolvePythonBinary();
+    QString scriptPath = resolveScriptPath(BUILD_SCRIPT);
+
     updateStatusLabel("Rebuilding intervals...", "#8e44ad");
 
-    builderProcess->setWorkingDirectory(PROJECT_DIR);
-    builderProcess->start(PYTHON_BIN, QStringList() << BUILD_SCRIPT);
+    builderProcess->setWorkingDirectory(projectRoot);
+    builderProcess->start(pythonBin, QStringList() << scriptPath);
 
     if (!builderProcess->waitForStarted(1200)) {
         updateStatusLabel("Failed to start build_intervals.py", "#c0392b");
-        QMessageBox::warning(this, "Rebuild Intervals",
-                             "Could not start build_intervals.py");
+        QMessageBox::warning(
+            this,
+            "Rebuild Intervals",
+            "Could not start build_intervals.py\n\n"
+            "Project root: " + projectRoot + "\n"
+            "Python: " + pythonBin + "\n"
+            "Script: " + scriptPath + "\n"
+            "Error: " + builderProcess->errorString()
+        );
     }
 }
 
@@ -819,10 +898,18 @@ void SchedulerWindow::onIngestorStarted() {
 void SchedulerWindow::onIngestorFinished(int exitCode, QProcess::ExitStatus exitStatus) {
     Q_UNUSED(exitStatus);
 
+    QString stderrText = ingestorProcess->readAllStandardError();
+    QString stdoutText = ingestorProcess->readAllStandardOutput();
+
     if (exitCode == 0) {
         updateStatusLabel("Live capture finished", "#2c3e50");
     } else {
         updateStatusLabel("Live capture stopped with error", "#c0392b");
+
+        QMessageBox::warning(this,
+                             "Live Capture",
+                             "ingest_from_stream.py failed.\n\nSTDOUT:\n" + stdoutText +
+                             "\n\nSTDERR:\n" + stderrText);
     }
 
     rebuildIntervals();
