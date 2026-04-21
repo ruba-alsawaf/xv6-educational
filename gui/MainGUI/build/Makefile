@@ -179,6 +179,78 @@ MainGUI_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.s
 .PHONY : MainGUI_autogen/mocs_compilation.cpp.s
 
+filesystemUi/InodeWidget.o: filesystemUi/InodeWidget.cpp.o
+.PHONY : filesystemUi/InodeWidget.o
+
+# target to build an object file
+filesystemUi/InodeWidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o
+.PHONY : filesystemUi/InodeWidget.cpp.o
+
+filesystemUi/InodeWidget.i: filesystemUi/InodeWidget.cpp.i
+.PHONY : filesystemUi/InodeWidget.i
+
+# target to preprocess a source file
+filesystemUi/InodeWidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.i
+.PHONY : filesystemUi/InodeWidget.cpp.i
+
+filesystemUi/InodeWidget.s: filesystemUi/InodeWidget.cpp.s
+.PHONY : filesystemUi/InodeWidget.s
+
+# target to generate assembly for a file
+filesystemUi/InodeWidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.s
+.PHONY : filesystemUi/InodeWidget.cpp.s
+
+filesystemUi/bCacheBufferTheory.o: filesystemUi/bCacheBufferTheory.cpp.o
+.PHONY : filesystemUi/bCacheBufferTheory.o
+
+# target to build an object file
+filesystemUi/bCacheBufferTheory.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o
+.PHONY : filesystemUi/bCacheBufferTheory.cpp.o
+
+filesystemUi/bCacheBufferTheory.i: filesystemUi/bCacheBufferTheory.cpp.i
+.PHONY : filesystemUi/bCacheBufferTheory.i
+
+# target to preprocess a source file
+filesystemUi/bCacheBufferTheory.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.i
+.PHONY : filesystemUi/bCacheBufferTheory.cpp.i
+
+filesystemUi/bCacheBufferTheory.s: filesystemUi/bCacheBufferTheory.cpp.s
+.PHONY : filesystemUi/bCacheBufferTheory.s
+
+# target to generate assembly for a file
+filesystemUi/bCacheBufferTheory.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.s
+.PHONY : filesystemUi/bCacheBufferTheory.cpp.s
+
+filesystemUi/blockAllocator.o: filesystemUi/blockAllocator.cpp.o
+.PHONY : filesystemUi/blockAllocator.o
+
+# target to build an object file
+filesystemUi/blockAllocator.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o
+.PHONY : filesystemUi/blockAllocator.cpp.o
+
+filesystemUi/blockAllocator.i: filesystemUi/blockAllocator.cpp.i
+.PHONY : filesystemUi/blockAllocator.i
+
+# target to preprocess a source file
+filesystemUi/blockAllocator.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.i
+.PHONY : filesystemUi/blockAllocator.cpp.i
+
+filesystemUi/blockAllocator.s: filesystemUi/blockAllocator.cpp.s
+.PHONY : filesystemUi/blockAllocator.s
+
+# target to generate assembly for a file
+filesystemUi/blockAllocator.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.s
+.PHONY : filesystemUi/blockAllocator.cpp.s
+
 filesystemUi/bufferCacheWidget.o: filesystemUi/bufferCacheWidget.cpp.o
 .PHONY : filesystemUi/bufferCacheWidget.o
 
@@ -226,6 +298,30 @@ filesystemUi/filesystemWindow.s: filesystemUi/filesystemWindow.cpp.s
 filesystemUi/filesystemWindow.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.s
 .PHONY : filesystemUi/filesystemWindow.cpp.s
+
+filesystemUi/logWidget.o: filesystemUi/logWidget.cpp.o
+.PHONY : filesystemUi/logWidget.o
+
+# target to build an object file
+filesystemUi/logWidget.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o
+.PHONY : filesystemUi/logWidget.cpp.o
+
+filesystemUi/logWidget.i: filesystemUi/logWidget.cpp.i
+.PHONY : filesystemUi/logWidget.i
+
+# target to preprocess a source file
+filesystemUi/logWidget.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.i
+.PHONY : filesystemUi/logWidget.cpp.i
+
+filesystemUi/logWidget.s: filesystemUi/logWidget.cpp.s
+.PHONY : filesystemUi/logWidget.s
+
+# target to generate assembly for a file
+filesystemUi/logWidget.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.s
+.PHONY : filesystemUi/logWidget.cpp.s
 
 main.o: main.cpp.o
 .PHONY : main.o
@@ -313,12 +409,24 @@ help:
 	@echo "... MainGUI_autogen/mocs_compilation.o"
 	@echo "... MainGUI_autogen/mocs_compilation.i"
 	@echo "... MainGUI_autogen/mocs_compilation.s"
+	@echo "... filesystemUi/InodeWidget.o"
+	@echo "... filesystemUi/InodeWidget.i"
+	@echo "... filesystemUi/InodeWidget.s"
+	@echo "... filesystemUi/bCacheBufferTheory.o"
+	@echo "... filesystemUi/bCacheBufferTheory.i"
+	@echo "... filesystemUi/bCacheBufferTheory.s"
+	@echo "... filesystemUi/blockAllocator.o"
+	@echo "... filesystemUi/blockAllocator.i"
+	@echo "... filesystemUi/blockAllocator.s"
 	@echo "... filesystemUi/bufferCacheWidget.o"
 	@echo "... filesystemUi/bufferCacheWidget.i"
 	@echo "... filesystemUi/bufferCacheWidget.s"
 	@echo "... filesystemUi/filesystemWindow.o"
 	@echo "... filesystemUi/filesystemWindow.i"
 	@echo "... filesystemUi/filesystemWindow.s"
+	@echo "... filesystemUi/logWidget.o"
+	@echo "... filesystemUi/logWidget.i"
+	@echo "... filesystemUi/logWidget.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

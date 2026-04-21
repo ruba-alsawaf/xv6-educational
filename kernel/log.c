@@ -5,6 +5,7 @@
 #include "spinlock.h"
 #include "sleeplock.h"
 #include "fs.h"
+#include "fslog.h"
 #include "buf.h"
 
 // Simple logging that allows concurrent FS system calls.
@@ -69,6 +70,7 @@ install_trans(int recovering)
   int tail;
 
   for (tail = 0; tail < log.lh.n; tail++) {
+    fslog_install(log.lh.block[tail]);
     if(recovering) {
       printf("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
     }
@@ -107,6 +109,7 @@ write_head(void)
   struct logheader *hb = (struct logheader *) (buf->data);
   int i;
   hb->n = log.lh.n;
+  fslog_writehead(log.lh.n);
   for (i = 0; i < log.lh.n; i++) {
     hb->block[i] = log.lh.block[i];
   }
@@ -135,7 +138,9 @@ begin_op(void)
       // this op might exhaust log space; wait for commit.
       sleep(&log, &log.lock);
     } else {
+      int before = log.outstanding;
       log.outstanding += 1;
+      fslog_begin(before, log.outstanding);
       release(&log.lock);
       break;
     }
@@ -150,6 +155,7 @@ end_op(void)
   int do_commit = 0;
 
   acquire(&log.lock);
+  int before = log.outstanding;
   log.outstanding -= 1;
   if(log.committing)
     panic("log.committing");
@@ -173,6 +179,7 @@ end_op(void)
     wakeup(&log);
     release(&log.lock);
   }
+  fslog_end(before, log.outstanding, do_commit);
 }
 
 // Copy modified blocks from cache to log.
@@ -182,6 +189,7 @@ write_log(void)
   int tail;
 
   for (tail = 0; tail < log.lh.n; tail++) {
+    fslog_writelog(log.lh.block[tail], tail);
     struct buf *to = bread(log.dev, log.start+tail+1); // log block
     struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
     memmove(to->data, from->data, BSIZE);
@@ -216,7 +224,8 @@ void
 log_write(struct buf *b)
 {
   int i;
-
+  int existed = 0;
+  int n_before = log.lh.n;
   acquire(&log.lock);
   if (log.lh.n >= LOGBLOCKS)
     panic("too big a transaction");
@@ -224,14 +233,16 @@ log_write(struct buf *b)
     panic("log_write outside of trans");
 
   for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno)   // log absorption
-      break;
+    if (log.lh.block[i] == b->blockno) {
+      existed = 1;  // log absorption
+      break;}
   }
   log.lh.block[i] = b->blockno;
   if (i == log.lh.n) {  // Add new block to log?
     bpin(b);
     log.lh.n++;
   }
+  fslog_write(b->blockno, existed, n_before, log.lh.n);
   release(&log.lock);
 }
 

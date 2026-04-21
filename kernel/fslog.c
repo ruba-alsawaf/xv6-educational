@@ -4,12 +4,13 @@
 #include "spinlock.h"
 #include "defs.h"
 #include "proc.h"
+#include "sleeplock.h"  
+#include "fs.h"        
+#include "file.h"
 #include "ringbuf.h"
 #include "fslog.h"
-
 static struct ringbuf fs_rb;
 static uint64 fs_seq = 0;
-
 static void
 fill_fs_common(struct fs_event *e)
 {
@@ -23,23 +24,19 @@ fslog_init(void)
 {
   ringbuf_init(&fs_rb, "fslog", sizeof(struct fs_event));
   printf("FS sizeof(fs_event)=%ld RB_MAX_ELEM=%d\n", sizeof(struct fs_event), RB_MAX_ELEM);
-  
 }
 
 void
 fslog_push(struct fs_event *e)
-{
-  e->seq = ++fs_seq;
+{ e->seq = ++fs_seq;
   ringbuf_push(&fs_rb, e);
 }
-
 int
 fslog_read_many(struct fs_event *out, int max)
 {
   struct fs_event e;
   int count = 0;
   struct proc *p = myproc();
-
   while(count < max){
     if(ringbuf_pop(&fs_rb, &e) != 0)
       break;
@@ -54,7 +51,6 @@ fslog_read_many(struct fs_event *out, int max)
 
   return count;
 }
-
 void
 fslog_bread_req(int dev, int blockno)
 {
@@ -66,7 +62,6 @@ fslog_bread_req(int dev, int blockno)
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_bget_scan(int dev, int blockno, int buf_id,
                 int refcnt, int valid, int lru_pos,
@@ -90,7 +85,6 @@ fslog_bget_scan(int dev, int blockno, int buf_id,
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_bget_hit(int dev, int blockno, int buf_id,
                int ref_before, int ref_after,
@@ -115,7 +109,6 @@ fslog_bget_hit(int dev, int blockno, int buf_id,
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_bget_miss(int dev, int blockno, int old_blockno, int buf_id,
                 int old_valid,
@@ -140,7 +133,6 @@ fslog_bget_miss(int dev, int blockno, int old_blockno, int buf_id,
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_bread_fill(int dev, int blockno, int buf_id,
                  int refcnt, int lru_pos)
@@ -162,7 +154,6 @@ fslog_bread_fill(int dev, int blockno, int buf_id,
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_bwrite_ev(int dev, int blockno, int buf_id,
                 int refcnt, int valid, int lru_pos)
@@ -184,7 +175,6 @@ fslog_bwrite_ev(int dev, int blockno, int buf_id,
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
 }
-
 void
 fslog_brelease_ev(int dev, int blockno, int buf_id,
                   int ref_before, int ref_after,
@@ -207,4 +197,124 @@ fslog_brelease_ev(int dev, int blockno, int buf_id,
   e.lru_after = lru_after;
   safestrcpy(e.name, "BCACHE", FS_NM);
   fslog_push(&e);
+}
+void fslog_begin(int before, int after){
+  struct fs_event e;
+  fill_fs_common(&e);
+
+  e.type = FS_LOG_BEGIN;
+  e.ref_before = before;
+  e.ref_after = after;
+
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+void fslog_write(int blockno, int existed, int n_before, int n_after){
+  struct fs_event e;
+  fill_fs_common(&e);
+
+  e.type = FS_LOG_WRITE;
+  e.blockno = blockno;
+  e.ref_before = n_before;
+  e.ref_after = n_after;
+  e.found = existed;
+
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+
+void fslog_end(int before, int after, int will_commit){
+  struct fs_event e;
+  fill_fs_common(&e);
+  e.type = FS_LOG_END;
+  e.ref_before = before;
+  e.ref_after = after;
+  e.found = will_commit;
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+void fslog_writelog(int blockno, int idx){
+  struct fs_event e;
+  fill_fs_common(&e);
+  e.type = FS_LOG_WLOG;
+  e.blockno = blockno;
+  e.lru_after = idx;
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+
+void fslog_writehead(int n){
+  struct fs_event e;
+  fill_fs_common(&e);
+  e.type = FS_LOG_WHEAD;
+  e.ref_after = n;
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+
+void fslog_install(int blockno){
+  struct fs_event e;
+  fill_fs_common(&e);
+  e.type = FS_LOG_INSTALL;
+  e.blockno = blockno;
+  safestrcpy(e.name, "LOG", FS_NM);
+  fslog_push(&e);
+}
+void fslog_balloc(int block_allocated) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_BLOCK_ALLOC;
+    e.blockno = block_allocated; // البلوك الذي تم حجزه فعلياً
+    safestrcpy(e.name, "BALLOC", FS_NM);
+    fslog_push(&e);
+}
+void fslog_bfree(int block_freed) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_BLOCK_FREE;
+    e.blockno = block_freed; // البلوك الذي تم تحريره
+    safestrcpy(e.name, "BFREE", FS_NM);
+    fslog_push(&e);
+}
+void fslog_ialloc(int inum, short type) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_INODE_ALLOC;
+    e.inum = inum;
+    e.i_type = type;
+    safestrcpy(e.name, "IALLOC", FS_NM);
+    fslog_push(&e);
+}
+
+void fslog_iget(int inum, int ref_before, int ref_after) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_INODE_GET;
+    e.inum = inum;
+    e.ref_before = ref_before;
+    e.ref_after = ref_after;
+    safestrcpy(e.name, "IGET", FS_NM);
+    fslog_push(&e);
+}
+void fslog_ilock(int inum, int locked) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_INODE_LOCK;
+    e.inum = inum;
+    e.locked_after = locked;
+    safestrcpy(e.name, "ILOCK", FS_NM);
+    fslog_push(&e);
+}
+
+void fslog_iupdate(struct inode *ip) {
+    struct fs_event e;
+    fill_fs_common(&e);
+    e.type = FS_INODE_UPDATE;
+    e.inum = ip->inum;
+    e.i_type = ip->type;
+    e.i_size = ip->size;
+    e.nlink = ip->nlink;
+    for(int i=0; i<13; i++) e.addrs[i] = ip->addrs[i];
+    safestrcpy(e.name, "IUPDATE", FS_NM);
+    fslog_push(&e);
 }

@@ -259,6 +259,24 @@
 	"HEADERS" : 
 	[
 		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.h",
+			"MU",
+			"3F6BJCI6SD/moc_InodeWidget.cpp",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.h",
+			"MU",
+			"3F6BJCI6SD/moc_bCacheBufferTheory.cpp",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.h",
+			"MU",
+			"3F6BJCI6SD/moc_blockAllocator.cpp",
+			null
+		],
+		[
 			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.h",
 			"MU",
 			"3F6BJCI6SD/moc_bufferCacheWidget.cpp",
@@ -268,6 +286,12 @@
 			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.h",
 			"MU",
 			"3F6BJCI6SD/moc_filesystemWindow.cpp",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.h",
+			"MU",
+			"3F6BJCI6SD/moc_logWidget.cpp",
 			null
 		],
 		[
@@ -352,12 +376,32 @@
 	"SOURCES" : 
 	[
 		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp",
+			"MU",
+			null
+		],
+		[
 			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp",
 			"MU",
 			null
 		],
 		[
 			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.cpp",
+			"MU",
+			null
+		],
+		[
+			"/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp",
 			"MU",
 			null
 		],

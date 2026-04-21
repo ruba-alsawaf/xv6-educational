@@ -20,6 +20,7 @@
 #include "fs.h"
 #include "buf.h"
 #include "file.h"
+#include "fslog.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 // there should be one superblock per disk device, but we run with
@@ -79,6 +80,7 @@ balloc(uint dev)
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
+        fslog_balloc(b + bi);
         return b + bi;
       }
     }
@@ -103,6 +105,7 @@ bfree(int dev, uint b)
   bp->data[bi/8] &= ~m;
   log_write(bp);
   brelse(bp);
+  fslog_bfree(b);
 }
 
 // Inodes.
@@ -211,6 +214,7 @@ ialloc(uint dev, short type)
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
       brelse(bp);
+      fslog_ialloc(inum, type);
       return iget(dev, inum);
     }
     brelse(bp);
@@ -239,6 +243,7 @@ iupdate(struct inode *ip)
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
   log_write(bp);
   brelse(bp);
+  fslog_iupdate(ip);
 }
 
 // Find the inode with number inum on device dev
@@ -256,6 +261,7 @@ iget(uint dev, uint inum)
   for(ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++){
     if(ip->ref > 0 && ip->dev == dev && ip->inum == inum){
       ip->ref++;
+      fslog_iupdate(ip);
       release(&itable.lock);
       return ip;
     }
@@ -300,7 +306,7 @@ ilock(struct inode *ip)
     panic("ilock");
 
   acquiresleep(&ip->lock);
-
+  fslog_ilock(ip->inum, 1);
   if(ip->valid == 0){
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
     dip = (struct dinode*)bp->data + ip->inum%IPB;
@@ -323,7 +329,7 @@ iunlock(struct inode *ip)
 {
   if(ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
     panic("iunlock");
-
+  fslog_ilock(ip->inum, 0);
   releasesleep(&ip->lock);
 }
 
@@ -359,6 +365,7 @@ iput(struct inode *ip)
   }
 
   ip->ref--;
+  fslog_iupdate(ip);
   release(&itable.lock);
 }
 

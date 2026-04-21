@@ -63,7 +63,14 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
         scan_step INTEGER,
         found INTEGER,
         size INTEGER,
-        name TEXT
+        inum INTEGER,  
+        i_type INTEGER,  
+        i_size INTEGER,  
+        nlink INTEGER,   
+        addrs TEXT ,
+        name TEXT,
+        op_name TEXT 
+        
     )
     """)
 
@@ -101,6 +108,8 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
     CREATE INDEX IF NOT EXISTS idx_fs_events_buf
     ON fs_events(buf_id)
     """)
+     
+   
 
 def extract_event_payloads(line: str) -> list[str]:
     payloads = []
@@ -135,66 +144,87 @@ def extract_event_payloads(line: str) -> list[str]:
     return payloads
 
 def is_important_fs_event(event: dict) -> bool:
-    """
-    تحديد ما إذا كان الحدث يستحق التخزين في جدول التاريخ بناءً على الخطة التعليمية.
-    """
     fs_type = event.get("fs_type", 0)
-    
-    # 1. دائماً نخزن عمليات: القراءة (1)، الكتابة (5)، التحرير (7)، الحجز (4)، البداية (3)
-    if fs_type in [1, 3, 4, 5, 6, 7]:
+
+    # كل الأحداث المهمة + اللوج
+    if fs_type in [1,3,4,5,6,7,20,21,22,23,24,25,30,31, 40,41,42,43,44,45,46]:
         return True
-    
-    # 2. عمليات البحث (fs_type == 2):
-    # لا نخزنها إلا إذا وجد البلوك (found == 1) 
-    # هذا سيحذف مئات السطور المملة التي تظهر في الـ serial
+
     if fs_type == 2:
         if event.get("found") == 1:
             return True
-        # إذا أردتِ رؤية أول خطوة في البحث فقط لإظهار أن النظام بدأ يبحث:
         if event.get("scan_step") == 0:
             return True
-            
-    return False    
+
+    return False   
+
+def get_op_name(event: dict) -> str:
+    # نتحقق أولاً إذا كان الـ csexport قد أرسل الاسم جاهزاً في حقل "op"
+    if "op" in event:
+        return event["op"]
+    
+    # إذا لم يوجد، نستخدم القاموس بناءً على الرقم
+    t = event.get("fs_type", 0)
+    mapping = {
+        20: "BEGIN_OP", 21: "LOG_WRITE", 22: "END_OP",
+        23: "WRITE_LOG", 24: "COMMIT", 25: "INSTALL",
+        30: "BALLOC", 31: "BFREE" ,
+        40: "IALLOC", 41: "IGET", 42: "IPUT", 
+        43: "ILOCK", 44: "IUNLOCK", 45: "IUPDATE", 46: "IBMAP"
+    }
+    return mapping.get(t, "FS")    
 
 
 def insert_fs_event(cur: sqlite3.Cursor, event: dict) -> None:
-    # الفلترة هنا: إذا لم يكن الحدث مهماً، نخرج فوراً ولا نحفظه في التاريخ
     if not is_important_fs_event(event):
         return
 
-    cur.execute("""
-    INSERT OR IGNORE INTO fs_events
-    (
-        session_id, seq, tick, fs_type, pid, dev, blockno, old_blockno, buf_id,
-        ref_before, ref_after, valid_before, valid_after,
-        locked_before, locked_after, lru_before, lru_after,
-        scan_dir, scan_step, found, size, name
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        SESSION_ID,
-        event.get("seq"),
-        event.get("tick"),
-        event.get("fs_type", 0),
-        event.get("pid", 0),
-        event.get("dev", 0),
-        event.get("block", -1),
-        event.get("old_block", -1),
-        event.get("buf_id", -1),
-        event.get("ref_before", -1),
-        event.get("ref_after", -1),
-        event.get("valid_before", -1),
-        event.get("valid_after", -1),
-        event.get("locked_before", -1),
-        event.get("locked_after", -1),
-        event.get("lru_before", -1),
-        event.get("lru_after", -1),
-        event.get("scan_dir", 0),
-        event.get("scan_step", 0),
-        event.get("found", 0),
-        event.get("size", 0),
-        event.get("name", "")
-    ))
+    operation_name = get_op_name(event)
+    
+    # تحضير القيم بشكل نظيف لتجنب أخطاء التكرار
+    try:
+        cur.execute("""
+        INSERT OR IGNORE INTO fs_events 
+        (
+            session_id, seq, tick, fs_type, pid, dev, blockno, old_blockno, buf_id,
+            ref_before, ref_after, valid_before, valid_after,
+            locked_before, locked_after, lru_before, lru_after,
+            scan_dir, scan_step, found, size, 
+            inum, i_type, i_size, nlink, addrs, name, op_name
+        ) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            SESSION_ID, 
+            event.get("seq"), 
+            event.get("tick"),
+            event.get("fs_type", 0), 
+            event.get("pid", 0), 
+            event.get("dev", 0),
+            event.get("block", -1), 
+            event.get("old_block", -1), 
+            event.get("buf_id", -1),
+            event.get("ref_before", -1), 
+            event.get("ref_after", -1), # سيستخدم كـ Ref Count في الواجهة
+            event.get("valid_before", -1), 
+            event.get("valid_after", -1),
+            event.get("locked_before", -1), 
+            event.get("locked_after", -1), # سيستخدم لرمز القفل 🔒
+            event.get("lru_before", -1), 
+            event.get("lru_after", -1),
+            event.get("scan_dir", 0), 
+            event.get("scan_step", 0),
+            event.get("found", 0), 
+            event.get("size", 0),
+            event.get("inum", -1), # أساسي لربط السطر بالجدول
+            event.get("i_type", 0), # لنوع الملف (أيقونة)
+            event.get("i_size", 0), # الحجم الحالي
+            event.get("nlink", 0), # Link Count
+            event.get("addrs", "0,0,0,0,0,0,0,0,0,0,0,0,0"), # لرسم الـ Blocks
+            event.get("name", ""), 
+            operation_name
+        ))
+    except sqlite3.Error as e:
+        print(f"[ERR] SQLite Insert Error: {e}")
 
 def update_buffer_state(cur: sqlite3.Cursor, event: dict) -> None:
     # ملاحظة: هذه الدالة تبقى كما هي لأننا نريد تحديث "حالة البفر الحالية" 
@@ -248,14 +278,14 @@ def insert_general_event(cur: sqlite3.Cursor, event: dict) -> None:
 
 def handle_event(cur: sqlite3.Cursor, event: dict) -> None:
     ev_type = event.get("type")
+
     if ev_type == "FS":
-        # نقوم بتحديث الحالة الحالية دائماً
         update_buffer_state(cur, event)
-        # ثم نقرر هل نسجل الحدث في جدول التاريخ (fs_events) أم لا
         insert_fs_event(cur, event)
     else:
-        # أحداث الجدولة (Scheduler) وغيرها تبقى كما هي دون تعديل
         insert_general_event(cur, event)
+
+
 
 
 def main() -> None:
@@ -307,5 +337,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
-

@@ -29,6 +29,14 @@ add_executable(MainGUI
     filesystemUi/filesystemWindow.h
     filesystemUi/bufferCacheWidget.cpp
     filesystemUi/bufferCacheWidget.h
+    filesystemUi/logWidget.cpp
+    filesystemUi/logWidget.h
+    filesystemUi/blockAllocator.cpp
+    filesystemUi/blockAllocator.h
+    filesystemUi/bCacheBufferTheory.cpp
+    filesystemUi/bCacheBufferTheory.h
+    filesystemUi/InodeWidget.cpp
+    filesystemUi/InodeWidget.h
 )
 
 # ربط المكتبات

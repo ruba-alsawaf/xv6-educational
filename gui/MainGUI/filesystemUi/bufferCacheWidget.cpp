@@ -10,7 +10,7 @@ static const char *DB_PATH = "/mnt/c/Users/ASUS/rubaa/events.db";
 
 BufferCacheWidget::BufferCacheWidget(QWidget *parent) : QWidget(parent) {
     // خطوة جوهرية: مسح أحداث الجلسات السابقة عند تشغيل البرنامج
-    clearOldLogs(); 
+    //clearOldLogs(); 
 
     setupUI();
     refreshTimer = new QTimer(this);

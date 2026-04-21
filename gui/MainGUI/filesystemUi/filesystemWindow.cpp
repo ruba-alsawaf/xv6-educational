@@ -5,7 +5,10 @@
 #include <QPen>
 // في FileSystemWindow.cpp
 #include "bufferCacheWidget.h"
-
+#include "logWidget.h"
+#include "blockAllocator.h"
+#include "bCacheBufferTheory.h"
+#include "InodeWidget.h"
 
 FileSystemWindow::FileSystemWindow(QWidget *parent) : QMainWindow(parent) {
     setupLayout();
@@ -45,6 +48,15 @@ void FileSystemWindow::setupLayout() {
    
 BufferCacheWidget *bufWidget = new BufferCacheWidget(this);
 tabs->addTab(bufWidget, "3. Buffer Cache (3 Levels)");
+
+LogWidget *logWidget = new LogWidget(this);
+tabs->addTab(logWidget, "4. Logging Layer (Transactions)");
+BlockAllocatorWidget *blockAllocator = new BlockAllocatorWidget(this);
+tabs->addTab(blockAllocator, "5. Block Allocator");
+TheoryWidget *bCacheBufferTheory = new TheoryWidget(this);
+tabs->addTab(bCacheBufferTheory, "6. buffer cache");
+InodeWidget *inodeWidget = new InodeWidget(this); 
+tabs->addTab(inodeWidget, "7. Inode");
 }
 
 void FileSystemWindow::drawLayers() {
