@@ -151,6 +151,73 @@ def extract_event_payloads(line: str) -> list[str]:
     return payloads
 
 
+def extract_cpu_and_proc_events(line: str) -> list[dict]:
+    """Extract CPU and PROC events from log line with proper brace matching"""
+    events = []
+    
+    # Helper function to extract balanced braces
+    def extract_json(line, search_prefix, pos=0):
+        idx = line.find(search_prefix, pos)
+        if idx == -1:
+            return None, -1
+        
+        brace_start = line.find("{", idx)
+        if brace_start == -1:
+            return None, -1
+        
+        depth = 0
+        end = -1
+        for i in range(brace_start, len(line)):
+            if line[i] == '{':
+                depth += 1
+            elif line[i] == '}':
+                depth -= 1
+                if depth == 0:
+                    end = i
+                    break
+        
+        if end == -1:
+            return None, -1
+        
+        return line[brace_start:end+1], end
+    
+    # Extract CPU info
+    pos = 0
+    while True:
+        json_str, next_pos = extract_json(line, "CPU", pos)
+        if json_str is None:
+            break
+        
+        try:
+            payload = clean_payload(json_str)
+            event = json.loads(payload)
+            if "cpu" in event:
+                events.append(event)
+        except:
+            pass
+        
+        pos = next_pos + 1
+    
+    # Extract PROC stats
+    pos = 0
+    while True:
+        json_str, next_pos = extract_json(line, "PROC", pos)
+        if json_str is None:
+            break
+        
+        try:
+            payload = clean_payload(json_str)
+            event = json.loads(payload)
+            if "total_created" in event:
+                events.append(event)
+        except:
+            pass
+        
+        pos = next_pos + 1
+    
+    return events
+
+
 def insert_fs_event(cur: sqlite3.Cursor, event: dict) -> None:
     cur.execute("""
     INSERT OR IGNORE INTO fs_events
