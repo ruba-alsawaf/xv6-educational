@@ -17,6 +17,7 @@ pagetable_t kernel_pagetable;
 extern char etext[];  // kernel.ld sets this to end of kernel code.
 
 extern char trampoline[]; // trampoline.S
+extern char stack0[]; // start.c declares the boot stack
 
 // Make a direct-map page table for the kernel.
 pagetable_t
@@ -37,15 +38,16 @@ kvmmake(void)
   kvmmap(kpgtbl, PLIC, PLIC, 0x4000000, PTE_R | PTE_W);
 
   // map kernel text executable and read-only.
-  kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+  kvmmap(kpgtbl, KERNBASE, V2P(KERNBASE), (uint64)etext-KERNBASE, PTE_R | PTE_X);
 
   // map kernel data and the physical RAM we'll make use of.
-  kvmmap(kpgtbl, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
+  kvmmap(kpgtbl, (uint64)etext, V2P(etext), PHYSTOP-(uint64)etext, PTE_R | PTE_W);
 
   // map the trampoline for trap entry/exit to
   // the highest virtual address in the kernel.
-  kvmmap(kpgtbl, TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
+  kvmmap(kpgtbl, TRAMPOLINE, V2P(trampoline), PGSIZE, PTE_R | PTE_X);
 
+  
   // allocate and map a kernel stack for each process.
   proc_mapstacks(kpgtbl);
   
@@ -77,7 +79,7 @@ kvminithart()
   // wait for any previous writes to the page table memory to finish.
   sfence_vma();
 
-  w_satp(MAKE_SATP(kernel_pagetable));
+  w_satp(MAKE_SATP(V2P(kernel_pagetable)));
 
   // flush stale entries from the TLB.
   sfence_vma();

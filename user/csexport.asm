@@ -50,7 +50,7 @@ static void append_uint(char *buf, int *pos, uint x) {
   46:	86c2                	mv	a3,a6
     while (x > 0) { tmp[n++] = '0' + (x % 10); x /= 10; }
   48:	000cd337          	lui	t1,0xcd
-  4c:	ccd30313          	addi	t1,t1,-819 # ccccd <base+0xcacbd>
+  4c:	ccd30313          	addi	t1,t1,-819 # ccccd <base+0xcbcbd>
   50:	0332                	slli	t1,t1,0xc
   52:	ccd30313          	addi	t1,t1,-819
   56:	4e25                	li	t3,9
@@ -1595,8 +1595,8 @@ free(void *ap)
   bp = (Header*)ap - 1;
  a16:	ff050693          	addi	a3,a0,-16
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- a1a:	00001797          	auipc	a5,0x1
- a1e:	5e67b783          	ld	a5,1510(a5) # 2000 <freep>
+ a1a:	00000797          	auipc	a5,0x0
+ a1e:	5e67b783          	ld	a5,1510(a5) # 1000 <freep>
  a22:	a039                	j	a30 <free+0x22>
     if(p >= p->s.ptr && (bp > p || bp < p->s.ptr))
  a24:	6398                	ld	a4,0(a5)
@@ -1635,8 +1635,8 @@ free(void *ap)
   } else
     p->s.ptr = bp;
   freep = p;
- a68:	00001717          	auipc	a4,0x1
- a6c:	58f73c23          	sd	a5,1432(a4) # 2000 <freep>
+ a68:	00000717          	auipc	a4,0x0
+ a6c:	58f73c23          	sd	a5,1432(a4) # 1000 <freep>
 }
  a70:	60a2                	ld	ra,8(sp)
  a72:	6402                	ld	s0,0(sp)
@@ -1682,8 +1682,8 @@ malloc(uint nbytes)
  aae:	2985                	addiw	s3,s3,1
  ab0:	894e                	mv	s2,s3
   if((prevp = freep) == 0){
- ab2:	00001517          	auipc	a0,0x1
- ab6:	54e53503          	ld	a0,1358(a0) # 2000 <freep>
+ ab2:	00000517          	auipc	a0,0x0
+ ab6:	54e53503          	ld	a0,1358(a0) # 1000 <freep>
  aba:	c905                	beqz	a0,aea <malloc+0x56>
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
@@ -1711,8 +1711,8 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- ade:	00001497          	auipc	s1,0x1
- ae2:	52248493          	addi	s1,s1,1314 # 2000 <freep>
+ ade:	00000497          	auipc	s1,0x0
+ ae2:	52248493          	addi	s1,s1,1314 # 1000 <freep>
   if(p == SBRK_ERROR)
  ae6:	5afd                	li	s5,-1
  ae8:	a83d                	j	b26 <malloc+0x92>
@@ -1721,10 +1721,10 @@ malloc(uint nbytes)
  aee:	e456                	sd	s5,8(sp)
  af0:	e05a                	sd	s6,0(sp)
     base.s.ptr = freep = prevp = &base;
- af2:	00001797          	auipc	a5,0x1
- af6:	51e78793          	addi	a5,a5,1310 # 2010 <base>
- afa:	00001717          	auipc	a4,0x1
- afe:	50f73323          	sd	a5,1286(a4) # 2000 <freep>
+ af2:	00000797          	auipc	a5,0x0
+ af6:	51e78793          	addi	a5,a5,1310 # 1010 <base>
+ afa:	00000717          	auipc	a4,0x0
+ afe:	50f73323          	sd	a5,1286(a4) # 1000 <freep>
  b02:	e39c                	sd	a5,0(a5)
     base.s.size = 0;
  b04:	0007a423          	sw	zero,8(a5)
@@ -1780,8 +1780,8 @@ malloc(uint nbytes)
         p->s.size = nunits;
  b60:	0137a423          	sw	s3,8(a5)
       freep = prevp;
- b64:	00001717          	auipc	a4,0x1
- b68:	48a73e23          	sd	a0,1180(a4) # 2000 <freep>
+ b64:	00000717          	auipc	a4,0x0
+ b68:	48a73e23          	sd	a0,1180(a4) # 1000 <freep>
       return (void*)(p + 1);
  b6c:	01078513          	addi	a0,a5,16
   }

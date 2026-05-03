@@ -48,7 +48,7 @@ main(void)
     for(i = 0; i < n; i++){
      
     
-      printf("#%d seq=%d tick=%d cpu=%d pid=%d type=%s src=%s name=%s old=%p new=%p\n",
+      printf("#%d seq=%d tick=%d cpu=%d pid=%d type=%s src=%s name=%s old=%p new=%p pa=0x%lx va=0x%lx\n",
         i,
         (int)ev[i].seq,
         ev[i].ticks,
@@ -58,7 +58,9 @@ main(void)
         esrc(ev[i].source),
         ev[i].name,
         (void*)ev[i].oldsz,
-        (void*)ev[i].newsz);
+        (void*)ev[i].newsz,
+        ev[i].pa,
+        ev[i].va);
     }
   }
 

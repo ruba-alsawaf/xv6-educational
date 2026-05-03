@@ -69,7 +69,7 @@ kfree(void *pa)
   e.ticks  = ticks;
   e.cpu    = cpuid();
   e.type   = MEM_FREE;
-  e.pa     = (uint64)pa;
+  e.pa     = V2P(pa);
   e.source = SRC_KFREE;
   e.kind   = PAGE_UNKNOWN;
 
@@ -106,7 +106,7 @@ kalloc(void)
     e.ticks  = ticks;
     e.cpu    = cpuid();
     e.type   = MEM_ALLOC;
-    e.pa     = (uint64)r;
+    e.pa     = V2P(r);
     e.source = SRC_KALLOC;
     e.kind   = PAGE_UNKNOWN;
 

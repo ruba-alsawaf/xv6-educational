@@ -165,8 +165,8 @@ int matchstar(int c, char *re, char *text)
  118:	4b01                	li	s6,0
   while((n = read(fd, buf+m, sizeof(buf)-m-1)) > 0){
  11a:	3ff00d13          	li	s10,1023
- 11e:	00002b97          	auipc	s7,0x2
- 122:	ef2b8b93          	addi	s7,s7,-270 # 2010 <buf>
+ 11e:	00001b97          	auipc	s7,0x1
+ 122:	ef2b8b93          	addi	s7,s7,-270 # 1010 <buf>
     while((q = strchr(p, '\n')) != 0){
  126:	49a9                	li	s3,10
         write(1, p, q+1 - p);
@@ -216,15 +216,15 @@ int matchstar(int c, char *re, char *text)
     while((q = strchr(p, '\n')) != 0){
  186:	b76d                	j	130 <grep+0x38>
       m -= p - buf;
- 188:	00002797          	auipc	a5,0x2
- 18c:	e8878793          	addi	a5,a5,-376 # 2010 <buf>
+ 188:	00001797          	auipc	a5,0x1
+ 18c:	e8878793          	addi	a5,a5,-376 # 1010 <buf>
  190:	40f907b3          	sub	a5,s2,a5
  194:	40fa063b          	subw	a2,s4,a5
  198:	8b32                	mv	s6,a2
       memmove(buf, p, m);
  19a:	85ca                	mv	a1,s2
- 19c:	00002517          	auipc	a0,0x2
- 1a0:	e7450513          	addi	a0,a0,-396 # 2010 <buf>
+ 19c:	00001517          	auipc	a0,0x1
+ 1a0:	e7450513          	addi	a0,a0,-396 # 1010 <buf>
  1a4:	290000ef          	jal	434 <memmove>
  1a8:	bf75                	j	164 <grep+0x6c>
 }
@@ -1594,8 +1594,8 @@ free(void *ap)
   bp = (Header*)ap - 1;
  9b2:	ff050693          	addi	a3,a0,-16
   for(p = freep; !(bp > p && bp < p->s.ptr); p = p->s.ptr)
- 9b6:	00001797          	auipc	a5,0x1
- 9ba:	64a7b783          	ld	a5,1610(a5) # 2000 <freep>
+ 9b6:	00000797          	auipc	a5,0x0
+ 9ba:	64a7b783          	ld	a5,1610(a5) # 1000 <freep>
  9be:	a039                	j	9cc <free+0x22>
     if(p >= p->s.ptr && (bp > p || bp < p->s.ptr))
  9c0:	6398                	ld	a4,0(a5)
@@ -1634,8 +1634,8 @@ free(void *ap)
   } else
     p->s.ptr = bp;
   freep = p;
- a04:	00001717          	auipc	a4,0x1
- a08:	5ef73e23          	sd	a5,1532(a4) # 2000 <freep>
+ a04:	00000717          	auipc	a4,0x0
+ a08:	5ef73e23          	sd	a5,1532(a4) # 1000 <freep>
 }
  a0c:	60a2                	ld	ra,8(sp)
  a0e:	6402                	ld	s0,0(sp)
@@ -1681,8 +1681,8 @@ malloc(uint nbytes)
  a4a:	2985                	addiw	s3,s3,1
  a4c:	894e                	mv	s2,s3
   if((prevp = freep) == 0){
- a4e:	00001517          	auipc	a0,0x1
- a52:	5b253503          	ld	a0,1458(a0) # 2000 <freep>
+ a4e:	00000517          	auipc	a0,0x0
+ a52:	5b253503          	ld	a0,1458(a0) # 1000 <freep>
  a56:	c905                	beqz	a0,a86 <malloc+0x56>
     base.s.ptr = freep = prevp = &base;
     base.s.size = 0;
@@ -1710,8 +1710,8 @@ malloc(uint nbytes)
       return (void*)(p + 1);
     }
     if(p == freep)
- a7a:	00001497          	auipc	s1,0x1
- a7e:	58648493          	addi	s1,s1,1414 # 2000 <freep>
+ a7a:	00000497          	auipc	s1,0x0
+ a7e:	58648493          	addi	s1,s1,1414 # 1000 <freep>
   if(p == SBRK_ERROR)
  a82:	5afd                	li	s5,-1
  a84:	a83d                	j	ac2 <malloc+0x92>
@@ -1720,10 +1720,10 @@ malloc(uint nbytes)
  a8a:	e456                	sd	s5,8(sp)
  a8c:	e05a                	sd	s6,0(sp)
     base.s.ptr = freep = prevp = &base;
- a8e:	00002797          	auipc	a5,0x2
- a92:	98278793          	addi	a5,a5,-1662 # 2410 <base>
- a96:	00001717          	auipc	a4,0x1
- a9a:	56f73523          	sd	a5,1386(a4) # 2000 <freep>
+ a8e:	00001797          	auipc	a5,0x1
+ a92:	98278793          	addi	a5,a5,-1662 # 1410 <base>
+ a96:	00000717          	auipc	a4,0x0
+ a9a:	56f73523          	sd	a5,1386(a4) # 1000 <freep>
  a9e:	e39c                	sd	a5,0(a5)
     base.s.size = 0;
  aa0:	0007a423          	sw	zero,8(a5)
@@ -1779,8 +1779,8 @@ malloc(uint nbytes)
         p->s.size = nunits;
  afc:	0137a423          	sw	s3,8(a5)
       freep = prevp;
- b00:	00001717          	auipc	a4,0x1
- b04:	50a73023          	sd	a0,1280(a4) # 2000 <freep>
+ b00:	00000717          	auipc	a4,0x0
+ b04:	50a73023          	sd	a0,1280(a4) # 1000 <freep>
       return (void*)(p + 1);
  b08:	01078513          	addi	a0,a5,16
   }
