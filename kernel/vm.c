@@ -14,6 +14,10 @@
  */
 pagetable_t kernel_pagetable;
 
+// CPU synchronization for safe paging transition
+struct spinlock pagetable_lock;
+volatile int pagetable_ready = 0;  // 0 = not ready, 1 = ready for all CPUs
+
 extern char etext[];  // kernel.ld sets this to end of kernel code.
 
 extern char trampoline[]; // trampoline.S
@@ -37,19 +41,35 @@ kvmmake(void)
   // PLIC
   kvmmap(kpgtbl, PLIC, PLIC, 0x4000000, PTE_R | PTE_W);
 
-  // Complete Identity Map: Ensure entire kernel (KERNBASE to PHYSTOP) is identity-mapped
-  // with R|W|X permissions for seamless paging transition
-  // Split around stack0 to avoid remap conflicts
-  kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)stack0 - KERNBASE, PTE_R | PTE_W | PTE_X);
-  kvmmap(kpgtbl, (uint64)stack0 + 4096 * NCPU, (uint64)stack0 + 4096 * NCPU, 
-         PHYSTOP - ((uint64)stack0 + 4096 * NCPU), PTE_R | PTE_W | PTE_X);
+  // Strict W^X Policy: Separate executable and writable mappings
+  
+  // Map kernel text (.text) as Read+Execute ONLY
+  uint64 text_start = KERNBASE;
+  uint64 text_end = PGROUNDUP((uint64)etext);
+  kvmmap(kpgtbl, text_start, text_start, text_end - text_start, PTE_R | PTE_X);
+  
+  // Map kernel data (.data/.bss) as Read+Write ONLY
+  uint64 data_start = text_end;
+  uint64 data_end = PGROUNDDOWN((uint64)stack0);
+  if(data_start < data_end) {
+    kvmmap(kpgtbl, data_start, data_start, data_end - data_start, PTE_R | PTE_W);
+  }
+  
+  // Map stack0 as Read+Write ONLY with proper alignment
+  uint64 stack_start = PGROUNDDOWN((uint64)stack0);
+  uint64 stack_end = PGROUNDUP(stack_start + 4096 * NCPU);
+  kvmmap(kpgtbl, stack_start, stack_start, stack_end - stack_start, PTE_R | PTE_W);
+  
+  // Map remaining kernel memory as Read+Write
+  uint64 remaining_start = stack_end;
+  uint64 remaining_end = PGROUNDUP(PHYSTOP);
+  if(remaining_start < remaining_end) {
+    kvmmap(kpgtbl, remaining_start, remaining_start, remaining_end - remaining_start, PTE_R | PTE_W);
+  }
 
   // map the trampoline for trap entry/exit to
   // the highest virtual address in the kernel.
   kvmmap(kpgtbl, TRAMPOLINE, V2P(trampoline), PGSIZE, PTE_R | PTE_X);
-
-  // map stack0 (boot stack) with identity mapping for extra safety
-  kvmmap(kpgtbl, (uint64)stack0, (uint64)stack0, 4096 * NCPU, PTE_R | PTE_W | PTE_X);
 
   // allocate and map a kernel stack for each process.
   proc_mapstacks(kpgtbl);
@@ -71,7 +91,22 @@ kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
 void
 kvminit(void)
 {
-  kernel_pagetable = kvmmake();
+  initlock(&pagetable_lock, "pagetable");
+  
+  // Only bootstrap processor (Hart 0) should initialize the page table
+  if(cpuid() == 0) {
+    printf("kvminit: Hart 0 initializing kernel page table\n");
+    kernel_pagetable = kvmmake();
+    
+    // Memory barrier to ensure page table is fully visible to all CPUs
+    __sync_synchronize();
+    
+    // Signal that page table is ready for all CPUs
+    pagetable_ready = 1;
+    __sync_synchronize();
+  } else {
+    printf("kvminit: Hart %d waiting for page table initialization\n", cpuid());
+  }
 }
 
 // Switch the current CPU's h/w page table register to
@@ -79,31 +114,48 @@ kvminit(void)
 void
 kvminithart()
 {
-  printf("kvminithart: starting extra-safe paging transition\n");
+  int hart = cpuid();
+  printf("kvminithart: Hart %d starting safe paging transition\n", hart);
+  
+  // Wait until page table is ready (only Hart 0 initializes it)
+  while(!pagetable_ready) {
+    __sync_synchronize();
+  }
+  
+  // Acquire lock to ensure only one CPU transitions at a time
+  acquire(&pagetable_lock);
+  
+  printf("kvminithart: Hart %d acquired pagetable lock\n", hart);
   
   // Test that we can execute basic instructions before paging
-  printf("kvminithart: pre-paging test passed\n");
+  printf("kvminithart: Hart %d pre-paging test passed\n", hart);
   
-  // Extra-safe assembly barrier sequence for perfect pipeline synchronization
-  // This prevents CPU pre-fetching and ensures atomic paging transition
+  // Verify this hart has its own stack space
+  uint64 hart_stack = (uint64)stack0 + (hart * 4096);
+  printf("kvminithart: Hart %d using stack at 0x%lx\n", hart, hart_stack);
+  
+  printf("kvminithart: Hart %d about to execute clean transition\n", hart);
+  
+  // Clean assembly transition: sfence.vma -> csrw satp -> sfence.vma -> absolute jump
   uint64 satp_value = MAKE_SATP(V2P(kernel_pagetable));
-  
-  printf("kvminithart: about to execute assembly sequence\n");
   
   asm volatile(
     "sfence.vma\n"          // Ensure all page table writes are visible
     "csrw satp, %0\n"       // Atomic write to SATP register
     "sfence.vma\n"          // Flush TLB immediately after SATP write
-    "auipc t0, 0\n"        // Load current PC into t0
-    "addi t0, t0, 12\n"    // Add offset to jump past this sequence
-    "jr t0\n"              // Absolute jump to force PC to use new mapping
-    "nop\nnop\nnop"        // Pipeline synchronization barriers
+    "la t0, 1f\n"           // Load address of continuation label
+    "jr t0\n"               // Absolute jump to force PC to use new mapping
+    "1:\n"                  // Continuation point after paging is enabled
     : 
     : "r"(satp_value)
     : "memory", "t0"
   );
   
-  printf("kvminithart: successfully passed w_satp - paging enabled!\n");
+  printf("kvminithart: Hart %d successfully passed w_satp - paging enabled!\n", hart);
+  
+  // Release lock for next CPU
+  release(&pagetable_lock);
+  printf("kvminithart: Hart %d released pagetable lock\n", hart);
 }
 
 // Return the address of the PTE in page table pagetable
