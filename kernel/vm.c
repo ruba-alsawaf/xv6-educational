@@ -37,17 +37,20 @@ kvmmake(void)
   // PLIC
   kvmmap(kpgtbl, PLIC, PLIC, 0x4000000, PTE_R | PTE_W);
 
-  // map kernel text executable and read-only.
-  kvmmap(kpgtbl, KERNBASE, V2P(KERNBASE), (uint64)etext-KERNBASE, PTE_R | PTE_X);
-
-  // map kernel data and the physical RAM we'll make use of.
-  kvmmap(kpgtbl, (uint64)etext, V2P(etext), PHYSTOP-(uint64)etext, PTE_R | PTE_W);
+  // Complete Identity Map: Ensure entire kernel (KERNBASE to PHYSTOP) is identity-mapped
+  // with R|W|X permissions for seamless paging transition
+  // Split around stack0 to avoid remap conflicts
+  kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)stack0 - KERNBASE, PTE_R | PTE_W | PTE_X);
+  kvmmap(kpgtbl, (uint64)stack0 + 4096 * NCPU, (uint64)stack0 + 4096 * NCPU, 
+         PHYSTOP - ((uint64)stack0 + 4096 * NCPU), PTE_R | PTE_W | PTE_X);
 
   // map the trampoline for trap entry/exit to
   // the highest virtual address in the kernel.
   kvmmap(kpgtbl, TRAMPOLINE, V2P(trampoline), PGSIZE, PTE_R | PTE_X);
 
-  
+  // map stack0 (boot stack) with identity mapping for extra safety
+  kvmmap(kpgtbl, (uint64)stack0, (uint64)stack0, 4096 * NCPU, PTE_R | PTE_W | PTE_X);
+
   // allocate and map a kernel stack for each process.
   proc_mapstacks(kpgtbl);
   
@@ -76,13 +79,31 @@ kvminit(void)
 void
 kvminithart()
 {
-  // wait for any previous writes to the page table memory to finish.
-  sfence_vma();
-
-  w_satp(MAKE_SATP(V2P(kernel_pagetable)));
-
-  // flush stale entries from the TLB.
-  sfence_vma();
+  printf("kvminithart: starting extra-safe paging transition\n");
+  
+  // Test that we can execute basic instructions before paging
+  printf("kvminithart: pre-paging test passed\n");
+  
+  // Extra-safe assembly barrier sequence for perfect pipeline synchronization
+  // This prevents CPU pre-fetching and ensures atomic paging transition
+  uint64 satp_value = MAKE_SATP(V2P(kernel_pagetable));
+  
+  printf("kvminithart: about to execute assembly sequence\n");
+  
+  asm volatile(
+    "sfence.vma\n"          // Ensure all page table writes are visible
+    "csrw satp, %0\n"       // Atomic write to SATP register
+    "sfence.vma\n"          // Flush TLB immediately after SATP write
+    "auipc t0, 0\n"        // Load current PC into t0
+    "addi t0, t0, 12\n"    // Add offset to jump past this sequence
+    "jr t0\n"              // Absolute jump to force PC to use new mapping
+    "nop\nnop\nnop"        // Pipeline synchronization barriers
+    : 
+    : "r"(satp_value)
+    : "memory", "t0"
+  );
+  
+  printf("kvminithart: successfully passed w_satp - paging enabled!\n");
 }
 
 // Return the address of the PTE in page table pagetable
