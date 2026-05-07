@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "schedulerWindow.h" // تأكدي من تضمين الملف الصحيح
+#include "memcatUi/memcatWindow.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
@@ -18,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     QGridLayout *grid = new QGridLayout();
     
     btnScheduler = new QPushButton("📊 CPU Scheduling", this);
-    btnPageTable = new QPushButton("🧠 Memory (Page Tables)", this);
+    btnMemcat = new QPushButton("🧠 Memcat Monitor", this);
     btnFileSystem = new QPushButton("📁 File System Explorer", this);
     btnSyscall   = new QPushButton("📞 System Calls Lab", this);
 
@@ -27,12 +28,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
                        "QPushButton:hover { background-color: #2ecc71; border: 2px solid #27ae60; }";
     
     btnScheduler->setStyleSheet(btnStyle);
-    btnPageTable->setStyleSheet(btnStyle);
+    btnMemcat->setStyleSheet(btnStyle);
     btnFileSystem->setStyleSheet(btnStyle);
     btnSyscall->setStyleSheet(btnStyle);
 
     grid->addWidget(btnScheduler, 0, 0);
-    grid->addWidget(btnPageTable, 0, 1);
+    grid->addWidget(btnMemcat, 0, 1);
     grid->addWidget(btnFileSystem, 1, 0);
     grid->addWidget(btnSyscall, 1, 1);
 
@@ -40,6 +41,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     mainLayout->addStretch();
 
     connect(btnScheduler, &QPushButton::clicked, this, &MainWindow::onSchedulerClicked);
+    connect(btnMemcat, &QPushButton::clicked, this, &MainWindow::onMemcatClicked);
     
     setWindowTitle("xv6 OS Educational GUI v2.0");
     resize(700, 550);
@@ -51,8 +53,13 @@ void MainWindow::onSchedulerClicked() {
     schedWin->show();
 }
 
+void MainWindow::onMemcatClicked() {
+    MemcatWindow *window = new MemcatWindow();
+    window->setAttribute(Qt::WA_DeleteOnClose);
+    window->show();
+}
+
 // باقي الدوال تبقى فارغة حالياً
-void MainWindow::onPageTableClicked() {}
 void MainWindow::onFileSystemClicked() {}
 void MainWindow::onSyscallClicked() {}
 
