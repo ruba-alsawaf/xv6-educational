@@ -1,0 +1,6 @@
+kernel/kernel
+fs.img
+*.o
+*.d
+.git
+.DS_Store

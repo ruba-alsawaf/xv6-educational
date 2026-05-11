@@ -259,25 +259,10 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
 {
   char *mem;
   uint64 a;
+  uint64 first_pa = 0;
 
   if(newsz < oldsz)
     return oldsz;
-      struct proc *p = myproc();
-  if(p){
-    struct mem_event e;
-    memset(&e, 0, sizeof(e));
-    e.ticks  = ticks;
-    e.cpu    = cpuid();
-    e.type   = MEM_GROW;
-    e.pid    = p->pid;
-    e.state  = p->state;
-    e.oldsz  = oldsz;
-    e.newsz  = newsz;
-    e.source = SRC_UVMALLOC;
-    e.kind   = PAGE_USER;
-    safestrcpy(e.name, p->name, MEM_NM);
-    memlog_push(&e);
-  }
 
   oldsz = PGROUNDUP(oldsz);
   for(a = oldsz; a < newsz; a += PGSIZE){
@@ -292,7 +277,30 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
       uvmdealloc(pagetable, a, oldsz);
       return 0;
     }
+    if(first_pa == 0)
+      first_pa = (uint64)mem;
   }
+  
+  struct proc *p = myproc();
+  if(p){
+    struct mem_event e;
+    memset(&e, 0, sizeof(e));
+    e.ticks  = ticks;
+    e.cpu    = cpuid();
+    e.type   = MEM_GROW;
+    e.pid    = p->pid;
+    e.state  = p->state;
+    e.va     = PGROUNDUP(oldsz);
+    e.pa     = first_pa;
+    e.perm   = PTE_R | PTE_U | xperm;
+    e.oldsz  = oldsz;
+    e.newsz  = newsz;
+    e.source = SRC_UVMALLOC;
+    e.kind   = PAGE_USER;
+    safestrcpy(e.name, p->name, MEM_NM);
+    memlog_push(&e);
+  }
+  
   return newsz;
 }
 
@@ -518,6 +526,10 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
     return 0;
   }
 
+  mem = (uint64) kalloc();
+  if(mem == 0)
+    return 0;
+
   struct mem_event e;
   memset(&e, 0, sizeof(e));
   e.ticks  = ticks;
@@ -526,14 +538,12 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   e.pid    = p->pid;
   e.state  = p->state;
   e.va     = va;
+  e.pa     = mem;
+  e.perm   = PTE_W | PTE_U | PTE_R;
   e.source = SRC_VMFAULT;
   e.kind   = PAGE_USER;
   safestrcpy(e.name, p->name, MEM_NM);
   memlog_push(&e);
-
-  mem = (uint64) kalloc();
-  if(mem == 0)
-    return 0;
 
   memset((void *) mem, 0, PGSIZE);
   if (mappages(p->pagetable, va, PGSIZE, mem, PTE_W|PTE_U|PTE_R) != 0) {
