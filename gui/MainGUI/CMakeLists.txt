@@ -27,16 +27,6 @@ add_executable(MainGUI
     schedulerUi/schedulerWindow.h
     filesystemUi/filesystemWindow.cpp
     filesystemUi/filesystemWindow.h
-    filesystemUi/bufferCacheWidget.cpp
-    filesystemUi/bufferCacheWidget.h
-    filesystemUi/logWidget.cpp
-    filesystemUi/logWidget.h
-    filesystemUi/blockAllocator.cpp
-    filesystemUi/blockAllocator.h
-    filesystemUi/bCacheBufferTheory.cpp
-    filesystemUi/bCacheBufferTheory.h
-    filesystemUi/InodeWidget.cpp
-    filesystemUi/InodeWidget.h
     filesystemUi/CoreEngineWindow.cpp
     filesystemUi/CoreEngineWindow.h
 )

@@ -146,80 +146,10 @@ CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.s
 
-CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o: CMakeFiles/MainGUI.dir/flags.make
-CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp
-CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp
-
-CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp > CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.i
-
-CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.s
-
-CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o: CMakeFiles/MainGUI.dir/flags.make
-CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp
-CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp
-
-CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp > CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.i
-
-CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.s
-
-CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o: CMakeFiles/MainGUI.dir/flags.make
-CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp
-CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp
-
-CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp > CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.i
-
-CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.s
-
-CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o: CMakeFiles/MainGUI.dir/flags.make
-CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp
-CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp
-
-CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp > CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.i
-
-CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.s
-
-CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o: CMakeFiles/MainGUI.dir/flags.make
-CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp
-CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp
-
-CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp > CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.i
-
-CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp -o CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.s
-
 CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o: CMakeFiles/MainGUI.dir/flags.make
 CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o: /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/CoreEngineWindow.cpp
 CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o: CMakeFiles/MainGUI.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o -MF CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o.d -o CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o -c /home/aya/xv6_ruba/gui/MainGUI/filesystemUi/CoreEngineWindow.cpp
 
 CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.i: cmake_force
@@ -237,11 +167,6 @@ MainGUI_OBJECTS = \
 "CMakeFiles/MainGUI.dir/mainwindow.cpp.o" \
 "CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o" \
 "CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o" \
-"CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o" \
-"CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o" \
-"CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o" \
-"CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o" \
-"CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o" \
 "CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o"
 
 # External object files for target MainGUI
@@ -252,11 +177,6 @@ MainGUI: CMakeFiles/MainGUI.dir/main.cpp.o
 MainGUI: CMakeFiles/MainGUI.dir/mainwindow.cpp.o
 MainGUI: CMakeFiles/MainGUI.dir/schedulerUi/schedulerWindow.cpp.o
 MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/filesystemWindow.cpp.o
-MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/bufferCacheWidget.cpp.o
-MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/logWidget.cpp.o
-MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o
-MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o
-MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o
 MainGUI: CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o
 MainGUI: CMakeFiles/MainGUI.dir/build.make
 MainGUI: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
@@ -266,7 +186,7 @@ MainGUI: /usr/lib/x86_64-linux-gnu/libGLX.so
 MainGUI: /usr/lib/x86_64-linux-gnu/libOpenGL.so
 MainGUI: /usr/lib/x86_64-linux-gnu/libQt6Core.so.6.4.2
 MainGUI: CMakeFiles/MainGUI.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Linking CXX executable MainGUI"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/aya/xv6_ruba/gui/MainGUI/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable MainGUI"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/MainGUI.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

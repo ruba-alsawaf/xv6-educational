@@ -5,18 +5,8 @@ MainGUI_autogen/timestamp: \
 	/home/aya/xv6_ruba/gui/MainGUI/build/MainGUI_autogen/moc_predefs.h \
 	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/CoreEngineWindow.cpp \
 	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/CoreEngineWindow.h \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.h \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.h \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.h \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.cpp \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bufferCacheWidget.h \
 	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.cpp \
 	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/filesystemWindow.h \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.cpp \
-	/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/logWidget.h \
 	/home/aya/xv6_ruba/gui/MainGUI/main.cpp \
 	/home/aya/xv6_ruba/gui/MainGUI/mainwindow.cpp \
 	/home/aya/xv6_ruba/gui/MainGUI/mainwindow.h \
@@ -206,7 +196,6 @@ MainGUI_autogen/timestamp: \
 	/usr/include/locale.h \
 	/usr/include/pthread.h \
 	/usr/include/sched.h \
-	/usr/include/sqlite3.h \
 	/usr/include/stdc-predef.h \
 	/usr/include/stdint.h \
 	/usr/include/stdio.h \
@@ -306,7 +295,6 @@ MainGUI_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/c++/13/bits/os_defines.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
 	/usr/include/x86_64-linux-gnu/gnu/stubs.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtCore/QMap \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/QTimer \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qabstractitemmodel.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtCore/qalgorithms.h \
@@ -432,10 +420,8 @@ MainGUI_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qvalidator.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtGui/qwindowdefs.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlDatabase \
-	/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlError \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/QSqlQuery \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqldatabase.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlerror.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/qsqlquery.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/qtsql-config.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtSql/qtsqlexports.h \
@@ -445,16 +431,12 @@ MainGUI_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGraphicsView \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QGridLayout \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHBoxLayout \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QHeaderView \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLabel \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QLineEdit \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QListWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QMainWindow \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QProgressBar \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QPushButton \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QScrollArea \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QSplitter \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QStackedWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTabWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTableWidget \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/QTextEdit \
@@ -471,13 +453,10 @@ MainGUI_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgraphicsscene.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgraphicsview.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qgridlayout.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qheaderview.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlabel.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayout.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlayoutitem.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlineedit.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlistview.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qlistwidget.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qmainwindow.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qprogressbar.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qpushbutton.h \
@@ -485,8 +464,6 @@ MainGUI_autogen/timestamp: \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qscrollarea.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsizepolicy.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qslider.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qsplitter.h \
-	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstackedwidget.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyle.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qstyleoption.h \
 	/usr/include/x86_64-linux-gnu/qt6/QtWidgets/qtabbar.h \

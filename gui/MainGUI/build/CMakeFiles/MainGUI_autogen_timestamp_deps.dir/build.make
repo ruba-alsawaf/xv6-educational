@@ -68,8 +68,8 @@ include CMakeFiles/MainGUI_autogen_timestamp_deps.dir/progress.make
 
 CMakeFiles/MainGUI_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Sql.so.6.4.2
 CMakeFiles/MainGUI_autogen_timestamp_deps: /usr/lib/qt6/libexec/moc
-CMakeFiles/MainGUI_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 CMakeFiles/MainGUI_autogen_timestamp_deps: /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6.4.2
+CMakeFiles/MainGUI_autogen_timestamp_deps: /usr/lib/qt6/libexec/uic
 
 MainGUI_autogen_timestamp_deps: CMakeFiles/MainGUI_autogen_timestamp_deps
 MainGUI_autogen_timestamp_deps: CMakeFiles/MainGUI_autogen_timestamp_deps.dir/build.make
