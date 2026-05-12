@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "" "MainGUI_autogen/timestamp" "custom" "MainGUI_autogen/deps"
   "/home/aya/xv6_ruba/gui/MainGUI/build/MainGUI_autogen/mocs_compilation.cpp" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o.d"
+  "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/CoreEngineWindow.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o.d"
   "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/InodeWidget.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o.d"
   "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/bCacheBufferTheory.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o.d"
   "/home/aya/xv6_ruba/gui/MainGUI/filesystemUi/blockAllocator.cpp" "CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o" "gcc" "CMakeFiles/MainGUI.dir/filesystemUi/blockAllocator.cpp.o.d"

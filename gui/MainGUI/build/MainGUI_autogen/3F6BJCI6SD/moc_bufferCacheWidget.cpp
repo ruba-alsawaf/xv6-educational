@@ -27,40 +27,61 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 namespace {
 struct qt_meta_stringdata_BufferCacheWidget_t {
-    uint offsetsAndSizes[18];
+    uint offsetsAndSizes[32];
     char stringdata0[18];
-    char stringdata1[10];
+    char stringdata1[18];
     char stringdata2[1];
-    char stringdata3[15];
-    char stringdata4[6];
-    char stringdata5[16];
-    char stringdata6[4];
-    char stringdata7[4];
-    char stringdata8[12];
+    char stringdata3[22];
+    char stringdata4[14];
+    char stringdata5[14];
+    char stringdata6[18];
+    char stringdata7[23];
+    char stringdata8[17];
+    char stringdata9[5];
+    char stringdata10[21];
+    char stringdata11[4];
+    char stringdata12[4];
+    char stringdata13[15];
+    char stringdata14[15];
+    char stringdata15[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_BufferCacheWidget_t::offsetsAndSizes) + ofs), len 
 Q_CONSTINIT static const qt_meta_stringdata_BufferCacheWidget_t qt_meta_stringdata_BufferCacheWidget = {
     {
         QT_MOC_LITERAL(0, 17),  // "BufferCacheWidget"
-        QT_MOC_LITERAL(18, 9),  // "refreshUI"
-        QT_MOC_LITERAL(28, 0),  // ""
-        QT_MOC_LITERAL(29, 14),  // "onLevelChanged"
-        QT_MOC_LITERAL(44, 5),  // "index"
-        QT_MOC_LITERAL(50, 15),  // "onBufferClicked"
-        QT_MOC_LITERAL(66, 3),  // "row"
-        QT_MOC_LITERAL(70, 3),  // "col"
-        QT_MOC_LITERAL(74, 11)   // "togglePause"
+        QT_MOC_LITERAL(18, 17),  // "onNextStepClicked"
+        QT_MOC_LITERAL(36, 0),  // ""
+        QT_MOC_LITERAL(37, 21),  // "onPreviousStepClicked"
+        QT_MOC_LITERAL(59, 13),  // "onPlayClicked"
+        QT_MOC_LITERAL(73, 13),  // "onStopClicked"
+        QT_MOC_LITERAL(87, 17),  // "onAutoPlayTimeout"
+        QT_MOC_LITERAL(105, 22),  // "onEventListItemClicked"
+        QT_MOC_LITERAL(128, 16),  // "QListWidgetItem*"
+        QT_MOC_LITERAL(145, 4),  // "item"
+        QT_MOC_LITERAL(150, 20),  // "onBufferTableClicked"
+        QT_MOC_LITERAL(171, 3),  // "row"
+        QT_MOC_LITERAL(175, 3),  // "col"
+        QT_MOC_LITERAL(179, 14),  // "onResetClicked"
+        QT_MOC_LITERAL(194, 14),  // "onSpeedChanged"
+        QT_MOC_LITERAL(209, 5)   // "value"
     },
     "BufferCacheWidget",
-    "refreshUI",
+    "onNextStepClicked",
     "",
-    "onLevelChanged",
-    "index",
-    "onBufferClicked",
+    "onPreviousStepClicked",
+    "onPlayClicked",
+    "onStopClicked",
+    "onAutoPlayTimeout",
+    "onEventListItemClicked",
+    "QListWidgetItem*",
+    "item",
+    "onBufferTableClicked",
     "row",
     "col",
-    "togglePause"
+    "onResetClicked",
+    "onSpeedChanged",
+    "value"
 };
 #undef QT_MOC_LITERAL
 } // unnamed namespace
@@ -71,7 +92,7 @@ Q_CONSTINIT static const uint qt_meta_data_BufferCacheWidget[] = {
       10,       // revision
        0,       // classname
        0,    0, // classinfo
-       4,   14, // methods
+       9,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -79,16 +100,26 @@ Q_CONSTINIT static const uint qt_meta_data_BufferCacheWidget[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   38,    2, 0x08,    1 /* Private */,
-       3,    1,   39,    2, 0x08,    2 /* Private */,
-       5,    2,   42,    2, 0x08,    4 /* Private */,
-       8,    0,   47,    2, 0x08,    7 /* Private */,
+       1,    0,   68,    2, 0x08,    1 /* Private */,
+       3,    0,   69,    2, 0x08,    2 /* Private */,
+       4,    0,   70,    2, 0x08,    3 /* Private */,
+       5,    0,   71,    2, 0x08,    4 /* Private */,
+       6,    0,   72,    2, 0x08,    5 /* Private */,
+       7,    1,   73,    2, 0x08,    6 /* Private */,
+      10,    2,   76,    2, 0x08,    8 /* Private */,
+      13,    0,   81,    2, 0x08,   11 /* Private */,
+      14,    1,   82,    2, 0x08,   12 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,    4,
-    QMetaType::Void, QMetaType::Int, QMetaType::Int,    6,    7,
     QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 8,    9,
+    QMetaType::Void, QMetaType::Int, QMetaType::Int,   11,   12,
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Int,   15,
 
        0        // eod
 };
@@ -102,17 +133,28 @@ Q_CONSTINIT const QMetaObject BufferCacheWidget::staticMetaObject = { {
     qt_incomplete_metaTypeArray<qt_meta_stringdata_BufferCacheWidget_t,
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<BufferCacheWidget, std::true_type>,
-        // method 'refreshUI'
+        // method 'onNextStepClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onLevelChanged'
+        // method 'onPreviousStepClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onPlayClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onStopClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onAutoPlayTimeout'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'onEventListItemClicked'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<QListWidgetItem *, std::false_type>,
+        // method 'onBufferTableClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'onBufferClicked'
+        QtPrivate::TypeAndForceComplete<int, std::false_type>,
+        // method 'onResetClicked'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'togglePause'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        // method 'onSpeedChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>
     >,
     nullptr
 } };
@@ -123,10 +165,15 @@ void BufferCacheWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         auto *_t = static_cast<BufferCacheWidget *>(_o);
         (void)_t;
         switch (_id) {
-        case 0: _t->refreshUI(); break;
-        case 1: _t->onLevelChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 2: _t->onBufferClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
-        case 3: _t->togglePause(); break;
+        case 0: _t->onNextStepClicked(); break;
+        case 1: _t->onPreviousStepClicked(); break;
+        case 2: _t->onPlayClicked(); break;
+        case 3: _t->onStopClicked(); break;
+        case 4: _t->onAutoPlayTimeout(); break;
+        case 5: _t->onEventListItemClicked((*reinterpret_cast< std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 6: _t->onBufferTableClicked((*reinterpret_cast< std::add_pointer_t<int>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 7: _t->onResetClicked(); break;
+        case 8: _t->onSpeedChanged((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         default: ;
         }
     }
@@ -151,13 +198,13 @@ int BufferCacheWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 9)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 9;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 9)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 9;
     }
     return _id;
 }

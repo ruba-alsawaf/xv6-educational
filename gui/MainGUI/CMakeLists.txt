@@ -37,6 +37,8 @@ add_executable(MainGUI
     filesystemUi/bCacheBufferTheory.h
     filesystemUi/InodeWidget.cpp
     filesystemUi/InodeWidget.h
+    filesystemUi/CoreEngineWindow.cpp
+    filesystemUi/CoreEngineWindow.h
 )
 
 # ربط المكتبات

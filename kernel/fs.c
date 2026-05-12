@@ -19,14 +19,129 @@
 #include "sleeplock.h"
 #include "fs.h"
 #include "buf.h"
-#include "file.h"
 #include "fslog.h"
+#include "file.h"
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 // there should be one superblock per disk device, but we run with
 // only one device
 struct superblock sb; 
+void balloc_report(char* op, int blockno, int old_bit, int new_bit, char* det) {
+    struct fs_event e;
+    memset(&e, 0, sizeof(e));
 
+    e.ticks = ticks;
+    e.pid = myproc() ? myproc()->pid : 0;
+    e.type = LAYER_BALLOC;
+
+    safestrcpy(e.op_name, op, 16);
+
+    e.blockno = blockno;
+    e.old_bit = old_bit;
+    e.bit = new_bit;
+
+    safestrcpy(e.details, det, 128);
+
+    fslog_push(&e);
+}
+
+void inode_report(char* op, struct inode *ip,
+                  int old_ref, int old_valid,
+                  int old_type, int old_size,
+                  int old_locked,
+                  char* det)
+{
+  struct fs_event e;
+  memset(&e, 0, sizeof(e));
+
+  e.ticks = ticks;
+  e.pid = myproc() ? myproc()->pid : 0;
+  e.type = LAYER_INODE;
+
+  safestrcpy(e.op_name, op, 16);
+
+  e.inum = ip->inum;
+
+  e.ref = ip->ref;
+  e.old_ref = old_ref;
+
+  e.valid_inode = ip->valid;
+  e.old_valid_inode = old_valid;
+
+  e.type_inode = ip->type;
+  e.old_type_inode = old_type;
+
+  e.size = ip->size;
+  e.old_size = old_size;
+
+  e.locked = holdingsleep(&ip->lock);
+  e.old_locked = old_locked;
+
+  safestrcpy(e.details, det, 128);
+
+  fslog_push(&e);
+}
+
+static void dir_report(
+    char *op,
+    struct inode *dp,
+    char *name,
+    uint target,
+    uint off,
+    char *details
+){
+    struct fs_event e;
+
+    memset(&e, 0, sizeof(e));
+
+    e.ticks = ticks;
+    e.pid = myproc() ? myproc()->pid : 0;
+
+    e.type = LAYER_DIR;
+
+    safestrcpy(e.op_name, op, sizeof(e.op_name));
+
+    if(name)
+        safestrcpy(e.name, name, sizeof(e.name));
+
+    e.parent_inum = dp ? dp->inum : -1;
+    e.target_inum = target;
+    e.offset = off;
+
+    safestrcpy(e.details, details, sizeof(e.details));
+
+    fslog_push(&e);
+}
+static void path_report(
+    char *op,
+    char *path,
+    char *elem,
+    struct inode *ip,
+    char *details
+){
+    struct fs_event e;
+
+    memset(&e, 0, sizeof(e));
+
+    e.ticks = ticks;
+    e.pid = myproc() ? myproc()->pid : 0;
+
+    e.type = LAYER_PATH;
+
+    safestrcpy(e.op_name, op, sizeof(e.op_name));
+
+    if(path)
+        safestrcpy(e.path, path, sizeof(e.path));
+
+    if(elem)
+        safestrcpy(e.name, elem, sizeof(e.name));
+
+    e.parent_inum = ip ? ip->inum : -1;
+
+    safestrcpy(e.details, details, sizeof(e.details));
+
+    fslog_push(&e);
+}
 // Read the super block.
 static void
 readsb(int dev, struct superblock *sb)
@@ -75,12 +190,13 @@ balloc(uint dev)
     bp = bread(dev, BBLOCK(b, sb));
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
       m = 1 << (bi % 8);
-      if((bp->data[bi/8] & m) == 0){  // Is block free?
+      if((bp->data[bi/8] & m) == 0){
+        int old_bit = 0;  // Is block free?
         bp->data[bi/8] |= m;  // Mark block in use.
+        balloc_report("BALLOC", b + bi, old_bit, 1, "Allocated block");
         log_write(bp);
         brelse(bp);
         bzero(dev, b + bi);
-        fslog_balloc(b + bi);
         return b + bi;
       }
     }
@@ -102,10 +218,11 @@ bfree(int dev, uint b)
   m = 1 << (bi % 8);
   if((bp->data[bi/8] & m) == 0)
     panic("freeing free block");
+  int old_bit = 1;
   bp->data[bi/8] &= ~m;
+  balloc_report("BFREE", b, old_bit, 0, "Freed block");
   log_write(bp);
   brelse(bp);
-  fslog_bfree(b);
 }
 
 // Inodes.
@@ -210,12 +327,18 @@ ialloc(uint dev, short type)
     bp = bread(dev, IBLOCK(inum, sb));
     dip = (struct dinode*)bp->data + inum%IPB;
     if(dip->type == 0){  // a free inode
+      int old_type = dip->type;
       memset(dip, 0, sizeof(*dip));
       dip->type = type;
       log_write(bp);   // mark it allocated on the disk
+      struct inode *ip = iget(dev, inum);
+      inode_report("IALLOC", ip,
+      0, 0,
+      old_type, 0,
+      0,
+      "Allocating new inode");
       brelse(bp);
-      fslog_ialloc(inum, type);
-      return iget(dev, inum);
+      return ip;
     }
     brelse(bp);
   }
@@ -241,9 +364,15 @@ iupdate(struct inode *ip)
   dip->nlink = ip->nlink;
   dip->size = ip->size;
   memmove(dip->addrs, ip->addrs, sizeof(ip->addrs));
+  inode_report("IUPDATE", ip,
+    ip->ref,
+    ip->valid,
+    ip->type,
+    ip->size,
+    1,
+    "Writing inode to disk");
   log_write(bp);
   brelse(bp);
-  fslog_iupdate(ip);
 }
 
 // Find the inode with number inum on device dev
@@ -260,8 +389,13 @@ iget(uint dev, uint inum)
   empty = 0;
   for(ip = &itable.inode[0]; ip < &itable.inode[NINODE]; ip++){
     if(ip->ref > 0 && ip->dev == dev && ip->inum == inum){
+      int old_ref = ip->ref;
       ip->ref++;
-      fslog_iupdate(ip);
+       inode_report("IGET_HIT", ip,
+      old_ref, ip->valid,
+      ip->type, ip->size,
+      0,
+      "Inode found in cache");
       release(&itable.lock);
       return ip;
     }
@@ -278,6 +412,11 @@ iget(uint dev, uint inum)
   ip->inum = inum;
   ip->ref = 1;
   ip->valid = 0;
+  inode_report("IGET_NEW", ip,
+    0, 0,
+    0, 0,
+    0,
+    "Allocated new inode in table");
   release(&itable.lock);
 
   return ip;
@@ -289,7 +428,13 @@ struct inode*
 idup(struct inode *ip)
 {
   acquire(&itable.lock);
+  int old_ref = ip->ref;
   ip->ref++;
+  inode_report("IDUP", ip,
+    old_ref, ip->valid,
+    ip->type, ip->size,
+    0,
+    "Increment ref count");
   release(&itable.lock);
   return ip;
 }
@@ -304,9 +449,15 @@ ilock(struct inode *ip)
 
   if(ip == 0 || ip->ref < 1)
     panic("ilock");
-
+   int old_valid = ip->valid;
+   int old_locked = 0;
   acquiresleep(&ip->lock);
-  fslog_ilock(ip->inum, 1);
+  inode_report("ILOCK_ACQUIRE", ip,
+    ip->ref, old_valid,
+    ip->type, ip->size,
+    old_locked,
+    "Locking inode");
+
   if(ip->valid == 0){
     bp = bread(ip->dev, IBLOCK(ip->inum, sb));
     dip = (struct dinode*)bp->data + ip->inum%IPB;
@@ -317,7 +468,15 @@ ilock(struct inode *ip)
     ip->size = dip->size;
     memmove(ip->addrs, dip->addrs, sizeof(ip->addrs));
     brelse(bp);
+    int prev_valid = 0;
+
     ip->valid = 1;
+
+    inode_report("ILOCK_LOAD", ip,
+    ip->ref, prev_valid,
+    ip->type, ip->size,
+    1,
+    "Loaded inode from disk");
     if(ip->type == 0)
       panic("ilock: no type");
   }
@@ -329,8 +488,14 @@ iunlock(struct inode *ip)
 {
   if(ip == 0 || !holdingsleep(&ip->lock) || ip->ref < 1)
     panic("iunlock");
-  fslog_ilock(ip->inum, 0);
+  int old_locked = 1;
+
   releasesleep(&ip->lock);
+  inode_report("IUNLOCK", ip,
+    ip->ref, ip->valid,
+    ip->type, ip->size,
+    old_locked,
+    "Unlocked inode"); 
 }
 
 // Drop a reference to an in-memory inode.
@@ -358,14 +523,25 @@ iput(struct inode *ip)
     ip->type = 0;
     iupdate(ip);
     ip->valid = 0;
-
+    inode_report("IPUT_FREE", ip,
+    ip->ref, ip->valid,
+    ip->type, ip->size,
+    1,
+    "Freeing inode (nlink=0)");
     releasesleep(&ip->lock);
 
     acquire(&itable.lock);
   }
 
-  ip->ref--;
-  fslog_iupdate(ip);
+  int old_ref = ip->ref;
+
+ip->ref--;
+
+inode_report("IPUT", ip,
+    old_ref, ip->valid,
+    ip->type, ip->size,
+    0,
+    "Decrement ref");
   release(&itable.lock);
 }
 
@@ -418,6 +594,14 @@ bmap(struct inode *ip, uint bn)
   if(bn < NDIRECT){
     if((addr = ip->addrs[bn]) == 0){
       addr = balloc(ip->dev);
+
+inode_report("BMAP_ALLOC_DIRECT", ip,
+    ip->ref,
+    ip->valid,
+    ip->type,
+    ip->size,
+    1,
+    "Allocated direct block");
       if(addr == 0)
         return 0;
       ip->addrs[bn] = addr;
@@ -430,6 +614,13 @@ bmap(struct inode *ip, uint bn)
     // Load indirect block, allocating if necessary.
     if((addr = ip->addrs[NDIRECT]) == 0){
       addr = balloc(ip->dev);
+      inode_report("BMAP_ALLOC_INDIRECT", ip,
+    ip->ref,
+    ip->valid,
+    ip->type,
+    ip->size,
+    1,
+    "Allocated indirect block table");
       if(addr == 0)
         return 0;
       ip->addrs[NDIRECT] = addr;
@@ -437,6 +628,13 @@ bmap(struct inode *ip, uint bn)
     bp = bread(ip->dev, addr);
     a = (uint*)bp->data;
     if((addr = a[bn]) == 0){
+      inode_report("BMAP_ALLOC_DATA", ip,
+    ip->ref,
+    ip->valid,
+    ip->type,
+    ip->size,
+    1,
+    "Allocated indirect data block");
       addr = balloc(ip->dev);
       if(addr){
         a[bn] = addr;
@@ -478,7 +676,15 @@ itrunc(struct inode *ip)
     ip->addrs[NDIRECT] = 0;
   }
 
-  ip->size = 0;
+  int old_size = ip->size;
+
+ip->size = 0;
+
+inode_report("ITRUNC", ip,
+    ip->ref, ip->valid,
+    ip->type, old_size,
+    1,
+    "Truncating inode data");
   iupdate(ip);
 }
 
@@ -520,6 +726,11 @@ readi(struct inode *ip, int user_dst, uint64 dst, uint off, uint n)
       tot = -1;
       break;
     }
+    inode_report("READI", ip,
+    ip->ref, ip->valid,
+    ip->type, ip->size,
+    1,
+    "Reading from inode");
     brelse(bp);
   }
   return tot;
@@ -537,7 +748,7 @@ writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
 {
   uint tot, m;
   struct buf *bp;
-
+  int old_size = ip->size;
   if(off > ip->size || off + n < off)
     return -1;
   if(off + n > MAXFILE*BSIZE)
@@ -559,6 +770,11 @@ writei(struct inode *ip, int user_src, uint64 src, uint off, uint n)
 
   if(off > ip->size)
     ip->size = off;
+  inode_report("WRITEI", ip,
+    ip->ref, ip->valid,
+    ip->type, old_size,
+    1,
+    "Writing to inode");
 
   // write the i-node back to disk even if the size didn't change
   // because the loop above might have called bmap() and added a new
@@ -585,8 +801,15 @@ dirlookup(struct inode *dp, char *name, uint *poff)
   struct dirent de;
 
   if(dp->type != T_DIR)
-    panic("dirlookup not DIR");
-
+   { panic("dirlookup not DIR");
+    dir_report(
+    "DIRLOOKUP_START",
+    dp,
+    name,
+    -1,
+    -1,
+    "Starting directory lookup"
+);}
   for(off = 0; off < dp->size; off += sizeof(de)){
     if(readi(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
       panic("dirlookup read");
@@ -597,10 +820,25 @@ dirlookup(struct inode *dp, char *name, uint *poff)
       if(poff)
         *poff = off;
       inum = de.inum;
+      dir_report(
+    "DIRLOOKUP_FOUND",
+    dp,
+    name,
+    de.inum,
+    off,
+    "Directory entry found"
+);
       return iget(dp->dev, inum);
     }
   }
-
+  dir_report(
+    "DIRLOOKUP_MISS",
+    dp,
+    name,
+    -1,
+    -1,
+    "Directory entry not found"
+);
   return 0;
 }
 
@@ -612,10 +850,26 @@ dirlink(struct inode *dp, char *name, uint inum)
   int off;
   struct dirent de;
   struct inode *ip;
+  dir_report(
+    "DIRLINK_START",
+    dp,
+    name,
+    inum,
+    -1,
+    "Creating directory entry"
+);
 
   // Check that name is not present.
   if((ip = dirlookup(dp, name, 0)) != 0){
     iput(ip);
+    dir_report(
+    "DIRLINK_EXISTS",
+    dp,
+    name,
+    inum,
+    -1,
+    "Entry already exists"
+);
     return -1;
   }
 
@@ -631,7 +885,14 @@ dirlink(struct inode *dp, char *name, uint inum)
   de.inum = inum;
   if(writei(dp, 0, (uint64)&de, off, sizeof(de)) != sizeof(de))
     return -1;
-
+  dir_report(
+    "DIRLINK_DONE",
+    dp,
+    name,
+    inum,
+    off,
+    "Directory entry linked"
+);
   return 0;
 }
 
@@ -668,6 +929,13 @@ skipelem(char *path, char *name)
   else {
     memmove(name, s, len);
     name[len] = 0;
+    path_report(
+    "SKIPELEM",
+    s,
+    name,
+    0,
+    "Parsed path element"
+);
   }
   while(*path == '/')
     path++;
@@ -687,11 +955,25 @@ namex(char *path, int nameiparent, char *name)
     ip = iget(ROOTDEV, ROOTINO);
   else
     ip = idup(myproc()->cwd);
-
+  path_report(
+    "NAMEX_START",
+    path,
+    "",
+    ip,
+    "Starting pathname resolution"
+);
   while((path = skipelem(path, name)) != 0){
+    path_report(
+    "NAMEX_STEP",
+    path,
+    name,
+    ip,
+    "Traversing pathname"
+);
     ilock(ip);
     if(ip->type != T_DIR){
       iunlockput(ip);
+      
       return 0;
     }
     if(nameiparent && *path == '\0'){
@@ -708,8 +990,22 @@ namex(char *path, int nameiparent, char *name)
   }
   if(nameiparent){
     iput(ip);
+    path_report(
+    "NAMEX_FAIL",
+    path,
+    name,
+    ip,
+    "Path resolution failed"
+);
     return 0;
   }
+  path_report(
+    "NAMEX_DONE",
+    path,
+    name,
+    ip,
+    "Path resolved successfully"
+);
   return ip;
 }
 

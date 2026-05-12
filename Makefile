@@ -150,7 +150,8 @@ UPROGS=\
 	$U/_forphan\
 	$U/_dorphan\
 	$U/_cscat\
-	$U/_csexport
+	$U/_csexport\
+	$U/_fsexport
 
 
 

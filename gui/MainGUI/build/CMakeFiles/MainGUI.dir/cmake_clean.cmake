@@ -4,6 +4,8 @@ file(REMOVE_RECURSE
   "MainGUI_autogen"
   "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o"
   "CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.o.d"
+  "CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o"
+  "CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o.d"
   "CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o"
   "CMakeFiles/MainGUI.dir/filesystemUi/InodeWidget.cpp.o.d"
   "CMakeFiles/MainGUI.dir/filesystemUi/bCacheBufferTheory.cpp.o"

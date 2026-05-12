@@ -5,6 +5,9 @@
 #include <QTableWidget>
 #include <QMap>
 #include <QVBoxLayout>
+#include <QTimer>
+#include <QSqlQuery>
+#include <QSqlError>
 
 struct InodeData {
     int inum;
@@ -12,8 +15,9 @@ struct InodeData {
     int ref;
     int nlink;
     uint size;
-    int addrs[13]; // تغيير من QString إلى مصفوفة int
+    int addrs[13]; 
     bool isLocked;
+    QString lastOp; // أضيفي هذا السطر
 };
 
 class InodeWidget : public QWidget {
@@ -21,11 +25,15 @@ class InodeWidget : public QWidget {
 public:
     explicit InodeWidget(QWidget *parent = nullptr);
     void processNewEvent(const InodeData &data); 
-    void updateData(const InodeData &data) { processNewEvent(data); } // دالة ربط سريعة
+    void updateData(const InodeData &data) { processNewEvent(data); }
+
+private slots:
+    void updateFromDatabase(); // الدالة اللي ضفناها للتايمر
 
 private:
     QTableWidget *table;
     QMap<int, int> inumToRow; 
+    QTimer *dbTimer; 
     void setupUi();
     void updateRow(int row, const InodeData &data);
 };

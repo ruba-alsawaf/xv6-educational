@@ -179,6 +179,30 @@ MainGUI_autogen/mocs_compilation.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/MainGUI_autogen/mocs_compilation.cpp.s
 .PHONY : MainGUI_autogen/mocs_compilation.cpp.s
 
+filesystemUi/CoreEngineWindow.o: filesystemUi/CoreEngineWindow.cpp.o
+.PHONY : filesystemUi/CoreEngineWindow.o
+
+# target to build an object file
+filesystemUi/CoreEngineWindow.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.o
+.PHONY : filesystemUi/CoreEngineWindow.cpp.o
+
+filesystemUi/CoreEngineWindow.i: filesystemUi/CoreEngineWindow.cpp.i
+.PHONY : filesystemUi/CoreEngineWindow.i
+
+# target to preprocess a source file
+filesystemUi/CoreEngineWindow.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.i
+.PHONY : filesystemUi/CoreEngineWindow.cpp.i
+
+filesystemUi/CoreEngineWindow.s: filesystemUi/CoreEngineWindow.cpp.s
+.PHONY : filesystemUi/CoreEngineWindow.s
+
+# target to generate assembly for a file
+filesystemUi/CoreEngineWindow.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/MainGUI.dir/build.make CMakeFiles/MainGUI.dir/filesystemUi/CoreEngineWindow.cpp.s
+.PHONY : filesystemUi/CoreEngineWindow.cpp.s
+
 filesystemUi/InodeWidget.o: filesystemUi/InodeWidget.cpp.o
 .PHONY : filesystemUi/InodeWidget.o
 
@@ -409,6 +433,9 @@ help:
 	@echo "... MainGUI_autogen/mocs_compilation.o"
 	@echo "... MainGUI_autogen/mocs_compilation.i"
 	@echo "... MainGUI_autogen/mocs_compilation.s"
+	@echo "... filesystemUi/CoreEngineWindow.o"
+	@echo "... filesystemUi/CoreEngineWindow.i"
+	@echo "... filesystemUi/CoreEngineWindow.s"
 	@echo "... filesystemUi/InodeWidget.o"
 	@echo "... filesystemUi/InodeWidget.i"
 	@echo "... filesystemUi/InodeWidget.s"

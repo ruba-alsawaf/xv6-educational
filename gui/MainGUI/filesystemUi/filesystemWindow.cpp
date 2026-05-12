@@ -9,6 +9,7 @@
 #include "blockAllocator.h"
 #include "bCacheBufferTheory.h"
 #include "InodeWidget.h"
+#include "CoreEngineWindow.h"
 
 FileSystemWindow::FileSystemWindow(QWidget *parent) : QMainWindow(parent) {
     setupLayout();
@@ -57,6 +58,8 @@ TheoryWidget *bCacheBufferTheory = new TheoryWidget(this);
 tabs->addTab(bCacheBufferTheory, "6. buffer cache");
 InodeWidget *inodeWidget = new InodeWidget(this); 
 tabs->addTab(inodeWidget, "7. Inode");
+CoreEngineWindow *coreEngineWindow = new CoreEngineWindow(this);
+tabs->addTab(coreEngineWindow, "8. Core Engine");
 }
 
 void FileSystemWindow::drawLayers() {

@@ -5,34 +5,10 @@
 #include "spinlock.h"
 #include "sleeplock.h"
 #include "fs.h"
-#include "fslog.h"
 #include "buf.h"
+#include "fslog.h"
+#include "proc.h"
 
-// Simple logging that allows concurrent FS system calls.
-//
-// A log transaction contains the updates of multiple FS system
-// calls. The logging system only commits when there are
-// no FS system calls active. Thus there is never
-// any reasoning required about whether a commit might
-// write an uncommitted system call's updates to disk.
-//
-// A system call should call begin_op()/end_op() to mark
-// its start and end. Usually begin_op() just increments
-// the count of in-progress FS system calls and returns.
-// But if it thinks the log is close to running out, it
-// sleeps until the last outstanding end_op() commits.
-//
-// The log is a physical re-do log containing disk blocks.
-// The on-disk log format:
-//   header block, containing block #s for block A, B, C, ...
-//   block A
-//   block B
-//   block C
-//   ...
-// Log appends are synchronous.
-
-// Contents of the header block, used for both the on-disk header block
-// and to keep track in memory of logged block# before commit.
 struct logheader {
   int n;
   int block[LOGBLOCKS];
@@ -41,15 +17,66 @@ struct logheader {
 struct log {
   struct spinlock lock;
   int start;
-  int outstanding; // how many FS sys calls are executing.
-  int committing;  // in commit(), please wait.
+  int outstanding;
+  int committing;
   int dev;
   struct logheader lh;
 };
+
 struct log log;
 
 static void recover_from_log(void);
-static void commit();
+static void commit(void);
+
+//
+// 🔥 snapshot للحالة (مثل bcache)
+//
+struct log_state {
+  int n;
+  int out;
+  int committing;
+};
+
+static struct log_state
+log_get_state(void)
+{
+  struct log_state s;
+  s.n = log.lh.n;
+  s.out = log.outstanding;
+  s.committing = log.committing;
+  return s;
+}
+
+//
+// 🔥 report (نفس نمط bio.c)
+//
+void log_report(char *op, int bno, struct log_state old, char *desc)
+{
+  struct fs_event e;
+  memset(&e, 0, sizeof(e));
+
+  struct log_state now = log_get_state();
+
+  e.ticks = ticks;
+  e.pid = myproc() ? myproc()->pid : 0;
+  e.type = LAYER_LOG;
+  e.blockno = bno;
+
+  // before
+  e.old_log_n = old.n;
+  e.old_outstanding = old.out;
+  e.old_committing = old.committing;
+
+  // after
+  e.log_n = now.n;
+  e.outstanding = now.out;
+  e.committing = now.committing;
+
+  safestrcpy(e.op_name, op, 16);
+  safestrcpy(e.details, desc, 128);
+
+  fslog_push(&e);
+}
 
 void
 initlog(int dev, struct superblock *sb)
@@ -60,189 +87,227 @@ initlog(int dev, struct superblock *sb)
   initlock(&log.lock, "log");
   log.start = sb->logstart;
   log.dev = dev;
+
+  struct log_state old = log_get_state();
+  log_report("INIT_LOG", 0, old, "Initialize log system");
+
   recover_from_log();
 }
 
-// Copy committed blocks from log to their home location
-static void
-install_trans(int recovering)
-{
-  int tail;
-
-  for (tail = 0; tail < log.lh.n; tail++) {
-    fslog_install(log.lh.block[tail]);
-    if(recovering) {
-      printf("recovering tail %d dst %d\n", tail, log.lh.block[tail]);
-    }
-    struct buf *lbuf = bread(log.dev, log.start+tail+1); // read log block
-    struct buf *dbuf = bread(log.dev, log.lh.block[tail]); // read dst
-    memmove(dbuf->data, lbuf->data, BSIZE);  // copy block to dst
-    bwrite(dbuf);  // write dst to disk
-    if(recovering == 0)
-      bunpin(dbuf);
-    brelse(lbuf);
-    brelse(dbuf);
-  }
-}
-
-// Read the log header from disk into the in-memory log header
 static void
 read_head(void)
 {
   struct buf *buf = bread(log.dev, log.start);
   struct logheader *lh = (struct logheader *) (buf->data);
-  int i;
+
+  struct log_state old = log_get_state();
+
   log.lh.n = lh->n;
-  for (i = 0; i < log.lh.n; i++) {
+  for (int i = 0; i < log.lh.n; i++)
     log.lh.block[i] = lh->block[i];
-  }
+
+  log_report("READ_HEAD", 0, old, "Read log header from disk");
+
   brelse(buf);
 }
 
-// Write in-memory log header to disk.
-// This is the true point at which the
-// current transaction commits.
 static void
 write_head(void)
 {
   struct buf *buf = bread(log.dev, log.start);
   struct logheader *hb = (struct logheader *) (buf->data);
-  int i;
+
+  struct log_state old = log_get_state();
+
   hb->n = log.lh.n;
-  fslog_writehead(log.lh.n);
-  for (i = 0; i < log.lh.n; i++) {
+  for (int i = 0; i < log.lh.n; i++)
     hb->block[i] = log.lh.block[i];
-  }
+
   bwrite(buf);
+
+  log_report("WRITE_HEAD", 0, old, "Write log header to disk");
+
   brelse(buf);
+}
+
+static void
+install_trans(int recovering)
+{
+  for (int tail = 0; tail < log.lh.n; tail++) {
+    struct buf *lbuf = bread(log.dev, log.start+tail+1);
+    struct buf *dbuf = bread(log.dev, log.lh.block[tail]);
+
+    struct log_state old = log_get_state();
+
+    if (recovering)
+      log_report("RECOVER_BLK", log.lh.block[tail], old, "Recover block");
+    else
+      log_report("INSTALL_BLK", log.lh.block[tail], old, "Install block");
+
+    memmove(dbuf->data, lbuf->data, BSIZE);
+    bwrite(dbuf);
+
+    if (!recovering)
+      bunpin(dbuf);
+
+    brelse(lbuf);
+    brelse(dbuf);
+  }
 }
 
 static void
 recover_from_log(void)
 {
   read_head();
-  install_trans(1); // if committed, copy from log to disk
-  log.lh.n = 0;
-  write_head(); // clear the log
+
+  if (log.lh.n > 0) {
+    struct log_state old = log_get_state();
+
+    log_report("RECOVER_START", 0, old, "Start recovery");
+
+    install_trans(1);
+
+    old = log_get_state();
+    log.lh.n = 0;
+    write_head();
+
+    log_report("RECOVER_DONE", 0, old, "Recovery done");
+  }
 }
 
-// called at the start of each FS system call.
 void
 begin_op(void)
 {
   acquire(&log.lock);
-  while(1){
-    if(log.committing){
+
+  while (1) {
+    if (log.committing) {
+      struct log_state old = log_get_state();
+      log_report("WAIT_COMMIT", 0, old, "Waiting for commit");
       sleep(&log, &log.lock);
-    } else if(log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGBLOCKS){
-      // this op might exhaust log space; wait for commit.
+
+    } else if (log.lh.n + (log.outstanding+1)*MAXOPBLOCKS > LOGBLOCKS) {
+      struct log_state old = log_get_state();
+      log_report("WAIT_SPACE", 0, old, "Waiting for log space");
       sleep(&log, &log.lock);
+
     } else {
-      int before = log.outstanding;
-      log.outstanding += 1;
-      fslog_begin(before, log.outstanding);
+      struct log_state old = log_get_state();
+
+      log.outstanding++;
+
+      log_report("BEGIN_OP", 0, old, "Begin operation");
+
       release(&log.lock);
       break;
     }
   }
 }
 
-// called at the end of each FS system call.
-// commits if this was the last outstanding operation.
 void
 end_op(void)
 {
   int do_commit = 0;
 
   acquire(&log.lock);
-  int before = log.outstanding;
-  log.outstanding -= 1;
-  if(log.committing)
-    panic("log.committing");
-  if(log.outstanding == 0){
+
+  struct log_state old = log_get_state();
+
+  log.outstanding--;
+
+  if (log.outstanding == 0) {
     do_commit = 1;
     log.committing = 1;
+
+    log_report("PRE_COMMIT", 0, old, "Start committing");
   } else {
-    // begin_op() may be waiting for log space,
-    // and decrementing log.outstanding has decreased
-    // the amount of reserved space.
+    log_report("END_OP", 0, old, "End operation");
     wakeup(&log);
   }
+
   release(&log.lock);
 
-  if(do_commit){
-    // call commit w/o holding locks, since not allowed
-    // to sleep with locks.
+  if (do_commit) {
     commit();
+
     acquire(&log.lock);
+
+    old = log_get_state();
     log.committing = 0;
+
+    log_report("FINAL_RELEASE", 0, old, "Commit finished");
+
     wakeup(&log);
     release(&log.lock);
   }
-  fslog_end(before, log.outstanding, do_commit);
 }
 
-// Copy modified blocks from cache to log.
 static void
 write_log(void)
 {
-  int tail;
+  for (int tail = 0; tail < log.lh.n; tail++) {
+    struct buf *to = bread(log.dev, log.start+tail+1);
+    struct buf *from = bread(log.dev, log.lh.block[tail]);
 
-  for (tail = 0; tail < log.lh.n; tail++) {
-    fslog_writelog(log.lh.block[tail], tail);
-    struct buf *to = bread(log.dev, log.start+tail+1); // log block
-    struct buf *from = bread(log.dev, log.lh.block[tail]); // cache block
+    struct log_state old = log_get_state();
+
+    log_report("LOG_SYNC", log.lh.block[tail], old, "Write to log");
+
     memmove(to->data, from->data, BSIZE);
-    bwrite(to);  // write the log
+    bwrite(to);
+
     brelse(from);
     brelse(to);
   }
 }
 
 static void
-commit()
+commit(void)
 {
   if (log.lh.n > 0) {
-    write_log();     // Write modified blocks from cache to log
-    write_head();    // Write header to disk -- the real commit
-    install_trans(0); // Now install writes to home locations
+    struct log_state old = log_get_state();
+
+    log_report("COMMIT_START", 0, old, "Commit start");
+
+    write_log();
+    write_head();
+
+    old = log_get_state();
+    log_report("WRITE_HEAD", 0, old, "Header committed");
+
+    install_trans(0);
+
+    old = log_get_state();
     log.lh.n = 0;
-    write_head();    // Erase the transaction from the log
+    write_head();
+
+    log_report("COMMIT_DONE", 0, old, "Commit done");
   }
 }
 
-// Caller has modified b->data and is done with the buffer.
-// Record the block number and pin in the cache by increasing refcnt.
-// commit()/write_log() will do the disk write.
-//
-// log_write() replaces bwrite(); a typical use is:
-//   bp = bread(...)
-//   modify bp->data[]
-//   log_write(bp)
-//   brelse(bp)
 void
 log_write(struct buf *b)
 {
-  int i;
-  int existed = 0;
-  int n_before = log.lh.n;
   acquire(&log.lock);
-  if (log.lh.n >= LOGBLOCKS)
-    panic("too big a transaction");
-  if (log.outstanding < 1)
-    panic("log_write outside of trans");
 
+  struct log_state old = log_get_state();
+
+  int i;
   for (i = 0; i < log.lh.n; i++) {
-    if (log.lh.block[i] == b->blockno) {
-      existed = 1;  // log absorption
-      break;}
+    if (log.lh.block[i] == b->blockno)
+      break;
   }
+
   log.lh.block[i] = b->blockno;
-  if (i == log.lh.n) {  // Add new block to log?
+
+  if (i == log.lh.n) {
     bpin(b);
     log.lh.n++;
+
+    log_report("LOG_WRITE", b->blockno, old, "Add block to log");
+  } else {
+    log_report("LOG_MERGE", b->blockno, old, "Merge block");
   }
-  fslog_write(b->blockno, existed, n_before, log.lh.n);
+
   release(&log.lock);
 }
-
