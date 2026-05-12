@@ -1,6 +1,6 @@
 #include "mainwindow.h"
-#include "schedulerWindow.h" // تأكدي من تضمين الملف الصحيح
-#include "memcatUi/memcatWindow.h"
+#include "schedulerWindow.h"
+#include "filesystemWindow.h"
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include <QPushButton>
@@ -17,23 +17,22 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     mainLayout->addWidget(titleLabel);
 
     QGridLayout *grid = new QGridLayout();
-    
+
     btnScheduler = new QPushButton("📊 CPU Scheduling", this);
-    btnMemcat = new QPushButton("🧠 Memcat Monitor", this);
+    btnPageTable = new QPushButton("🧠 Memory (Page Tables)", this);
     btnFileSystem = new QPushButton("📁 File System Explorer", this);
     btnSyscall   = new QPushButton("📞 System Calls Lab", this);
 
-    // ستايل احترافي موحد
     QString btnStyle = "QPushButton { background-color: #3498db; color: white; border-radius: 15px; min-height: 100px; font-size: 18px; font-weight: bold; border: 2px solid #2980b9; } "
                        "QPushButton:hover { background-color: #2ecc71; border: 2px solid #27ae60; }";
-    
+
     btnScheduler->setStyleSheet(btnStyle);
-    btnMemcat->setStyleSheet(btnStyle);
+    btnPageTable->setStyleSheet(btnStyle);
     btnFileSystem->setStyleSheet(btnStyle);
     btnSyscall->setStyleSheet(btnStyle);
 
     grid->addWidget(btnScheduler, 0, 0);
-    grid->addWidget(btnMemcat, 0, 1);
+    grid->addWidget(btnPageTable, 0, 1);
     grid->addWidget(btnFileSystem, 1, 0);
     grid->addWidget(btnSyscall, 1, 1);
 
@@ -41,8 +40,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     mainLayout->addStretch();
 
     connect(btnScheduler, &QPushButton::clicked, this, &MainWindow::onSchedulerClicked);
-    connect(btnMemcat, &QPushButton::clicked, this, &MainWindow::onMemcatClicked);
-    
+    connect(btnFileSystem, &QPushButton::clicked, this, &MainWindow::onFileSystemClicked);
+    connect(btnPageTable, &QPushButton::clicked, this, &MainWindow::onPageTableClicked);
+    connect(btnSyscall, &QPushButton::clicked, this, &MainWindow::onSyscallClicked);
+
     setWindowTitle("xv6 OS Educational GUI v2.0");
     resize(700, 550);
 }
@@ -53,14 +54,13 @@ void MainWindow::onSchedulerClicked() {
     schedWin->show();
 }
 
-void MainWindow::onMemcatClicked() {
-    MemcatWindow *window = new MemcatWindow();
-    window->setAttribute(Qt::WA_DeleteOnClose);
-    window->show();
+void MainWindow::onFileSystemClicked() {
+    FileSystemWindow *fsWin = new FileSystemWindow();
+    fsWin->setAttribute(Qt::WA_DeleteOnClose);
+    fsWin->show();
 }
 
-// باقي الدوال تبقى فارغة حالياً
-void MainWindow::onFileSystemClicked() {}
+void MainWindow::onPageTableClicked() {}
 void MainWindow::onSyscallClicked() {}
 
 MainWindow::~MainWindow() {}

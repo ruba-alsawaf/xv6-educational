@@ -8,8 +8,8 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
-struct sched_event;
 #include "cslog.h"
+
 
 // bio.c
 void            binit(void);
@@ -58,10 +58,28 @@ void            itrunc(struct inode*);
 void            ireclaim(int);
 
 // fslog.c
-struct fs_event; // 🔥 إضافة هذا السطر هنا (Forward Declaration)
+struct fs_event;
+
 void            fslog_init(void);
-void            fslog_push(int, int, int, uint, char*);
+void            fslog_push(struct fs_event *e);
 int             fslog_read_many(struct fs_event*, int);
+
+void            fslog_bread_req(int dev, int blockno);
+void            fslog_bget_scan(int dev, int blockno, int buf_id,
+                                int refcnt, int valid, int lru_pos,
+                                int scan_dir, int scan_step, int found);
+void            fslog_bget_hit(int dev, int blockno, int buf_id,
+                               int ref_before, int ref_after,
+                               int valid, int lru_pos);
+void            fslog_bget_miss(int dev, int blockno, int old_blockno, int buf_id,
+                                int old_valid, int lru_pos);
+void            fslog_bread_fill(int dev, int blockno, int buf_id,
+                                 int refcnt, int lru_pos);
+void            fslog_bwrite_ev(int dev, int blockno, int buf_id,
+                                int refcnt, int valid, int lru_pos);
+void            fslog_brelease_ev(int dev, int blockno, int buf_id,
+                                  int ref_before, int ref_after,
+                                  int valid, int lru_before, int lru_after);
 
 // kalloc.c
 void*           kalloc(void);
@@ -192,14 +210,9 @@ void            virtio_disk_intr(void);
 // number of elements in fixed-size array
 #define NELEM(x) (sizeof(x)/sizeof((x)[0]))
 
-
 // cslog.c
 void cslog_init(void);
 void cslog_push(struct cs_event *e);
 void cslog_run_start(struct proc *p);
 int  cslog_read_many(struct cs_event *out, int max);
 
-// sysmemlog.c
-uint64 sys_memread(void);
-
-int  schedread(struct sched_event *dst, int max);

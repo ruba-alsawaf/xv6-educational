@@ -25,12 +25,10 @@ add_executable(MainGUI
     mainwindow.h
     schedulerUi/schedulerWindow.cpp
     schedulerUi/schedulerWindow.h
-    memcatUi/memcatWindow.cpp
-    memcatUi/memcatWindow.h
     filesystemUi/filesystemWindow.cpp
     filesystemUi/filesystemWindow.h
-    filesystemUi/bufferCacheWidget.cpp
-    filesystemUi/bufferCacheWidget.h
+    filesystemUi/CoreEngineWindow.cpp
+    filesystemUi/CoreEngineWindow.h
 )
 
 # ربط المكتبات
