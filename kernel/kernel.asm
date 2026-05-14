@@ -6633,7 +6633,7 @@ buf_id(struct buf *b)
     80002d26:	69a2                	ld	s3,8(sp)
     80002d28:	6145                	addi	sp,sp,48
     80002d2a:	8082                	ret
-bcache_report("BREAD_START", b, b->refcnt, old_valid, "Reading from disk...");
+  bcache_report("BREAD_START", b, b->refcnt, old_valid, "Reading from disk...");
     80002d2c:	00005717          	auipc	a4,0x5
     80002d30:	6e470713          	addi	a4,a4,1764 # 80008410 <etext+0x410>
     80002d34:	4681                	li	a3,0
@@ -6649,10 +6649,10 @@ bcache_report("BREAD_START", b, b->refcnt, old_valid, "Reading from disk...");
     b->valid = 1;
     80002d4e:	4785                	li	a5,1
     80002d50:	c09c                	sw	a5,0(s1)
-    bcache_report("BREAD_END", b, b->refcnt, old_valid, "Read finished: Valid=1");
+  bcache_report("BREAD_END", b, b->refcnt, b->valid, "Read finished: Valid=1");
     80002d52:	00005717          	auipc	a4,0x5
     80002d56:	6e670713          	addi	a4,a4,1766 # 80008438 <etext+0x438>
-    80002d5a:	4681                	li	a3,0
+    80002d5a:	4685                	li	a3,1
     80002d5c:	40b0                	lw	a2,64(s1)
     80002d5e:	85a6                	mv	a1,s1
     80002d60:	00005517          	auipc	a0,0x5

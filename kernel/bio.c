@@ -101,13 +101,13 @@ bread(uint dev, uint blockno)
   if(!b->valid) {
     int old_valid = b->valid;
 
-bcache_report("BREAD_START", b, b->refcnt, old_valid, "Reading from disk...");
+  bcache_report("BREAD_START", b, b->refcnt, old_valid, "Reading from disk...");
     
     virtio_disk_rw(b, 0);
     b->valid = 1;
 
     // تقرير بعد انتهاء القراءة
-    bcache_report("BREAD_END", b, b->refcnt, old_valid, "Read finished: Valid=1");
+  bcache_report("BREAD_END", b, b->refcnt, b->valid, "Read finished: Valid=1");
   }
   return b;
 }
@@ -165,7 +165,7 @@ void
 bunpin(struct buf *b) {
   acquire(&bcache.lock);
   int old_ref = b->refcnt;
-int old_valid = b->valid;
+  int old_valid = b->valid;
   b->refcnt--;
   bcache_report("BUNPIN",b, old_ref, old_valid, "Unpinned buffer");
   release(&bcache.lock);
