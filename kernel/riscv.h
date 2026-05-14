@@ -1,3 +1,6 @@
+#ifndef RISC_V_H
+#define RISC_V_H
+
 #ifndef __ASSEMBLER__
 
 // which hart (core) is this?
@@ -351,6 +354,8 @@ typedef uint64 *pagetable_t; // 512 PTEs
 
 #define PGSIZE 4096 // bytes per page
 #define PGSHIFT 12  // bits of offset within a page
+
+#endif // RISC_V_H
 
 #define PGROUNDUP(sz)  (((sz)+PGSIZE-1) & ~(PGSIZE-1))
 #define PGROUNDDOWN(a) (((a)) & ~(PGSIZE-1))

@@ -161,6 +161,10 @@ sys_getcpuinfo(void)
     ci->active = c->active;
     ci->current_pid = c->current_pid;
     ci->current_state = c->current_state;
+    if (c->proc)
+      safestrcpy(ci->current_name, c->proc->name, sizeof(ci->current_name));
+    else
+      ci->current_name[0] = '\0';
     ci->last_pid = c->last_pid;
     ci->last_state = c->last_state;
     ci->active_ticks = c->active_ticks;

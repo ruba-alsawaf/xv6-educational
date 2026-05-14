@@ -17,6 +17,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QAbstractItemView>
+#include <QProgressBar>
 
 static const QString DB_PATH = "events.db";
 
@@ -155,29 +156,49 @@ void SchedulerWindow::setupUi() {
     statusLabel = new QLabel("Initializing...", this);
     statusLabel->setStyleSheet("font-weight: bold; color: #2c3e50; padding-left: 8px;");
 
+    cpuUsageLabel = new QLabel("Total CPU Usage", this);
+    cpuUsageLabel->setStyleSheet("font-weight: bold; color: #34495e; padding-left: 8px;");
+
+    cpuUsageBar = new QProgressBar(this);
+    cpuUsageBar->setMinimum(0);
+    cpuUsageBar->setMaximum(100);
+    cpuUsageBar->setTextVisible(true);
+    cpuUsageBar->setStyleSheet("QProgressBar { border: 1px solid #bdc3c7; border-radius: 6px; text-align: center; }"
+                               "QProgressBar::chunk { background-color: #27ae60; }");
+
     topBar->addWidget(cpuStatsRefreshButton);
     topBar->addStretch();
+    topBar->addWidget(cpuUsageLabel);
+    topBar->addWidget(cpuUsageBar);
     topBar->addWidget(statusLabel);
 
     // CPU Info Table
     cpuInfoTable = new QTableWidget(this);
-    cpuInfoTable->setColumnCount(9);
+    cpuInfoTable->setColumnCount(11);
     cpuInfoTable->setHorizontalHeaderLabels({
-        "CPU", "Active", "Current PID", "Current State", "Last PID", "Last State", "Busy %", "Active Ticks", "Timestamp"
+        "CPU", "Active", "Current PID", "Current Name", "Current Process", "Current State", "Last PID", "Last State", "Busy %", "Active Ticks", "Timestamp"
     });
     cpuInfoTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     cpuInfoTable->setAlternatingRowColors(true);
     cpuInfoTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     cpuInfoTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+    cpuTimelineTable = new QTableWidget(this);
+    cpuTimelineTable->setColumnCount(2);
+    cpuTimelineTable->setHorizontalHeaderLabels({"CPU", "Recent Process Timeline"});
+    cpuTimelineTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    cpuTimelineTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    cpuTimelineTable->setAlternatingRowColors(true);
+    cpuTimelineTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    cpuTimelineTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+
     // Process Stats Table
     procStatsTable = new QTableWidget(this);
-    procStatsTable->setColumnCount(15);
+    procStatsTable->setColumnCount(13);
     procStatsTable->setHorizontalHeaderLabels({
-        "Total Created", "Total Exited",
+        "Total Created", "Total Exited", "Total CPU Usage %",
         "Current UNUSED", "Current USED", "Current SLEEPING", "Current RUNNABLE", "Current RUNNING", "Current ZOMBIE",
-        "Unique UNUSED", "Unique USED", "Unique SLEEPING", "Unique RUNNABLE", "Unique RUNNING", "Unique ZOMBIE",
-        "Timestamp"
+        "Ever RUNNING", "Ever SLEEPING", "Ever ZOMBIE", "Timestamp"
     });
     procStatsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     procStatsTable->setAlternatingRowColors(true);
@@ -186,12 +207,16 @@ void SchedulerWindow::setupUi() {
 
     QLabel *cpuLabel = new QLabel("CPU Information", this);
     cpuLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
+    QLabel *timelineLabel = new QLabel("CPU Timeline", this);
+    timelineLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
     QLabel *procLabel = new QLabel("Process Statistics", this);
     procLabel->setStyleSheet("font-weight: bold; font-size: 14px;");
 
     mainLayout->addLayout(topBar);
     mainLayout->addWidget(cpuLabel);
     mainLayout->addWidget(cpuInfoTable, 1);
+    mainLayout->addWidget(timelineLabel);
+    mainLayout->addWidget(cpuTimelineTable, 1);
     mainLayout->addWidget(procLabel);
     mainLayout->addWidget(procStatsTable, 1);
 }
@@ -261,7 +286,7 @@ void SchedulerWindow::loadCpuStats() {
     if (tableExists("cpu_info")) {
         QSqlQuery cpuQuery(db);
         cpuQuery.prepare(R"(
-            SELECT cpu, active, current_pid, current_state, last_pid, last_state, busy_percent, active_ticks, timestamp
+            SELECT cpu, active, current_pid, current_name, current_process, current_state, last_pid, last_state, busy_percent, active_ticks, timeline, timestamp
             FROM cpu_info
             WHERE id IN (
                 SELECT MAX(id) FROM cpu_info GROUP BY cpu
@@ -277,12 +302,34 @@ void SchedulerWindow::loadCpuStats() {
                 cpuInfoTable->setItem(row, 1, new QTableWidgetItem(cpuQuery.value(1).toInt() ? "Yes" : "No"));
                 cpuInfoTable->setItem(row, 2, new QTableWidgetItem(QString::number(cpuQuery.value(2).toInt())));
                 cpuInfoTable->setItem(row, 3, new QTableWidgetItem(cpuQuery.value(3).toString()));
-                cpuInfoTable->setItem(row, 4, new QTableWidgetItem(QString::number(cpuQuery.value(4).toInt())));
+                cpuInfoTable->setItem(row, 4, new QTableWidgetItem(cpuQuery.value(4).toString()));
                 cpuInfoTable->setItem(row, 5, new QTableWidgetItem(cpuQuery.value(5).toString()));
-                cpuInfoTable->setItem(row, 6, new QTableWidgetItem(QString::number(cpuQuery.value(6).toInt()) + "%"));
-                cpuInfoTable->setItem(row, 7, new QTableWidgetItem(QString::number(cpuQuery.value(7).toULongLong())));
-                cpuInfoTable->setItem(row, 8, new QTableWidgetItem(cpuQuery.value(8).toString()));
+                cpuInfoTable->setItem(row, 6, new QTableWidgetItem(QString::number(cpuQuery.value(6).toInt())));
+                cpuInfoTable->setItem(row, 7, new QTableWidgetItem(cpuQuery.value(7).toString()));
+                cpuInfoTable->setItem(row, 8, new QTableWidgetItem(QString::number(cpuQuery.value(8).toInt()) + "%"));
+                cpuInfoTable->setItem(row, 9, new QTableWidgetItem(QString::number(cpuQuery.value(9).toULongLong())));
+                cpuInfoTable->setItem(row, 10, new QTableWidgetItem(cpuQuery.value(11).toString()));
                 row++;
+            }
+
+            cpuTimelineTable->setRowCount(0);
+            QSqlQuery timelineQuery(db);
+            timelineQuery.prepare(R"(
+                SELECT cpu, timeline
+                FROM cpu_info
+                WHERE id IN (
+                    SELECT MAX(id) FROM cpu_info GROUP BY cpu
+                )
+                ORDER BY cpu ASC
+            )");
+            if (timelineQuery.exec()) {
+                int timelineRow = 0;
+                while (timelineQuery.next()) {
+                    cpuTimelineTable->insertRow(timelineRow);
+                    cpuTimelineTable->setItem(timelineRow, 0, new QTableWidgetItem(QString::number(timelineQuery.value(0).toInt())));
+                    cpuTimelineTable->setItem(timelineRow, 1, new QTableWidgetItem(timelineQuery.value(1).toString()));
+                    timelineRow++;
+                }
             }
         }
     }
@@ -291,9 +338,9 @@ void SchedulerWindow::loadCpuStats() {
     if (tableExists("proc_stats")) {
         QSqlQuery procQuery(db);
         procQuery.prepare(R"(
-            SELECT total_created, total_exited,
+            SELECT total_created, total_exited, total_cpu_usage,
                    current_unused, current_used, current_sleeping, current_runnable, current_running, current_zombie,
-                   unique_unused, unique_used, unique_sleeping, unique_runnable, unique_running, unique_zombie,
+                   ever_running, ever_sleeping, ever_zombie,
                    timestamp
             FROM proc_stats
             ORDER BY id DESC
@@ -304,12 +351,15 @@ void SchedulerWindow::loadCpuStats() {
             int row = 0;
             while (procQuery.next()) {
                 procStatsTable->insertRow(row);
-                for (int col = 0; col < 15; col++) {
-                    if (col < 14) {
+                for (int col = 0; col < 13; col++) {
+                    if (col < 12) {
                         procStatsTable->setItem(row, col, new QTableWidgetItem(QString::number(procQuery.value(col).toULongLong())));
                     } else {
                         procStatsTable->setItem(row, col, new QTableWidgetItem(procQuery.value(col).toString()));
                     }
+                }
+                if (!procQuery.value(2).isNull()) {
+                    cpuUsageBar->setValue(procQuery.value(2).toInt());
                 }
                 row++;
             }

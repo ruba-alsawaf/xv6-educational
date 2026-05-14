@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QProcess>
 #include <QLabel>
+#include <QProgressBar>
 
 class SchedulerWindow : public QMainWindow {
     Q_OBJECT
@@ -42,7 +43,10 @@ private:
 
     QTimer *cpuCmdTimer;
 
+    QProgressBar *cpuUsageBar;
+    QLabel *cpuUsageLabel;
     QTableWidget *cpuInfoTable;
+    QTableWidget *cpuTimelineTable;
     QTableWidget *procStatsTable;
     QPushButton *cpuStatsRefreshButton;
     QLabel *statusLabel;

@@ -33,25 +33,33 @@ HTML_TEMPLATE = """
     <table>
         <tr>
             <th>CPU</th>
+            <th>CPU ID</th>
             <th>Active</th>
             <th>Current PID</th>
+            <th>Current Name</th>
+            <th>Current Process</th>
             <th>Current State</th>
             <th>Last PID</th>
             <th>Last State</th>
             <th>Busy %</th>
             <th>Active Ticks</th>
+            <th>Recent Timeline</th>
             <th>Timestamp</th>
         </tr>
         {% for cpu in cpus %}
         <tr>
             <td>{{ cpu.cpu }}</td>
+            <td>{{ cpu.cpu_id }}</td>
             <td>{{ cpu.active }}</td>
             <td>{{ cpu.current_pid }}</td>
+            <td>{{ cpu.current_name }}</td>
+            <td>{{ cpu.current_process }}</td>
             <td>{{ cpu.current_state }}</td>
             <td>{{ cpu.last_pid }}</td>
             <td>{{ cpu.last_state }}</td>
             <td>{{ cpu.busy_percent }}</td>
             <td>{{ cpu.active_ticks }}</td>
+            <td>{{ cpu.timeline }}</td>
             <td>{{ cpu.timestamp }}</td>
         </tr>
         {% endfor %}
@@ -62,12 +70,16 @@ HTML_TEMPLATE = """
         <tr>
             <th>Total Created</th>
             <th>Total Exited</th>
+            <th>Total CPU Usage %</th>
             <th>Current UNUSED</th>
             <th>Current USED</th>
             <th>Current SLEEPING</th>
             <th>Current RUNNABLE</th>
             <th>Current RUNNING</th>
             <th>Current ZOMBIE</th>
+            <th>Ever RUNNING</th>
+            <th>Ever SLEEPING</th>
+            <th>Ever ZOMBIE</th>
             <th>Unique UNUSED</th>
             <th>Unique USED</th>
             <th>Unique SLEEPING</th>
@@ -80,12 +92,16 @@ HTML_TEMPLATE = """
         <tr>
             <td>{{ stat.total_created }}</td>
             <td>{{ stat.total_exited }}</td>
+            <td>{{ stat.total_cpu_usage }}</td>
             <td>{{ stat.current_unused }}</td>
             <td>{{ stat.current_used }}</td>
             <td>{{ stat.current_sleeping }}</td>
             <td>{{ stat.current_runnable }}</td>
             <td>{{ stat.current_running }}</td>
             <td>{{ stat.current_zombie }}</td>
+            <td>{{ stat.ever_running }}</td>
+            <td>{{ stat.ever_sleeping }}</td>
+            <td>{{ stat.ever_zombie }}</td>
             <td>{{ stat.unique_unused }}</td>
             <td>{{ stat.unique_used }}</td>
             <td>{{ stat.unique_sleeping }}</td>
@@ -136,26 +152,28 @@ def index():
 
     # Get latest CPU info
     cur.execute("""
-        SELECT cpu, active, current_pid, current_state, last_pid, last_state, busy_percent, active_ticks, timestamp
+        SELECT cpu, cpu_id, active, current_pid, current_name, current_process, current_state, last_pid, last_state, busy_percent, active_ticks, timeline, timestamp
         FROM cpu_info
         ORDER BY timestamp DESC
         LIMIT 10
     """)
-    cpus = [dict(zip(['cpu', 'active', 'current_pid', 'current_state', 'last_pid', 'last_state', 'busy_percent', 'active_ticks', 'timestamp'], row)) for row in cur.fetchall()]
+    cpus = [dict(zip(['cpu', 'cpu_id', 'active', 'current_pid', 'current_name', 'current_process', 'current_state', 'last_pid', 'last_state', 'busy_percent', 'active_ticks', 'timeline', 'timestamp'], row)) for row in cur.fetchall()]
 
     # Get latest process stats
     cur.execute("""
-        SELECT total_created, total_exited,
+        SELECT total_created, total_exited, total_cpu_usage,
                current_unused, current_used, current_sleeping, current_runnable, current_running, current_zombie,
                unique_unused, unique_used, unique_sleeping, unique_runnable, unique_running, unique_zombie,
+               ever_running, ever_sleeping, ever_zombie,
                timestamp
         FROM proc_stats
         ORDER BY timestamp DESC
         LIMIT 10
-    """)
-    proc_stats = [dict(zip(['total_created', 'total_exited',
+    """ )
+    proc_stats = [dict(zip(['total_created', 'total_exited', 'total_cpu_usage',
                            'current_unused', 'current_used', 'current_sleeping', 'current_runnable', 'current_running', 'current_zombie',
                            'unique_unused', 'unique_used', 'unique_sleeping', 'unique_runnable', 'unique_running', 'unique_zombie',
+                           'ever_running', 'ever_sleeping', 'ever_zombie',
                            'timestamp'], row)) for row in cur.fetchall()]
 
     # Get latest scheduler events
@@ -180,12 +198,12 @@ def api_cpu():
     cur = con.cursor()
 
     cur.execute("""
-        SELECT cpu, active, current_pid, current_state, last_pid, last_state, busy_percent, active_ticks, timestamp
+        SELECT cpu, cpu_id, active, current_pid, current_name, current_process, current_state, last_pid, last_state, busy_percent, active_ticks, timeline, timestamp
         FROM cpu_info
         ORDER BY timestamp DESC
         LIMIT 100
     """)
-    cpus = [dict(zip(['cpu', 'active', 'current_pid', 'current_state', 'last_pid', 'last_state', 'busy_percent', 'active_ticks', 'timestamp'], row)) for row in cur.fetchall()]
+    cpus = [dict(zip(['cpu', 'cpu_id', 'active', 'current_pid', 'current_name', 'current_process', 'current_state', 'last_pid', 'last_state', 'busy_percent', 'active_ticks', 'timeline', 'timestamp'], row)) for row in cur.fetchall()]
 
     con.close()
     return jsonify(cpus)
@@ -199,17 +217,19 @@ def api_proc():
     cur = con.cursor()
 
     cur.execute("""
-        SELECT total_created, total_exited,
+        SELECT total_created, total_exited, total_cpu_usage,
                current_unused, current_used, current_sleeping, current_runnable, current_running, current_zombie,
                unique_unused, unique_used, unique_sleeping, unique_runnable, unique_running, unique_zombie,
+               ever_running, ever_sleeping, ever_zombie,
                timestamp
         FROM proc_stats
         ORDER BY timestamp DESC
         LIMIT 100
     """)
-    proc_stats = [dict(zip(['total_created', 'total_exited',
+    proc_stats = [dict(zip(['total_created', 'total_exited', 'total_cpu_usage',
                            'current_unused', 'current_used', 'current_sleeping', 'current_runnable', 'current_running', 'current_zombie',
                            'unique_unused', 'unique_used', 'unique_sleeping', 'unique_runnable', 'unique_running', 'unique_zombie',
+                           'ever_running', 'ever_sleeping', 'ever_zombie',
                            'timestamp'], row)) for row in cur.fetchall()]
 
     con.close()
