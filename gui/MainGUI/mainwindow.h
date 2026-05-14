@@ -14,14 +14,14 @@ public:
     ~MainWindow();
 private slots:
     void onSchedulerClicked();
-    void onMemcatClicked();
+    void onPageTableClicked();
     void onFileSystemClicked();
     void onSyscallClicked();
 
 private:
     QLabel *titleLabel;
     QPushButton *btnScheduler;
-    QPushButton *btnMemcat;
+    QPushButton *btnPageTable;
     QPushButton *btnFileSystem;
     QPushButton *btnSyscall;
 };

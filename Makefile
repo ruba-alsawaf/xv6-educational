@@ -32,11 +32,8 @@ OBJS = \
   $K/cslog.o \
   $K/syscslog.o \
   $K/ringbuf.o \
-  $K/fslog.o  \
-  $K/memlog.o \
-  $K/sysmemlog.o \
-  $K/schedlog.o \
-  
+  $K/fslog.o
+
 
 
 # riscv64-unknown-elf- or riscv64-linux-gnu-
@@ -154,12 +151,7 @@ UPROGS=\
 	$U/_dorphan\
 	$U/_cscat\
 	$U/_csexport\
-	$U/_schedexport\
-	$U/_memcat \
-	$U/_cpuinfo \
-	$U/_shrinktest \
-	$U/_faulttest
-	
+	$U/_fsexport
 
 
 
@@ -173,7 +165,7 @@ clean:
 	*/*.o */*.d */*.asm */*.sym \
 	$K/kernel fs.img \
 	mkfs/mkfs .gdbinit \
-	    $U/usys.S \
+        $U/usys.S \
 	$(UPROGS)
 
 # try to generate a unique GDB port

@@ -3,9 +3,8 @@
 #include <QGraphicsTextItem>
 #include <QBrush>
 #include <QPen>
-// في FileSystemWindow.cpp
-#include "bufferCacheWidget.h"
 
+#include "CoreEngineWindow.h"
 
 FileSystemWindow::FileSystemWindow(QWidget *parent) : QMainWindow(parent) {
     setupLayout();
@@ -42,9 +41,10 @@ void FileSystemWindow::setupLayout() {
 
     layout->addWidget(tabs);
     layout->addWidget(explanationArea);
-    // داخل setupLayout:
-    BufferCacheWidget *bufWidget = new BufferCacheWidget(this);
-    tabs->addTab(bufWidget, "3. Buffer Cache Monitor");
+   
+
+CoreEngineWindow *coreEngineWindow = new CoreEngineWindow(this);
+tabs->addTab(coreEngineWindow, "3. Core Engine");
 }
 
 void FileSystemWindow::drawLayers() {
