@@ -28,27 +28,33 @@ void fslog_push(int type, int inum, int bno, uint size, char* name) {
   if(name) safestrcpy(e.name, name, FS_NM);
   ringbuf_push(&fs_rb, &e);
 }
-// لا تنسي إضافة fslog_read_many أيضاً هنا
-
 int
 fslog_read_many(struct fs_event *out, int max)
 {
-  struct fs_event e;
-  int count = 0;
-  struct proc *p = myproc();
+  // 1. تعريف بافر مؤقت في الكيرنل يتسع لـ max من الأحداث
+  // تم وضع حد أقصى 32 للأمان التام وتجنب فيضان الذاكرة
+  if (max > 32) max = 32;
+  
+  struct fs_event local_buf[32];
+  memset(local_buf, 0, sizeof(local_buf));
 
-  while(count < max){
-    // سحب حدث واحد من الرينغ بفر (موجود في ذاكرة الكيرنل)
-    if(ringbuf_pop(&fs_rb, &e) != 0)
-      break;
-
-    // 🔥 النسخ الآمن لذاكرة المستخدم باستخدام copyout
-    // العنوان الهدف: out + (count * حجم الـ struct)
-    uint64 dst_addr = (uint64)out + (count * sizeof(struct fs_event));
-    if(copyout(p->pagetable, dst_addr, (char *)&e, sizeof(struct fs_event)) < 0)
-      break;
-
-    count++;
+  // 2. القراءة الآمنة والدفعية من الـ Ring Buffer تحت قفل واحد مستمر
+  // الدالة تعيد العدد الحقيقي للأحداث التي نجحت قراءتها (مثلاً n)
+  int n = ringbuf_read_many(&fs_rb, local_buf, max);
+  if (n <= 0) {
+    return 0; // البافر فارغ تماماً، توقف فوراً ولا تطبع مخلفات
   }
-  return count;
+
+  // 3. الآن نقوم بنسخ الأحداث الحقيقية فقط (الـ n حدث) إلى ذاكرة المستخدم (User space)
+  int copied = 0;
+  while (copied < n) {
+    uint64 dst_addr = (uint64)out + (copied * sizeof(struct fs_event));
+    
+    if (copyout(myproc()->pagetable, dst_addr, (char *)&local_buf[copied], sizeof(struct fs_event)) < 0) {
+      break; // توقف إذا فشل نسخ الذاكرة لليوزر
+    }
+    copied++;
+  }
+
+  return copied; // إرجاع عدد الأحداث السليمة والمكتوبة كلياً
 }

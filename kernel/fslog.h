@@ -13,7 +13,7 @@ enum {
   FS_BGET_HIT    = 6,   // موجودين هون وهاد بيكفي
   FS_BGET_MISS   = 7,
   FS_BRELEASE    = 8
-};
+}__attribute__((packed));
 
 struct fs_event {
   uint64 seq;
@@ -24,7 +24,7 @@ struct fs_event {
   int    blockno;   // رقم البلوك (إذا كان الحدث بيتعلق ببلوك)
   uint   size;      // حجم البيانات (بالقراءة أو الكتابة)
   char   name[FS_NM]; // اسم الملف
-};
+} __attribute__((packed));
 
 void fslog_init(void);
 void fslog_push(int type, int inum, int bno, uint size, char* name);

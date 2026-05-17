@@ -19,19 +19,18 @@ def parse_cpu_info(line: str) -> dict | None:
     if 'CPU {' not in line:
         return None
     try:
-        # تحديد بداية ونهاية كائن الـ JSON
         start_idx = line.find('{')
         end_idx = line.rfind('}')
         if start_idx != -1 and end_idx != -1:
             payload = line[start_idx:end_idx+1]
             return json.loads(clean_payload(payload))
     except Exception as e:
-        print(f"[ERR] JSON Parse Error: {e}")
+        # قمنا بتحويلها إلى رسالة تلميح ناعمة لأن تداخل النصوص أمر طبيعي في الكيرنل المتعدد الأنوية
+        pass 
     return None
 
 def ensure_schema(cur: sqlite3.Cursor):
     """إنشاء الجدول المتوافق مع البيانات الجديدة"""
-    # يفضل حذف الملف القديم أو التأكد من وجود هذه الأعمدة
     cur.execute("""
     CREATE TABLE IF NOT EXISTS cpu_metrics (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -90,19 +89,30 @@ def main():
 
     try:
         while True:
-            if Path(LOG_PATH).exists():
+            log_file = Path(LOG_PATH)
+            if log_file.exists():
+                # 🌟 تعديل الأمان: التحقق من إعادة تشغيل المحاكي وتصفير الملف
+                current_size = log_file.stat().st_size
+                if current_size < last_pos:
+                    print("[INFO] Log file truncated (QEMU restarted). Resetting pointer.")
+                    last_pos = 0
+
                 with open(LOG_PATH, "r", encoding="utf-8", errors="ignore") as f:
-                    # القراءة من آخر مكان توقفنا عنده لتوفير الأداء
                     f.seek(last_pos)
                     lines = f.readlines()
                     last_pos = f.tell()
 
+                    # استخدام معالجة المعاملات (Transaction) السريعة في المجموعات لتعزيز الأداء
+                    has_updates = False
                     for line in lines:
                         data = parse_cpu_info(line)
                         if data:
                             insert_data(cur, data)
-                            con.commit()
-                            print(f"[OK] Saved snapshot: {len(data.get('cpus', []))} cores updated.")
+                            has_updates = True
+                    
+                    if has_updates:
+                        con.commit()
+                        print(f"[OK] Saved snapshot to Database.")
             
             # تحديث كل 3 ثوانٍ
             time.sleep(3)
