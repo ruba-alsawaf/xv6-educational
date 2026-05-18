@@ -25,7 +25,6 @@ def parse_cpu_info(line: str) -> dict | None:
             payload = line[start_idx:end_idx+1]
             return json.loads(clean_payload(payload))
     except Exception as e:
-        # قمنا بتحويلها إلى رسالة تلميح ناعمة لأن تداخل النصوص أمر طبيعي في الكيرنل المتعدد الأنوية
         pass 
     return None
 
@@ -91,7 +90,6 @@ def main():
         while True:
             log_file = Path(LOG_PATH)
             if log_file.exists():
-                # 🌟 تعديل الأمان: التحقق من إعادة تشغيل المحاكي وتصفير الملف
                 current_size = log_file.stat().st_size
                 if current_size < last_pos:
                     print("[INFO] Log file truncated (QEMU restarted). Resetting pointer.")
@@ -102,7 +100,6 @@ def main():
                     lines = f.readlines()
                     last_pos = f.tell()
 
-                    # استخدام معالجة المعاملات (Transaction) السريعة في المجموعات لتعزيز الأداء
                     has_updates = False
                     for line in lines:
                         data = parse_cpu_info(line)
@@ -114,7 +111,6 @@ def main():
                         con.commit()
                         print(f"[OK] Saved snapshot to Database.")
             
-            # تحديث كل 3 ثوانٍ
             time.sleep(3)
     except KeyboardInterrupt:
         con.close()

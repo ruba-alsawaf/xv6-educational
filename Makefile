@@ -158,7 +158,8 @@ UPROGS=\
 	$U/_memcat \
 	$U/_cpuinfo \
 	$U/_shrinktest \
-	$U/_faulttest
+	$U/_faulttest \
+	$U/_infinite 
 	
 
 
