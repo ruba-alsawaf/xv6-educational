@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>CPUSchedulingLogo.svg</file>
+        <file>FileSystemLogo.svg</file>
+        <file>MemoryManagmentLogo.svg</file>
+    </qresource>
+</RCC>

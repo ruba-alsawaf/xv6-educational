@@ -1,0 +1,48 @@
+{
+    "classes": [
+        {
+            "className": "DbManager",
+            "lineNumber": 8,
+            "methods": [
+                {
+                    "access": "public",
+                    "index": 0,
+                    "lineNumber": 16,
+                    "name": "getLatestCpuMetrics",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "index": 1,
+                    "lineNumber": 19,
+                    "name": "getTimelineMetrics",
+                    "returnType": "QVariantList"
+                },
+                {
+                    "access": "public",
+                    "index": 2,
+                    "lineNumber": 21,
+                    "name": "getAverageCpuUsage",
+                    "returnType": "int"
+                },
+                {
+                    "access": "public",
+                    "index": 3,
+                    "lineNumber": 22,
+                    "name": "getProcessStatesCount",
+                    "returnType": "QVariantMap"
+                }
+            ],
+            "object": true,
+            "qualifiedClassName": "DbManager",
+            "superClasses": [
+                {
+                    "access": "public",
+                    "name": "QObject"
+                }
+            ]
+        }
+    ],
+    "inputFile": "dbmanager.h",
+    "outputRevision": 69
+}
