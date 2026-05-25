@@ -1555,3 +1555,4 @@ malloc(uint nbytes)
  8e6:	6aa2                	ld	s5,8(sp)
  8e8:	6b02                	ld	s6,0(sp)
  8ea:	b7f5                	j	8d6 <malloc+0xe2>
+

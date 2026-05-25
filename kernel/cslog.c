@@ -25,6 +25,7 @@ void
 cslog_init(void)
 {
   ringbuf_init(&cs_rb, "cslog", sizeof(struct cs_event));
+  printf("CS sizeof(cs_event)=%ld RB_MAX_ELEM=%d\n", sizeof(struct cs_event), RB_MAX_ELEM);
 }
 
 void

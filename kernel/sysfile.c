@@ -506,8 +506,8 @@ sys_pipe(void)
 uint64
 sys_fsread(void)
 {
-  uint64 addr;
-  int n;
+  uint64 uaddr;
+  int max;
 
   // استدعاء الدوال مباشرة لأنها void في نسختك
   argaddr(0, &addr); 

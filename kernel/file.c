@@ -12,12 +12,47 @@
 #include "file.h"
 #include "stat.h"
 #include "proc.h"
+#include "fslog.h"
 
 struct devsw devsw[NDEV];
 struct {
   struct spinlock lock;
   struct file file[NFILE];
 } ftable;
+ 
+static void file_report(
+    char *op,
+    struct file *f,
+    int old_ref,
+    int old_off,
+    char *details
+){
+    struct fs_event e;
+
+    memset(&e, 0, sizeof(e));
+
+    e.ticks = ticks;
+    e.pid = myproc() ? myproc()->pid : 0;
+
+    e.type = LAYER_FILE;
+
+    safestrcpy(e.op_name, op, sizeof(e.op_name));
+
+    e.file_type = f->type;
+
+    e.readable = f->readable;
+    e.writable = f->writable;
+
+    e.file_ref = f->ref;
+    e.old_file_ref = old_ref;
+
+    e.file_off = f->off;
+    e.old_file_off = old_off;
+
+    safestrcpy(e.details, details, sizeof(e.details));
+
+    fslog_push(&e);
+}
 
 void
 fileinit(void)
@@ -35,6 +70,13 @@ filealloc(void)
   for(f = ftable.file; f < ftable.file + NFILE; f++){
     if(f->ref == 0){
       f->ref = 1;
+      file_report(
+    "FILE_ALLOC",
+    f,
+    0,
+    0,
+    "Allocated file structure"
+);
       release(&ftable.lock);
       return f;
     }
@@ -50,7 +92,15 @@ filedup(struct file *f)
   acquire(&ftable.lock);
   if(f->ref < 1)
     panic("filedup");
+  int old_ref = f->ref;
   f->ref++;
+  file_report(
+    "FILE_DUP",
+    f,
+    old_ref,
+    f->off,
+    "Duplicated file descriptor"
+);
   release(&ftable.lock);
   return f;
 }
@@ -64,7 +114,15 @@ fileclose(struct file *f)
   acquire(&ftable.lock);
   if(f->ref < 1)
     panic("fileclose");
+  int old_ref = f->ref;
   if(--f->ref > 0){
+    file_report(
+    "FILE_CLOSE",
+    f,
+    old_ref,
+    f->off,
+    "Closing file"
+);
     release(&ftable.lock);
     return;
   }
@@ -119,8 +177,18 @@ fileread(struct file *f, uint64 addr, int n)
     r = devsw[f->major].read(1, addr, n);
   } else if(f->type == FD_INODE){
     ilock(f->ip);
+    int old_off = f->off;
+
     if((r = readi(f->ip, 1, addr, f->off, n)) > 0)
-      f->off += r;
+   
+    f->off += r;
+    file_report(
+    "FILE_READ",
+    f,
+    f->ref,
+    old_off,
+    "Read from file"
+);
     iunlock(f->ip);
   } else {
     panic("fileread");
@@ -152,6 +220,7 @@ filewrite(struct file *f, uint64 addr, int n)
     // and 2 blocks of slop for non-aligned writes.
     int max = ((MAXOPBLOCKS-1-1-2) / 2) * BSIZE;
     int i = 0;
+    int old_off;
     while(i < n){
       int n1 = n - i;
       if(n1 > max)
@@ -159,8 +228,16 @@ filewrite(struct file *f, uint64 addr, int n)
 
       begin_op();
       ilock(f->ip);
+      old_off = f->off;
       if ((r = writei(f->ip, 1, addr + i, f->off, n1)) > 0)
         f->off += r;
+      file_report(
+    "FILE_WRITE",
+    f,
+    f->ref,
+    old_off,
+    "Write to file"
+);
       iunlock(f->ip);
       end_op();
 

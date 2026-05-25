@@ -5,9 +5,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-#include "procinfo.h"
 #include "vm.h"
-#include "schedlog.h"
 
 uint64
 sys_exit(void)
@@ -108,103 +106,4 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
-}
-
-uint64
-sys_schedread(void)
-{
-  uint64 dst;
-  int max;
-
-  argaddr(0, &dst);
-  argint(1, &max);
-
-  if(max <= 0)
-    return 0;
-
-  struct sched_event buf[32];
-  if(max > 32)
-    max = 32;
-
-  int n = schedread(buf, max);
-  if(n < 0)
-    return -1;
-
-  if(copyout(myproc()->pagetable, dst, (char *)buf, n * sizeof(struct sched_event)) < 0)
-    return -1;
-
-  return n;
-}
-
-uint64
-sys_getcpuinfo(void)
-{
-  uint64 dst;
-  int max;
-  argaddr(0, &dst);
-  argint(1, &max);
-
-  if(max <= 0)
-    return 0;
-
-  struct cpu_info infos[NCPU];
-  int count = 0;
-
-  acquire(&tickslock);
-  uint total_ticks = ticks;
-  release(&tickslock);
-
-  for(int i = 0; i < NCPU && count < max; i++) {
-    struct cpu_info *ci = &infos[count];
-    struct cpu *c = &cpus[i];
-    ci->cpu = i;
-    ci->active = c->active;
-    ci->current_pid = c->current_pid;
-    ci->current_state = c->current_state;
-    ci->last_pid = c->last_pid;
-    ci->last_state = c->last_state;
-    ci->active_ticks = c->active_ticks;
-    ci->busy_percent = total_ticks > 0 ? (int)((c->active_ticks * 100) / total_ticks) : 0;
-    count++;
-  }
-
-  if(copyout(myproc()->pagetable, dst, (char *)infos, count * sizeof(struct cpu_info)) < 0)
-    return -1;
-
-  return count;
-}
-
-uint64
-sys_getprocstats(void)
-{
-  uint64 dst;
-  argaddr(0, &dst);
-  if(dst == 0)
-    return -1;
-
-  struct proc_stats stats;
-  for (int i = 0; i < PROC_STATE_COUNT; i++) {
-    stats.current_count[i] = 0;
-    stats.unique_count[i] = 0;
-  }
-
-  struct proc *p;
-  for(p = proc; p < &proc[NPROC]; p++) {
-    acquire(&p->lock);
-    if(p->state >= 0 && p->state < PROC_STATE_COUNT)
-      stats.current_count[p->state]++;
-    release(&p->lock);
-  }
-
-  acquire(&procstat_lock);
-  for (int i = 0; i < PROC_STATE_COUNT; i++)
-    stats.unique_count[i] = proc_state_unique[i];
-  stats.total_created = proc_total_created;
-  stats.total_exited = proc_total_exited;
-  release(&procstat_lock);
-
-  if(copyout(myproc()->pagetable, dst, (char *)&stats, sizeof(stats)) < 0)
-    return -1;
-
-  return 0;
 }
