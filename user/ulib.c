@@ -3,6 +3,7 @@
 #include "kernel/fcntl.h"
 #include "kernel/riscv.h"
 #include "kernel/vm.h"
+#include "kernel/procinfo.h"
 #include "user/user.h"
 
 //
@@ -157,5 +158,23 @@ sbrk(int n) {
 char *
 sbrklazy(int n) {
   return sys_sbrk(n, SBRK_LAZY);
+}
+
+int
+getcpuinfo(struct cpu_info *cpus, int ncpu)
+{
+  // Stub: return 0 CPUs for now
+  // In a full implementation, this would fetch CPU state from kernel
+  memset(cpus, 0, ncpu * sizeof(struct cpu_info));
+  return 0;
+}
+
+int
+getprocstats(struct proc_stats *stats)
+{
+  // Stub: return zeros for now
+  // In a full implementation, this would fetch process statistics from kernel
+  memset(stats, 0, sizeof(struct proc_stats));
+  return 0;
 }
 

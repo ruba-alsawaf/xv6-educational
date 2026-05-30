@@ -31,8 +31,11 @@ OBJS = \
   $K/virtio_disk.o\
   $K/cslog.o \
   $K/syscslog.o \
+  $K/sysmemlog.o \
   $K/ringbuf.o \
-  $K/fslog.o
+  $K/fslog.o \
+  $K/schedlog.o \
+  $K/memlog.o
 
 
 
@@ -156,7 +159,7 @@ UPROGS=\
 	$U/_cpuinfo \
 	$U/_shrinktest \
 	$U/_faulttest \
-	$U/_infinite 
+	$U/_infinite \
 	$U/_fsexport
 
 

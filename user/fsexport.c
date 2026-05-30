@@ -72,18 +72,18 @@ static void print_fs_event(const struct fs_event *e) {
     if(e->type == LAYER_BCACHE){
 
         append_str(buf, &pos, ",\"buf\":{");
-        append_str(buf, &pos, "\"id\":"); append_int(buf, &pos, e->buf_id);
-        append_str(buf, &pos, ",\"block\":"); append_int(buf, &pos, e->blockno);
+        append_str(buf, &pos, "\"id\":"); append_int(buf, &pos, e->bcache.buf_id);
+        append_str(buf, &pos, ",\"block\":"); append_int(buf, &pos, e->bcache.blockno);
         append_str(buf, &pos, "}");
 
-        append_str(buf, &pos, ",\"state\":{");
-        append_str(buf, &pos, "\"ref\":"); append_int(buf, &pos, e->refcnt);
-        append_str(buf, &pos, ",\"valid\":"); append_int(buf, &pos, e->valid);
+        append_str(buf, &pos, ",\"state\":{" );
+        append_str(buf, &pos, "\"ref\":"); append_int(buf, &pos, e->bcache.refcnt);
+        append_str(buf, &pos, ",\"valid\":"); append_int(buf, &pos, e->bcache.valid);
         append_str(buf, &pos, "}");
 
-        append_str(buf, &pos, ",\"changes\":{");
-        print_change(buf, &pos, "ref", e->old_refcnt, e->refcnt);
-        print_change(buf, &pos, "valid", e->old_valid, e->valid);
+        append_str(buf, &pos, ",\"changes\":{" );
+        print_change(buf, &pos, "ref", e->bcache.old_refcnt, e->bcache.refcnt);
+        print_change(buf, &pos, "valid", e->bcache.old_valid, e->bcache.valid);
 
         if(buf[pos-1] == ',') pos--; // remove last comma
         append_str(buf, &pos, "}");
@@ -109,15 +109,15 @@ static void print_fs_event(const struct fs_event *e) {
     else if(e->type == LAYER_BALLOC){
 
     append_str(buf, &pos, ",\"block\":");
-    append_int(buf, &pos, e->blockno);
+    append_int(buf, &pos, e->balloc.blockno);
 
-    append_str(buf, &pos, ",\"state\":{");
+    append_str(buf, &pos, ",\"state\":{" );
     append_str(buf, &pos, "\"bit\":");
-    append_int(buf, &pos, e->bit);
+    append_int(buf, &pos, e->balloc.bit);
     append_str(buf, &pos, "}");
 
-    append_str(buf, &pos, ",\"changes\":{");
-    print_change(buf, &pos, "bit", e->old_bit, e->bit);
+    append_str(buf, &pos, ",\"changes\":{" );
+    print_change(buf, &pos, "bit", e->balloc.old_bit, e->balloc.bit);
 
     if(buf[pos-1] == ',') pos--;
     append_str(buf, &pos, "}");
@@ -126,25 +126,25 @@ static void print_fs_event(const struct fs_event *e) {
 else if(e->type == LAYER_INODE){
 
     append_str(buf, &pos, ",\"inode\":{");
-    append_str(buf, &pos, "\"inum\":"); append_int(buf, &pos, e->inum);
+    append_str(buf, &pos, "\"inum\":"); append_int(buf, &pos, e->inode.inum);
     append_str(buf, &pos, "}");
 
 
     append_str(buf, &pos, ",\"state\":{");
-    append_str(buf, &pos, "\"ref\":"); append_int(buf, &pos, e->ref);
-    append_str(buf, &pos, ",\"valid\":"); append_int(buf, &pos, e->valid_inode);
-    append_str(buf, &pos, ",\"type\":"); append_int(buf, &pos, e->type_inode);
-    append_str(buf, &pos, ",\"size\":"); append_int(buf, &pos, e->size);
-    append_str(buf, &pos, ",\"locked\":"); append_int(buf, &pos, e->locked);
+    append_str(buf, &pos, "\"ref\":"); append_int(buf, &pos, e->inode.ref);
+    append_str(buf, &pos, ",\"valid\":"); append_int(buf, &pos, e->inode.valid_inode);
+    append_str(buf, &pos, ",\"type\":"); append_int(buf, &pos, e->inode.type_inode);
+    append_str(buf, &pos, ",\"size\":"); append_int(buf, &pos, e->inode.size);
+    append_str(buf, &pos, ",\"locked\":"); append_int(buf, &pos, e->inode.locked);
     append_str(buf, &pos, "}");
 
 
     append_str(buf, &pos, ",\"changes\":{");
-    print_change(buf, &pos, "ref", e->old_ref, e->ref);
-    print_change(buf, &pos, "valid", e->old_valid_inode, e->valid_inode);
-    print_change(buf, &pos, "type", e->old_type_inode, e->type_inode);
-    print_change(buf, &pos, "size", e->old_size, e->size);
-    print_change(buf, &pos, "locked", e->old_locked, e->locked);
+    print_change(buf, &pos, "ref", e->inode.old_ref, e->inode.ref);
+    print_change(buf, &pos, "valid", e->inode.old_valid_inode, e->inode.valid_inode);
+    print_change(buf, &pos, "type", e->inode.old_type_inode, e->inode.type_inode);
+    print_change(buf, &pos, "size", e->inode.old_size, e->inode.size);
+    print_change(buf, &pos, "locked", e->inode.old_locked, e->inode.locked);
 
     if(buf[pos-1] == ',') pos--;
     append_str(buf, &pos, "}");
@@ -153,27 +153,27 @@ else if(e->type == LAYER_DIR){
     append_str(buf, &pos, ",\"dir\":{");
 
     append_str(buf, &pos, "\"parent\":");
-    append_int(buf, &pos, e->parent_inum);
+    append_int(buf, &pos, e->dir.parent_inum);
 
     append_str(buf, &pos, ",\"target\":");
-    append_int(buf, &pos, e->target_inum);
+    append_int(buf, &pos, e->dir.target_inum);
 
     append_str(buf, &pos, ",\"offset\":");
-    append_int(buf, &pos, e->offset);
+    append_int(buf, &pos, e->dir.offset);
 
     append_str(buf, &pos, ",\"name\":\"");
-    append_str(buf, &pos, e->name);
+    append_str(buf, &pos, e->dir.name);
     append_str(buf, &pos, "\"}");
 
 }
 else if(e->type == LAYER_PATH){
 
     append_str(buf, &pos, ",\"path\":\"");
-    append_str(buf, &pos, e->path);
+    append_str(buf, &pos, e->dir.path);
     append_str(buf, &pos, "\"");
 
     append_str(buf, &pos, ",\"elem\":\"");
-    append_str(buf, &pos, e->name);
+    append_str(buf, &pos, e->dir.name);
     append_str(buf, &pos, "\"");
 }
 else if(e->type == LAYER_FILE){
@@ -181,16 +181,16 @@ else if(e->type == LAYER_FILE){
     append_str(buf, &pos, ",\"state\":{");
 
     append_str(buf, &pos, "\"ref\":");
-    append_int(buf, &pos, e->file_ref);
+    append_int(buf, &pos, e->file.file_ref);
 
     append_str(buf, &pos, ",\"offset\":");
-    append_int(buf, &pos, e->file_off);
+    append_int(buf, &pos, e->file.file_off);
 
     append_str(buf, &pos, ",\"readable\":");
-    append_int(buf, &pos, e->readable);
+    append_int(buf, &pos, e->file.readable);
 
     append_str(buf, &pos, ",\"writable\":");
-    append_int(buf, &pos, e->writable);
+    append_int(buf, &pos, e->file.writable);
 
     append_str(buf, &pos, "}");
 
@@ -198,13 +198,13 @@ else if(e->type == LAYER_FILE){
 
     print_change(buf, &pos,
         "ref",
-        e->old_file_ref,
-        e->file_ref);
+        e->file.old_file_ref,
+        e->file.file_ref);
 
     print_change(buf, &pos,
         "offset",
-        e->old_file_off,
-        e->file_off);
+        e->file.old_file_off,
+        e->file.file_off);
 
     if(buf[pos-1] == ',')
         pos--;

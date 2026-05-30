@@ -12,15 +12,49 @@
 #define LAYER_PATH   6
 #define LAYER_FILE   7
 
+#define FS_NM 32   // Maximum field size for names
+
 enum {
   FS_ALLOC_BLOCK = 1,
   FS_CREATE_FILE = 2,
   FS_WRITE_FILE  = 3,
   FS_READ_FILE   = 4,
   FS_FREE_BLOCK  = 5,
-  FS_BGET_HIT    = 6,   // موجودين هون وهاد بيكفي
+  FS_BGET_HIT    = 6,
   FS_BGET_MISS   = 7,
-  FS_BRELEASE    = 8
+  FS_BRELEASE    = 8,
+  FS_INODE_PUT   = 9,
+  FS_BREAD_REQ   = 10,
+  FS_BGET_SCAN   = 11,
+  FS_BREAD_FILL  = 12,
+  FS_BWRITE      = 13,
+  FS_LOG_BEGIN   = 14,
+  FS_LOG_WRITE   = 15,
+  FS_LOG_END     = 16,
+  FS_LOG_WLOG    = 17,
+  FS_LOG_WHEAD   = 18,
+  FS_LOG_INSTALL = 19,
+  FS_BLOCK_ALLOC = 20,
+  FS_BLOCK_FREE  = 21,
+  FS_INODE_ALLOC = 22,
+  FS_INODE_GET   = 23,
+  FS_INODE_LOCK  = 24,
+  FS_INODE_UPDATE= 25,
+  FS_DIR_LOOKUP  = 26,
+  FS_DIR_LINK    = 27,
+  FS_PATH_SEARCH = 28,
+  FS_NAME_X      = 29,
+  FS_IGET        = 30,
+  FS_IGET_EXIST  = 31,
+  FS_ILOCK       = 32,
+  FS_IUNLOCK     = 33,
+  FS_IUPDATE     = 34,
+  FS_BALLOC_BIT  = 35,
+  FS_BFREE_BIT   = 36,
+  FS_DIRLOOKUP   = 37,
+  FS_DIRLINK     = 38,
+  FS_PATHSEARCH  = 39,
+  FS_NAMEX       = 40
 } __attribute__((packed));
 
 struct fs_event {
@@ -30,14 +64,56 @@ struct fs_event {
   int pid;
   int type;        // LAYER_BCACHE or LAYER_LOG or LAYER_BALLOC ...
   char op_name[16];
-  char details[128]; 
+  char details[128];
+  char name[FS_NM]; // اسم عام يستخدم في عدة أماكن
+  
+  // حقول عامة تُستخدم في عدة طبقات
+  int blockno;      // للـ log.c و bio.c
+  int old_blockno;  // البلوك القديم (للمسح)
+  int inum;         // للـ fs.c (inode)
+  int dev;          // الجهاز
+  int buf_id;       // معرف البفر
+  int h;            // متغير مساعد
+  
+  // حقول inode
+  int i_type;
+  int i_size;
+  int nlink;
+  
+  // حقول ref counts عامة
+  int ref_before;
+  int ref_after;
+  int valid_before;
+  int valid_after;
+  int locked_before;
+  int locked_after;
+  
+  // حقول LRU tracking
+  int lru_before;
+  int lru_after;
+  
+  // حقول المسح والبحث
+  int scan_dir;     // اتجاه المسح
+  int scan_step;    // خطوة المسح
+  int found;        // تم العثور عليه
+  
+  // حقول مشتركة للـ log events (للتوافق مع kernel/log.c)
+  int old_log_n;
+  int old_outstanding;
+  int old_committing;
+  int log_n;
+  int outstanding;
+  int committing;
+  
+  // حقول العناوين (للـ inode)
+  uint addrs[13];
 
   // الحقول الخاصة بكل طبقة (يحجز مساحة لأكبرها فقط لتوفير الذاكرة)
   union {
       // حقول البفر كاش (Bcache)
       struct {
-          int blockno;
           int buf_id;
+          int blockno;     // للـ bio.c
           int refcnt;
           int old_refcnt;
           int valid;
@@ -56,6 +132,7 @@ struct fs_event {
 
       // حقول الـ BALLOC
       struct {
+          int blockno;     // للـ fs.c (balloc)
           int bit;
           int old_bit;
       } balloc;

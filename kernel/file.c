@@ -38,16 +38,17 @@ static void file_report(
 
     safestrcpy(e.op_name, op, sizeof(e.op_name));
 
-    e.file_type = f->type;
+    // تم التعديل هنا: استخدام قسم file من الـ union
+    e.file.file_type = f->type;
 
-    e.readable = f->readable;
-    e.writable = f->writable;
+    e.file.readable = f->readable;
+    e.file.writable = f->writable;
 
-    e.file_ref = f->ref;
-    e.old_file_ref = old_ref;
+    e.file.file_ref = f->ref;
+    e.file.old_file_ref = old_ref;
 
-    e.file_off = f->off;
-    e.old_file_off = old_off;
+    e.file.file_off = f->off;
+    e.file.old_file_off = old_off;
 
     safestrcpy(e.details, details, sizeof(e.details));
 
@@ -254,4 +255,3 @@ filewrite(struct file *f, uint64 addr, int n)
 
   return ret;
 }
-
