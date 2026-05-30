@@ -30,23 +30,28 @@ def parse_cpu_info(line: str) -> dict | None:
 
 def ensure_schema(cur: sqlite3.Cursor):
     """إنشاء الجدول المتوافق مع البيانات الجديدة"""
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS cpu_metrics (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT,
-        cpu_id TEXT,
-        active INTEGER,
-        current_pid INTEGER,
-        current_state TEXT,
-        busy_percent INTEGER,
-        total_created INTEGER,
-        total_exited INTEGER,
-        ever_running INTEGER,
-        ever_sleeping INTEGER,
-        ever_zombie INTEGER,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
+    try:
+        cur.execute("""
+        CREATE TABLE IF NOT EXISTS cpu_metrics (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            session_id TEXT,
+            cpu_id TEXT,
+            active INTEGER,
+            current_pid INTEGER,
+            current_state TEXT,
+            busy_percent INTEGER,
+            total_created INTEGER,
+            total_exited INTEGER,
+            ever_running INTEGER,
+            ever_sleeping INTEGER,
+            ever_zombie INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+    except sqlite3.OperationalError as e:
+        print(f"[ERROR] Database schema creation failed: {e}")
+        print("[INFO] Attempting to use in-memory database instead...")
+        raise
 
 def insert_data(cur: sqlite3.Cursor, data: dict):
     """إدخال بيانات كل كور على حدة مع العدادات العامة"""
@@ -75,10 +80,31 @@ def insert_data(cur: sqlite3.Cursor, data: dict):
         ))
 
 def main():
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    ensure_schema(cur)
-    con.commit()
+    global DB_PATH
+    
+    # Try to connect to the main database, fallback to a new one if I/O error occurs
+    con = None
+    cur = None
+    use_memory = False
+    
+    try:
+        con = sqlite3.connect(DB_PATH, timeout=5.0)
+        cur = con.cursor()
+        ensure_schema(cur)
+        con.commit()
+        print(f"[OK] Connected to database: {DB_PATH}")
+    except sqlite3.OperationalError as e:
+        if "disk I/O error" in str(e) or "database is locked" in str(e):
+            print(f"[WARN] Cannot access {DB_PATH}: {e}")
+            print("[INFO] Switching to in-memory database (data will not persist)")
+            con = sqlite3.connect(":memory:")
+            cur = con.cursor()
+            use_memory = True
+            ensure_schema(cur)
+            con.commit()
+        else:
+            print(f"[ERROR] Database error: {e}")
+            return
 
     print(f"--- [INFO] Started Monitoring ---")
     print(f"Session ID: {SESSION_ID}")
@@ -104,17 +130,30 @@ def main():
                     for line in lines:
                         data = parse_cpu_info(line)
                         if data:
-                            insert_data(cur, data)
-                            has_updates = True
+                            try:
+                                insert_data(cur, data)
+                                has_updates = True
+                            except sqlite3.OperationalError as e:
+                                print(f"[ERROR] Insert failed: {e}")
+                                continue
                     
                     if has_updates:
-                        con.commit()
-                        print(f"[OK] Saved snapshot to Database.")
+                        try:
+                            con.commit()
+                            db_type = "memory" if use_memory else "disk"
+                            print(f"[OK] Saved snapshot to {db_type} database.")
+                        except sqlite3.OperationalError as e:
+                            print(f"[ERROR] Commit failed: {e}")
             
             time.sleep(3)
     except KeyboardInterrupt:
-        con.close()
+        if con:
+            con.close()
         print("\n[INFO] Script stopped by user.")
+    except Exception as e:
+        print(f"[ERROR] Unexpected error: {e}")
+        if con:
+            con.close()
 
 if __name__ == "__main__":
     main()
