@@ -24,3 +24,5 @@
 #define SYS_fsread  23
 #define SYS_schedread 24
 #define SYS_memread 25
+#define SYS_getcpuinfo 26
+#define SYS_getprocstats 27

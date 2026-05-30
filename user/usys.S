@@ -125,3 +125,13 @@ memread:
  li a7, SYS_memread
  ecall
  ret
+.global getcpuinfo
+getcpuinfo:
+ li a7, SYS_getcpuinfo
+ ecall
+ ret
+.global getprocstats
+getprocstats:
+ li a7, SYS_getprocstats
+ ecall
+ ret

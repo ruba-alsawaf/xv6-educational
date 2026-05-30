@@ -7,7 +7,7 @@ from pathlib import Path
 
 # الإعدادات الأساسية
 LOG_PATH = "qemu.log"
-DB_PATH = "events.db"
+DB_PATH = "events.db"  # استخدم اسم جديد
 SESSION_ID = str(uuid.uuid4())
 
 def clean_payload(payload: str) -> str:

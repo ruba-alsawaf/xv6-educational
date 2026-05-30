@@ -46,3 +46,5 @@ entry("csread");
 entry("fsread");
 entry("schedread");
 entry("memread");
+entry("getcpuinfo");
+entry("getprocstats");
