@@ -101,6 +101,9 @@ main(void)
         printf("Error fetching system info\n");
         exit(1);
     }
+    
+    // DEBUG: Print number of CPUs returned
+    printf("[DEBUG] getcpuinfo returned %d CPUs\n", n);
 
     // 1. طباعة حالة المعالجات الحالية
     printf("CPU {\"timestamp\":\"now\",\"system\":{");
@@ -116,8 +119,8 @@ main(void)
             st_name = state_names[state_idx];
         }
 
-        printf("{\"cpu_id\":\"cpu%d\",\"active\":%d,\"current_pid\":%d,\"current_state\":\"%s\",\"busy_percent\":%d}",
-               cpus[i].cpu, cpus[i].active, cpus[i].current_pid, st_name, cpus[i].busy_percent);
+        printf("{\"cpu_id\":\"cpu%d\",\"active\":%d,\"current_pid\":%d,\"proc_name\":\"%s\",\"current_state\":\"%s\",\"context_eip\":\"0x%lx\",\"context_esp\":\"0x%lx\",\"busy_percent\":%d}",
+               cpus[i].cpu, cpus[i].active, cpus[i].current_pid, cpus[i].proc_name, st_name, cpus[i].context_eip, cpus[i].context_esp, cpus[i].busy_percent);
         
         if (i < n - 1) printf(",");
     }

@@ -564,9 +564,19 @@ sys_getcpuinfo(void)
     
     info.cpu = i;
     if(cpus[i].proc != 0) {
+      struct proc *p = cpus[i].proc;
       info.active = 1;
-      info.current_pid = cpus[i].proc->pid;
-      info.current_state = cpus[i].proc->state;
+      info.current_pid = p->pid;
+      info.current_state = p->state;
+      
+      // Copy process name
+      safestrcpy(info.proc_name, p->name, PROC_NAME_LEN);
+      
+      // Get context from trapframe if available
+      if(p->trapframe) {
+        info.context_eip = p->trapframe->epc;  // instruction pointer
+        info.context_esp = p->trapframe->sp;   // stack pointer
+      }
     }
     info.busy_percent = 0;  // Simplified
     

@@ -29,7 +29,7 @@ def parse_cpu_info(line: str) -> dict | None:
     return None
 
 def ensure_schema(cur: sqlite3.Cursor):
-    """إنشاء الجدول المتوافق مع البيانات الجديدة"""
+    """إنشاء الجدول المتوافق مع البيانات الجديدة أو إضافة الأعمدة الناقصة"""
     try:
         cur.execute("""
         CREATE TABLE IF NOT EXISTS cpu_metrics (
@@ -38,7 +38,10 @@ def ensure_schema(cur: sqlite3.Cursor):
             cpu_id TEXT,
             active INTEGER,
             current_pid INTEGER,
+            proc_name TEXT,
             current_state TEXT,
+            context_eip TEXT,
+            context_esp TEXT,
             busy_percent INTEGER,
             total_created INTEGER,
             total_exited INTEGER,
@@ -48,6 +51,18 @@ def ensure_schema(cur: sqlite3.Cursor):
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         """)
+        
+        # محاولة إضافة الأعمدة الناقصة إن لم تكن موجودة
+        for col, col_type in [
+            ('proc_name', 'TEXT'),
+            ('context_eip', 'TEXT'),
+            ('context_esp', 'TEXT')
+        ]:
+            try:
+                cur.execute(f'ALTER TABLE cpu_metrics ADD COLUMN {col} {col_type}')
+            except sqlite3.OperationalError:
+                # العمود موجود بالفعل
+                pass
     except sqlite3.OperationalError as e:
         print(f"[ERROR] Database schema creation failed: {e}")
         print("[INFO] Attempting to use in-memory database instead...")
@@ -61,16 +76,19 @@ def insert_data(cur: sqlite3.Cursor, data: dict):
     for cpu in cpus_list:
         cur.execute("""
         INSERT INTO cpu_metrics 
-        (session_id, cpu_id, active, current_pid, current_state, 
-         busy_percent, total_created, total_exited, 
+        (session_id, cpu_id, active, current_pid, proc_name, current_state, 
+         context_eip, context_esp, busy_percent, total_created, total_exited, 
          ever_running, ever_sleeping, ever_zombie)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             SESSION_ID, 
             cpu.get("cpu_id"), 
             cpu.get("active"),
-            cpu.get("current_pid"), 
+            cpu.get("current_pid"),
+            cpu.get("proc_name", ""),
             cpu.get("current_state"),
+            cpu.get("context_eip", ""),
+            cpu.get("context_esp", ""),
             cpu.get("busy_percent"), 
             sys_stats.get("total_created"),
             sys_stats.get("total_exited"),
@@ -88,7 +106,10 @@ def main():
     use_memory = False
     
     try:
-        con = sqlite3.connect(DB_PATH, timeout=5.0)
+        con = sqlite3.connect(DB_PATH, timeout=15.0)
+        # استخدم WAL mode لتجنب database locked errors
+        con.execute('PRAGMA journal_mode=WAL')
+        con.execute('PRAGMA synchronous=NORMAL')
         cur = con.cursor()
         ensure_schema(cur)
         con.commit()
@@ -138,12 +159,21 @@ def main():
                                 continue
                     
                     if has_updates:
-                        try:
-                            con.commit()
-                            db_type = "memory" if use_memory else "disk"
-                            print(f"[OK] Saved snapshot to {db_type} database.")
-                        except sqlite3.OperationalError as e:
-                            print(f"[ERROR] Commit failed: {e}")
+                        # Retry commit up to 3 times
+                        retry_count = 0
+                        while retry_count < 3:
+                            try:
+                                con.commit()
+                                db_type = "memory" if use_memory else "disk"
+                                print(f"[OK] Saved snapshot to {db_type} database.")
+                                break
+                            except sqlite3.OperationalError as e:
+                                retry_count += 1
+                                if retry_count < 3:
+                                    print(f"[WARN] Commit failed (retry {retry_count}/3): {e}")
+                                    time.sleep(0.5)
+                                else:
+                                    print(f"[ERROR] Commit failed after 3 retries: {e}")
             
             time.sleep(3)
     except KeyboardInterrupt:
