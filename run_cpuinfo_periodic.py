@@ -7,10 +7,11 @@ import re
 from pathlib import Path
 from collections import defaultdict
 
+#test ruba
+
 LOG_PATH = "qemu.log"
 DB_PATH = "events.db"
 SESSION_ID = str(uuid.uuid4())
-
 def extract_json(line: str, marker: str) -> dict | None:
     """Extract JSON object from line starting with marker"""
     if marker not in line or '{' not in line:
