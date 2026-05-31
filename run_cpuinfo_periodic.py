@@ -101,6 +101,9 @@ def main():
     ensure_schema(con)
     
     last_pos = 0
+    cpu_count = 0
+    proc_count = 0
+    
     try:
         while True:
             try:
@@ -110,13 +113,19 @@ def main():
                         cpu_event = extract_json(line, "CPU")
                         if cpu_event:
                             insert_cpu_info(cur, cpu_event)
+                            cpu_count += len(cpu_event.get("cpus", []))
                         
                         proc_event = extract_json(line, "PROC")
                         if proc_event:
                             insert_proc_stats(cur, proc_event)
+                            proc_count += 1
                     
                     last_pos = f.tell()
-                    con.commit()
+                    if cpu_count > 0 or proc_count > 0:
+                        con.commit()
+                        print(f"✓ Saved: {cpu_count} CPU records, {proc_count} PROC records")
+                        cpu_count = 0
+                        proc_count = 0
             except IOError:
                 pass
             
