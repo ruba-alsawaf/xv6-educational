@@ -8,14 +8,15 @@ DbManager::DbManager(QObject *parent) : QObject(parent)
 {
     // إعداد الاتصال بقاعدة البيانات
     m_db = QSqlDatabase::addDatabase("QSQLITE");
-
-    // تأكدي من تعديل المسار ليتطابق مع مكان وجود ملف الداتابيز الحقيقي عندك
     m_db.setDatabaseName("C:/Users/rubaa/OneDrive/Desktop/xv6-educational-main/events.db");
 
     if (!m_db.open()) {
-        qDebug() << "Error: connection with database failed:" << m_db.lastError().text();
+        qWarning() << "Error: connection with database failed:" << m_db.lastError().text();
     } else {
         qDebug() << "Database: connection ok";
+        // تفعيل WAL Mode لمنع قفل قاعدة البيانات
+        QSqlQuery pragmaQuery(m_db);
+        pragmaQuery.exec("PRAGMA journal_mode=WAL;");
     }
 }
 
@@ -30,15 +31,29 @@ QVariantList DbManager::getLatestCpuMetrics()
 {
     QVariantList list;
     if (!m_db.isOpen()) {
-        qDebug() << "Database is NOT open!";
-        return list;
+        if (!m_db.open()) return list;
     }
 
-    QSqlQuery query;
-    query.prepare("SELECT cpu_id, current_pid, current_state, busy_percent "
-                  "FROM cpu_metrics "
-                  "WHERE cpu_id IN ('cpu0', 'cpu1', 'cpu2') "
-                  "ORDER BY id DESC LIMIT 3");
+    // كسر الكاش لضمان جلب البيانات الجديدة الحية
+    QSqlQuery pragma(m_db);
+    pragma.exec("PRAGMA query_only = OFF;");
+
+    QSqlQuery query(m_db);
+    // النسخة الذهبية بالـ UNION ALL لمنع التكرار
+    query.prepare(
+        "SELECT * FROM ("
+        "  SELECT cpu_id, current_pid, current_state, busy_percent "
+        "  FROM cpu_metrics WHERE cpu_id='cpu0' ORDER BY id DESC LIMIT 1"
+        ") UNION ALL "
+        "SELECT * FROM ("
+        "  SELECT cpu_id, current_pid, current_state, busy_percent "
+        "  FROM cpu_metrics WHERE cpu_id='cpu1' ORDER BY id DESC LIMIT 1"
+        ") UNION ALL "
+        "SELECT * FROM ("
+        "  SELECT cpu_id, current_pid, current_state, busy_percent "
+        "  FROM cpu_metrics WHERE cpu_id='cpu2' ORDER BY id DESC LIMIT 1"
+        ") ORDER BY cpu_id"
+        );
 
     if (query.exec()) {
         while (query.next()) {
@@ -54,10 +69,8 @@ QVariantList DbManager::getLatestCpuMetrics()
 
             list.append(map);
         }
-        // سطر للتحقق: يطبع عدد العناصر المسترجعة في شاشة الـ Application Output
-        qDebug() << "Successfully fetched CPUs count:" << list.size();
     } else {
-        qDebug() << "Query failed:" << query.lastError().text();
+        qWarning() << "Query failed:" << query.lastError().text();
     }
 
     return list;
@@ -66,21 +79,26 @@ QVariantList DbManager::getLatestCpuMetrics()
 QVariantList DbManager::getTimelineMetrics()
 {
     QVariantList timeline;
-    QStringList cpus = {"CPU0", "CPU1", "CPU2"};
+    if (!m_db.isOpen()) {
+        if (!m_db.open()) return timeline;
+    }
+
+    QSqlQuery pragma(m_db);
+    pragma.exec("PRAGMA query_only = OFF;");
+
+    QStringList cpus = {"cpu0", "cpu1", "cpu2"};
 
     for (const QString &cpu : cpus) {
         QVariantMap cpuRow;
-        cpuRow["label"] = cpu;
-
+        cpuRow["label"] = cpu.toUpper();
         QVariantList blocks;
 
-        QSqlQuery query;
-        // جلب آخر 5 لقطات زمنية مخصصة لهذا المعالج بالذات
-        query.prepare("SELECT current_pid, current_state "
+        QSqlQuery query(m_db);
+        query.prepare("SELECT current_pid, current_state, proc_name, context_eip, context_esp "
                       "FROM cpu_metrics "
                       "WHERE cpu_id = :cpuId "
                       "ORDER BY id DESC LIMIT 5");
-        query.bindValue(":cpuId", cpu.toLower());
+        query.bindValue(":cpuId", cpu);
 
         if (query.exec()) {
             while (query.next()) {
@@ -88,22 +106,26 @@ QVariantList DbManager::getTimelineMetrics()
                 QString state = query.value("current_state").toString();
                 int pid = query.value("current_pid").toInt();
 
-                // العرض الافتراضي لكل كتلة زمنية مدخلة (يمكنك ضبطه حسب الرغبة)
                 block["w"] = 2.0;
+                block["state"] = state;
 
                 if (state == "UNUSED") {
                     block["c"] = "transparent";
                     block["t"] = "";
+                    block["proc_name"] = "";
+                    block["eip"] = "0x0";
+                    block["esp"] = "0x0";
                 } else {
                     block["c"] = "solid";
                     block["t"] = QString("PID %1").arg(pid);
+                    block["proc_name"] = query.value("proc_name").toString();
+                    block["eip"] = query.value("context_eip").toString();
+                    block["esp"] = query.value("context_esp").toString();
                 }
-                // إدراج الكتل في البداية لتظهر مرتبة زمنياً من الأقدم للأحدث
                 blocks.prepend(block);
             }
         }
 
-        // إذا كانت الداتابيز فارغة مؤقتاً، نضع كتلة افتراضية فارغة منعاً للأخطاء الرسومية
         if (blocks.isEmpty()) {
             QVariantMap dummy;
             dummy["w"] = 10.0; dummy["c"] = "transparent"; dummy["t"] = "";
@@ -116,29 +138,46 @@ QVariantList DbManager::getTimelineMetrics()
 
     return timeline;
 }
+
 int DbManager::getAverageCpuUsage()
 {
-    if (!m_db.isOpen()) return 0;
+    if (!m_db.isOpen()) {
+        if (!m_db.open()) return 0;
+    }
 
-    QSqlQuery query;
-    // حساب الاستهلاك بناءً على كم نواة من النوى الثلاثة الأولى مشغولة بحالة RUNNING فعلياً في آخر لقطة
-    query.prepare("SELECT current_state FROM cpu_metrics "
-                  "WHERE cpu_id IN ('cpu0', 'cpu1', 'cpu2') "
-                  "ORDER BY id DESC LIMIT 3");
+    // كسر الكاش لضمان التحديث المستمر
+    QSqlQuery pragma(m_db);
+    pragma.exec("PRAGMA query_only = OFF;");
+
+    QSqlQuery query(m_db);
+
+    // ✅ العودة لكودك الذهبي الأصلي اللي كان شغال 100% بدون أي تخبيص
+    query.prepare(
+        "SELECT current_state FROM cpu_metrics "
+        "WHERE id IN ("
+        "  SELECT MAX(id) FROM cpu_metrics WHERE cpu_id IN ('cpu0', 'cpu1', 'cpu2') GROUP BY cpu_id"
+        ") "
+        "ORDER BY cpu_id"
+        );
 
     if (query.exec()) {
-        int runningCpus = 0;
+        int runningCount = 0;
+        int totalCount = 0;
         while (query.next()) {
             if (query.value(0).toString() == "RUNNING") {
-                runningCpus++;
+                runningCount++;
             }
+            totalCount++;
         }
-        // حساب النسبة المئوية: (عدد النوى المشغولة / 3) * 100
-        return static_cast<int>((runningCpus / 3.0) * 100);
+        if (totalCount > 0) {
+            return (runningCount * 100) / totalCount;
+        }
+    } else {
+        qWarning() << "❌ CPU Usage Query failed:" << query.lastError().text();
     }
+
     return 0;
 }
-
 QVariantMap DbManager::getProcessStatesCount()
 {
     QVariantMap states;
@@ -147,20 +186,33 @@ QVariantMap DbManager::getProcessStatesCount()
     states["zombie"] = 0;
     states["total"] = 0;
 
-    if (!m_db.isOpen()) return states;
+    if (!m_db.isOpen()) {
+        if (!m_db.open()) return states;
+    }
 
-    QSqlQuery query;
-    // جلب أحدث سجل لقراءة العدادات التراكمية مباشرة
-    query.prepare("SELECT total_created, ever_running, ever_sleeping, ever_zombie "
-                  "FROM cpu_metrics "
-                  "ORDER BY id DESC LIMIT 1");
+    QSqlQuery pragma(m_db);
+    pragma.exec("PRAGMA query_only = OFF;");
+
+    QSqlQuery query(m_db);
+
+    // ✅ الحل المنطقي الخاص بكِ: جلب العدادات التراكمية (Cumulative) للعمليات التي مرت على النظام
+    query.prepare(
+        "SELECT total_created, ever_running, ever_sleeping, ever_zombie "
+        "FROM cpu_metrics "
+        "ORDER BY id DESC LIMIT 1"
+        );
 
     if (query.exec() && query.next()) {
-        // تمرير القيم التراكمية مباشرة كما هي قادمة من الكيرنل والـ JSON
+        // سحب القيم التراكمية المحدثة
         states["running"] = query.value("ever_running").toInt();
         states["sleeping"] = query.value("ever_sleeping").toInt();
         states["zombie"] = query.value("ever_zombie").toInt();
+
+        // إجمالي العمليات التي تم خلقها منذ إقلاع الكيرنل
         states["total"] = query.value("total_created").toInt();
+    } else {
+        qWarning() << "❌ Query failed:" << query.lastError().text();
     }
+
     return states;
 }

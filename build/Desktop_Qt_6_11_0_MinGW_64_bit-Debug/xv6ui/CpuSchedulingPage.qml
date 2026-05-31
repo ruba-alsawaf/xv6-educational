@@ -7,14 +7,14 @@ Rectangle {
     color: "transparent"
     anchors.fill: parent
 
-    // تعريف المصفوفات البرمجية التي تستقبل البيانات الحية من الـ C++ Backend
     property variant cpuModelData: []
     property variant timelineModelData: []
-
     property int currentCpuUsage: 0
     property variant processStatesData: ({"running": 0, "sleeping": 0, "zombie": 0, "total": 0})
 
-    // تيمر مركزي موحد لتحديث كل أقسام الصفحة من قاعدة البيانات كل ثانية
+    property variant hoveredBlockData: null
+
+    // التايمر الأصلي الخفيف المستقر
     Timer {
         interval: 1000
         running: true
@@ -33,13 +33,11 @@ Rectangle {
         anchors.fill: parent
         spacing: 25
 
-        // === TOP ROW: System Dashboard & Usage ===
         Row {
             width: parent.width
             height: (parent.height - parent.spacing) / 3
             spacing: 25
 
-            // الكرت الأيسر: نظرة عامة على المعالجات (بيانات حية)
             Rectangle {
                 id: cpusRect
                 width: (parent.width - parent.spacing) / 2
@@ -64,7 +62,7 @@ Rectangle {
                     anchors { top: systemDashboardTitle.bottom; bottom: parent.bottom; left: parent.left; right: parent.right; margins: 20 }
                     spacing: 15
                     Repeater {
-                        model: cpuSchedulingPage.cpuModelData // ربط مباشر ببيانات المعالجات الحية
+                        model: cpuSchedulingPage.cpuModelData
                         delegate: Rectangle {
                             width: (parent.width - 2 * 15) / 3; height: parent.height; radius: 12; color: Qt.rgba(0, 0, 0, 0.3)
                             Column {
@@ -91,19 +89,15 @@ Rectangle {
                 }
             }
 
-            // الكرت الأيمن: نسبة الاستهلاك العام وحالات العمليات
             Rectangle {
                 id: usageBoard
                 width: (parent.width - parent.spacing) / 2; height: parent.height; color: Qt.rgba(255, 255, 255, 0.08); radius: 20
                 Row {
                     anchors { fill: parent; margins: 20 } spacing: 15
 
-                    // بطاقة تأثير الأمواج لنسبة الاستهلاك
                     Rectangle {
                         id: rectWaterCard
                         width: (parent.width - parent.spacing) / 2; height: parent.height; radius: 12; color: Qt.rgba(0, 0, 0, 0.3)
-
-                        // ربط مباشر بمتوسط الاستهلاك القادم من الداتابيز
                         property real percentage: cpuSchedulingPage.currentCpuUsage
                         property real _waveOffset: 0
 
@@ -138,7 +132,6 @@ Rectangle {
                         Text { anchors.centerIn: parent; text: "USAGE " + Math.round(rectWaterCard.percentage) + "%"; color: "white"; font { family: "Segoe UI"; pixelSize: 22; weight: Font.Bold } style: Text.Raised; styleColor: Qt.rgba(0, 0, 0, 0.3) }
                     }
 
-                    // كرت حالات العمليات
                     Rectangle {
                         width: (parent.width - parent.spacing) / 2; height: parent.height; radius: 12; color: Qt.rgba(0, 0, 0, 0.3)
                         Column {
@@ -207,7 +200,7 @@ Rectangle {
                 Column {
                     anchors.centerIn: parent; width: parent.width; spacing: 35
                     Repeater {
-                        model: cpuSchedulingPage.timelineModelData // هنا يتم إسقاط كتل التايم لاين الديناميكية القادمة من قاعدة البيانات
+                        model: cpuSchedulingPage.timelineModelData
                         delegate: Row {
                             width: parent.width; height: 56; spacing: graphArea.innerSpacing
                             Text {
@@ -220,17 +213,11 @@ Rectangle {
                                 id: trackBox
                                 width: graphArea.trackWidth; height: parent.height; radius: 8; color: Qt.rgba(0, 0, 0, 0.3)
 
-                                // 1. The Glow Layer (Bleeds outside boundaries)
                                 Item {
                                     width: trackBox.width * schedulingRec.playheadProgress
                                     height: trackBox.height
                                     layer.enabled: true
-                                    layer.effect: Glow {
-                                        radius: 15
-                                        samples: 20
-                                        color: "#8b5cf6"
-                                        spread: 0.15
-                                    }
+                                    layer.effect: Glow { radius: 15; samples: 20; color: "#8b5cf6"; spread: 0.15 }
                                     Row {
                                         width: trackBox.width; height: trackBox.height
                                         Repeater {
@@ -244,7 +231,6 @@ Rectangle {
                                     }
                                 }
 
-                                // 2. The Text & Block Layer (Strictly Clipped)
                                 Item {
                                     width: trackBox.width * schedulingRec.playheadProgress
                                     height: trackBox.height
@@ -255,13 +241,40 @@ Rectangle {
                                         Repeater {
                                             model: modelData.blocks
                                             delegate: Rectangle {
+                                                id: blockItem
                                                 width: trackBox.width * (modelData.w / 10.0); height: trackBox.height
                                                 color: modelData.c === "transparent" ? "transparent" : "#8b5cf6"
                                                 radius: 8
+
+                                                property bool isProcess: modelData.t !== ""
+
                                                 Text {
                                                     anchors.centerIn: parent; text: modelData.t; color: "white"
                                                     font { family: "Segoe UI"; pixelSize: 14; weight: Font.Bold }
-                                                    visible: modelData.t !== ""
+                                                    visible: blockItem.isProcess
+                                                }
+
+                                                MouseArea {
+                                                    anchors.fill: parent
+                                                    enabled: blockItem.isProcess
+                                                    hoverEnabled: true
+                                                    propagateComposedEvents: true
+
+                                                    onEntered: {
+                                                        blockItem.opacity = 0.8
+                                                        cpuSchedulingPage.hoveredBlockData = modelData
+
+                                                        var globalPos = blockItem.mapToItem(cpuSchedulingPage, width/2, height/2)
+                                                        processTooltip.x = globalPos.x - (processTooltip.width / 2)
+                                                        processTooltip.y = globalPos.y - 145
+                                                        processTooltip.open()
+                                                    }
+
+                                                    onExited: {
+                                                        blockItem.opacity = 1.0
+                                                        cpuSchedulingPage.hoveredBlockData = null
+                                                        processTooltip.hide()
+                                                    }
                                                 }
                                             }
                                         }
@@ -272,7 +285,6 @@ Rectangle {
                     }
                 }
 
-                // Sweeping Purple Playhead - Coordinates perfectly synchronized
                 Rectangle {
                     id: playhead
                     width: 2; height: parent.height; color: "#8b5cf6"
@@ -284,4 +296,98 @@ Rectangle {
             }
         }
     }
+
+    ToolTip {
+            id: processTooltip
+            delay: 0
+            timeout: 5000
+
+            // 1️⃣ استخدام الـ Padding هنا يجعل الخلفية تلتف حول النص بدقة وبدون تمدد عشوائي
+            padding: 15
+
+            contentItem: Column {
+                spacing: 12
+
+                // الصف الأول: نقطة خضراء + رقم الـ PID + اسم العملية
+                Row {
+                    spacing: 8
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Rectangle {
+                        width: 8; height: 8; radius: 4
+                        color: "#34d399"
+                        anchors.verticalCenter: parent.verticalCenter
+                        layer.enabled: true
+                        layer.effect: Glow { radius: 4; samples: 8; color: "#34d399"; spread: 0.3 }
+                    }
+
+                    Text {
+                        text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.t : ""
+                        font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
+                        color: "#ffffff"
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Text {
+                        text: "•"
+                        font { family: "Segoe UI"; pixelSize: 12 }
+                        color: Qt.rgba(255, 255, 255, 0.3)
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+
+                    Text {
+                        text: (cpuSchedulingPage.hoveredBlockData && cpuSchedulingPage.hoveredBlockData.proc_name) ? cpuSchedulingPage.hoveredBlockData.proc_name : "unknown"
+                        font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
+                        color: "#a78bfa" // لون بنفسجي فاتح لاسم العملية
+                        anchors.verticalCenter: parent.verticalCenter
+                    }
+                }
+
+                // خط فاصل شفاف وأنيق
+                Rectangle {
+                    width: parent.width; height: 1
+                    color: Qt.rgba(255, 255, 255, 0.1)
+                }
+
+                // الصف الثاني: السجلات (EIP و ESP) بتنسيق شبكي صغير
+                Row {
+                    spacing: 20
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    Column {
+                        spacing: 4
+                        anchors.verticalCenter: parent.verticalCenter
+                        Text { text: "EIP (PC)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
+                        Text {
+                            text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.eip : "0x0"
+                            font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
+                            color: "#f43f5e"
+                        }
+                    }
+
+                    Rectangle { width: 1; height: 25; color: Qt.rgba(255, 255, 255, 0.1); anchors.verticalCenter: parent.verticalCenter }
+
+                    Column {
+                        spacing: 4
+                        anchors.verticalCenter: parent.verticalCenter
+                        Text { text: "ESP (SP)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
+                        Text {
+                            text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.esp : "0x0"
+                            font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
+                            color: "#38bdf8"
+                        }
+                    }
+                }
+            }
+
+            // 2️⃣ الخلفية: تأثير زجاجي غامق (Glassmorphism) مع حدود خفيفة
+            background: Rectangle {
+                color: Qt.rgba(20 / 255, 15 / 255, 35 / 255, 0.85)
+                border.color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.5)
+                border.width: 1
+                radius: 12
+                layer.enabled: true
+                layer.effect: Glow { radius: 10; samples: 15; color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.2); spread: 0.1 }
+            }
+        }
 }

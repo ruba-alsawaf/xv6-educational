@@ -328,7 +328,7 @@
                         {
                             "codegenResult": 2,
                             "column": 40,
-                            "durationMicroseconds": 0,
+                            "durationMicroseconds": 1000,
                             "functionName": "onClicked",
                             "line": 293,
                             "message": "Cannot access value for name navList"

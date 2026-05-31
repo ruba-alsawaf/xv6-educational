@@ -48,7 +48,7 @@
                         {
                             "codegenResult": 0,
                             "column": 16,
-                            "durationMicroseconds": 1000,
+                            "durationMicroseconds": 0,
                             "functionName": "width",
                             "line": 15,
                             "message": ""
@@ -544,7 +544,7 @@
                         {
                             "codegenResult": 2,
                             "column": 34,
-                            "durationMicroseconds": 3000,
+                            "durationMicroseconds": 2000,
                             "functionName": "onPaint",
                             "line": 181,
                             "message": "Cannot generate efficient code for call to untyped JavaScript function"

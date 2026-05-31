@@ -280,7 +280,7 @@
                         {
                             "codegenResult": 2,
                             "column": 30,
-                            "durationMicroseconds": 0,
+                            "durationMicroseconds": 1000,
                             "functionName": "onPaint",
                             "line": 121,
                             "message": "Cannot generate efficient code for call to untyped JavaScript function"
