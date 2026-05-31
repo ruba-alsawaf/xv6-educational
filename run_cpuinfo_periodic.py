@@ -5,6 +5,7 @@ import time
 import uuid
 import re
 from pathlib import Path
+from collections import defaultdict
 
 LOG_PATH = "qemu.log"
 DB_PATH = "events.db"
@@ -50,20 +51,50 @@ def insert_cpu_info(cur: sqlite3.Cursor, event: dict) -> None:
             system.get("ever_zombie", 0)
         ))
 
-def insert_proc_stats(cur: sqlite3.Cursor, event: dict) -> None:
-    """Insert PROC stats into database"""
+def insert_proc_stats_from_cpu(cur: sqlite3.Cursor, event: dict) -> None:
+    """Calculate and insert PROC stats from CPU data"""
+    system = event.get("system", {})
+    cpus = event.get("cpus", [])
+    
+    # Count process states from CPU data
+    running = 0
+    sleeping = 0
+    zombie = 0
+    used = 0
+    unused = 0
+    
+    seen_pids = set()
+    for cpu_data in cpus:
+        state = cpu_data.get("current_state", "").upper()
+        pid = cpu_data.get("current_pid", 0)
+        
+        if state == "RUNNING":
+            running += 1
+            if pid > 0:
+                seen_pids.add(pid)
+                used += 1
+        elif state == "SLEEPING":
+            sleeping += 1
+            if pid > 0:
+                seen_pids.add(pid)
+                used += 1
+        elif state == "ZOMBIE":
+            zombie += 1
+            if pid > 0:
+                seen_pids.add(pid)
+                used += 1
+        elif state == "UNUSED":
+            unused += 1
+    
+    # Insert into database
     cur.execute("""INSERT INTO proc_stats
     (session_id, total_created, total_exited, current_unused, current_used, 
      current_sleeping, current_runnable, current_running, current_zombie,
      unique_unused, unique_used, unique_sleeping, unique_runnable, unique_running, unique_zombie)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""", (
-        SESSION_ID, event.get("total_created"), event.get("total_exited"),
-        event.get("current", {}).get("UNUSED", 0), event.get("current", {}).get("USED", 0),
-        event.get("current", {}).get("SLEEPING", 0), event.get("current", {}).get("RUNNABLE", 0),
-        event.get("current", {}).get("RUNNING", 0), event.get("current", {}).get("ZOMBIE", 0),
-        event.get("unique", {}).get("UNUSED", 0), event.get("unique", {}).get("USED", 0),
-        event.get("unique", {}).get("SLEEPING", 0), event.get("unique", {}).get("RUNNABLE", 0),
-        event.get("unique", {}).get("RUNNING", 0), event.get("unique", {}).get("ZOMBIE", 0)
+        SESSION_ID, system.get("total_created", 0), system.get("total_exited", 0),
+        unused, used, 0, 0, running, zombie,
+        0, len(seen_pids), sleeping, 0, running, zombie
     ))
 
 def ensure_schema(con: sqlite3.Connection) -> None:
@@ -113,15 +144,12 @@ def main():
                         cpu_event = extract_json(line, "CPU")
                         if cpu_event:
                             insert_cpu_info(cur, cpu_event)
+                            insert_proc_stats_from_cpu(cur, cpu_event)
                             cpu_count += len(cpu_event.get("cpus", []))
-                        
-                        proc_event = extract_json(line, "PROC")
-                        if proc_event:
-                            insert_proc_stats(cur, proc_event)
                             proc_count += 1
                     
                     last_pos = f.tell()
-                    if cpu_count > 0 or proc_count > 0:
+                    if cpu_count > 0:
                         con.commit()
                         print(f"✓ Saved: {cpu_count} CPU records, {proc_count} PROC records")
                         cpu_count = 0
