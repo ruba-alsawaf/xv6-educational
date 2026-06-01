@@ -524,23 +524,23 @@ main(void)
  4f8:	b7c50513          	addi	a0,a0,-1156 # 1070 <malloc+0x350>
  4fc:	770000ef          	jal	c6c <printf>
 
-   // 2. قراءة أحداث المعالج المتوفرة في البفر حالياً
-    int n_cs = csread(cs_ev, 32);
- 500:	02000593          	li	a1,32
- 504:	00002517          	auipc	a0,0x2
- 508:	dbc50513          	addi	a0,a0,-580 # 22c0 <cs_ev>
+    // 2. قراءة أحداث المعالج - اقرأ 256 حدث بنسخة واحدة
+    int n_cs = csread(cs_ev, 256);
+ 500:	10000593          	li	a1,256
+ 504:	00022517          	auipc	a0,0x22
+ 508:	dbc50513          	addi	a0,a0,-580 # 222c0 <cs_ev>
  50c:	3a8000ef          	jal	8b4 <csread>
-    for (int i = 0; i < n_cs; i++) { // الدوران فقط حتى n_cs الحقيقية
+    for (int i = 0; i < n_cs; i++) {
  510:	02a05963          	blez	a0,542 <main+0x1a8>
- 514:	00002497          	auipc	s1,0x2
- 518:	dac48493          	addi	s1,s1,-596 # 22c0 <cs_ev>
+ 514:	00022497          	auipc	s1,0x22
+ 518:	dac48493          	addi	s1,s1,-596 # 222c0 <cs_ev>
  51c:	03000793          	li	a5,48
  520:	02f50533          	mul	a0,a0,a5
  524:	00950933          	add	s2,a0,s1
         if (cs_ev[i].type == 1) 
  528:	4985                	li	s3,1
  52a:	a029                	j	534 <main+0x19a>
-    for (int i = 0; i < n_cs; i++) { // الدوران فقط حتى n_cs الحقيقية
+    for (int i = 0; i < n_cs; i++) {
  52c:	03048493          	addi	s1,s1,48
  530:	01248963          	beq	s1,s2,542 <main+0x1a8>
         if (cs_ev[i].type == 1) 
@@ -552,23 +552,21 @@ main(void)
  540:	b7f5                	j	52c <main+0x192>
     }
 
-    
-// 3. قراءة أحداث نظام الملفات المتوفرة في البفر حالياً
-    int n_fs = fsread(fs_ev, 32);
- 542:	02000593          	li	a1,32
+    // 3. قراءة أحداث نظام الملفات - اقرأ 256 حدث بنسخة واحدة
+    int n_fs = fsread(fs_ev, 256);
+ 542:	10000593          	li	a1,256
  546:	00002517          	auipc	a0,0x2
- 54a:	37a50513          	addi	a0,a0,890 # 28c0 <fs_ev>
+ 54a:	d7a50513          	addi	a0,a0,-646 # 22c0 <fs_ev>
  54e:	36e000ef          	jal	8bc <fsread>
-    for (int i = 0; i < n_fs; i++) { 
+    for (int i = 0; i < n_fs; i++) {
  552:	02a05463          	blez	a0,57a <main+0x1e0>
  556:	00002497          	auipc	s1,0x2
- 55a:	36a48493          	addi	s1,s1,874 # 28c0 <fs_ev>
+ 55a:	d6a48493          	addi	s1,s1,-662 # 22c0 <fs_ev>
  55e:	0526                	slli	a0,a0,0x9
  560:	00950933          	add	s2,a0,s1
  564:	a029                	j	56e <main+0x1d4>
  566:	20048493          	addi	s1,s1,512
  56a:	01248863          	beq	s1,s2,57a <main+0x1e0>
-        // إذا كان الـ seq مصفراً، فهذا مخلفات بافر، لا تطبعه
         if (fs_ev[i].seq != 0) {
  56e:	609c                	ld	a5,0(s1)
  570:	dbfd                	beqz	a5,566 <main+0x1cc>
@@ -578,7 +576,7 @@ main(void)
  578:	b7fd                	j	566 <main+0x1cc>
         }
     }
-    // الخروج وإنهاء البرنامج فوراً دون الدخول في حلقة لانهائية
+    
     exit(0); 
  57a:	4501                	li	a0,0
  57c:	298000ef          	jal	814 <exit>
@@ -2009,8 +2007,8 @@ malloc(uint nbytes)
  d7c:	e456                	sd	s5,8(sp)
  d7e:	e05a                	sd	s6,0(sp)
     base.s.ptr = freep = prevp = &base;
- d80:	00006797          	auipc	a5,0x6
- d84:	b4078793          	addi	a5,a5,-1216 # 68c0 <base>
+ d80:	00024797          	auipc	a5,0x24
+ d84:	54078793          	addi	a5,a5,1344 # 252c0 <base>
  d88:	00001717          	auipc	a4,0x1
  d8c:	26f73c23          	sd	a5,632(a4) # 2000 <freep>
  d90:	e39c                	sd	a5,0(a5)
