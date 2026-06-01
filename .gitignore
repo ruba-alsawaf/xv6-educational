@@ -1,3 +1,12 @@
+*.o
+*.d
+*.img
+kernel/kernel
+user/user
+qemu.log
 *.db
+build/
+__pycache__/
+.vscode/*.db
 *.log
 build/
