@@ -1,4 +1,7 @@
+#include "kernel/csevent.h"
 #include "kernel/fslog.h"
+#include "kernel/schedlog.h"
+#include "kernel/memevent.h"
 #include "kernel/procinfo.h"
 #define SBRK_ERROR ((char *)-1)
 
@@ -23,8 +26,6 @@ int mkdir(const char*);
 int chdir(const char*);
 int dup(int);
 int getpid(void);
-int getcpuinfo(struct cpu_info*, int);
-int getprocstats(struct proc_stats*);
 char* sys_sbrk(int,int);
 int pause(int);
 int uptime(void);
@@ -54,12 +55,9 @@ void free(void*);
 
 // لازم يطابق struct cs_event بالكيرنل
 
-#include "kernel/csevent.h"
 int csread(struct cs_event *out, int max);
-int fsread(struct fs_event*, int);
-
-struct sched_event;
-int schedread(struct sched_event *buf, int max);
-
-#include "kernel/memevent.h"
+int fsread(struct fs_event *out, int max);
+int schedread(struct sched_event *out, int max);
 int memread(struct mem_event *out, int max);
+int getcpuinfo(struct cpu_info *cpus, int ncpu);
+int getprocstats(struct proc_stats *stats);

@@ -90,16 +90,6 @@ getpid:
  li a7, SYS_getpid
  ecall
  ret
-.global getcpuinfo
-getcpuinfo:
- li a7, SYS_getcpuinfo
- ecall
- ret
-.global getprocstats
-getprocstats:
- li a7, SYS_getprocstats
- ecall
- ret
 .global sys_sbrk
 sys_sbrk:
  li a7, SYS_sbrk
@@ -133,5 +123,15 @@ schedread:
 .global memread
 memread:
  li a7, SYS_memread
+ ecall
+ ret
+.global getcpuinfo
+getcpuinfo:
+ li a7, SYS_getcpuinfo
+ ecall
+ ret
+.global getprocstats
+getprocstats:
+ li a7, SYS_getprocstats
  ecall
  ret

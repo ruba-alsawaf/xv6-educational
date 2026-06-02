@@ -8,8 +8,8 @@
 // المصفوفات العالمية لحماية الـ Stack
 static struct cpu_info cpus[NCPU];
 static struct proc_stats stats;
-static struct cs_event cs_ev[32];
-static struct fs_event fs_ev[32];
+static struct cs_event cs_ev[256];
+static struct fs_event fs_ev[256];
 
 static const char *state_names[PROC_STATE_COUNT] = {
   "UNUSED", "USED", "SLEEPING", "RUNNABLE", "RUNNING", "ZOMBIE"
@@ -58,7 +58,7 @@ static void print_fs_event(const struct fs_event *e) {
     append_str(buf, &pos, ",\"block\":");
     append_int(buf, &pos, e->blockno);
     append_str(buf, &pos, ",\"size\":");         
-    append_uint(buf, &pos, e->size);
+    append_uint(buf, &pos, e->i_size);
     append_str(buf, &pos, ",\"name\":\"");
     append_str(buf, &pos, e->name);
     append_str(buf, &pos, "\"}\n");
@@ -101,6 +101,9 @@ main(void)
         printf("Error fetching system info\n");
         exit(1);
     }
+    
+    // DEBUG: Print number of CPUs returned
+    printf("[DEBUG] getcpuinfo returned %d CPUs\n", n);
 
     // 1. طباعة حالة المعالجات الحالية
     printf("CPU {\"timestamp\":\"now\",\"system\":{");
@@ -116,29 +119,27 @@ main(void)
             st_name = state_names[state_idx];
         }
 
-        printf("{\"cpu_id\":\"cpu%d\",\"active\":%d,\"current_pid\":%d,\"current_state\":\"%s\",\"busy_percent\":%d}",
-               cpus[i].cpu, cpus[i].active, cpus[i].current_pid, st_name, cpus[i].busy_percent);
+        printf("{\"cpu_id\":\"cpu%d\",\"active\":%d,\"current_pid\":%d,\"proc_name\":\"%s\",\"current_state\":\"%s\",\"context_eip\":\"0x%lx\",\"context_esp\":\"0x%lx\",\"busy_percent\":%d}",
+               cpus[i].cpu, cpus[i].active, cpus[i].current_pid, cpus[i].proc_name, st_name, cpus[i].context_eip, cpus[i].context_esp, cpus[i].busy_percent);
         
         if (i < n - 1) printf(",");
     }
     printf("]}\n");
 
-   // 2. قراءة أحداث المعالج المتوفرة في البفر حالياً
-    int n_cs = csread(cs_ev, 32);
-    for (int i = 0; i < n_cs; i++) { // الدوران فقط حتى n_cs الحقيقية
+    // 2. قراءة أحداث المعالج - اقرأ 256 حدث بنسخة واحدة
+    int n_cs = csread(cs_ev, 256);
+    for (int i = 0; i < n_cs; i++) {
         if (cs_ev[i].type == 1) 
             print_cs_event(&cs_ev[i]);
     }
 
-    
-// 3. قراءة أحداث نظام الملفات المتوفرة في البفر حالياً
-    int n_fs = fsread(fs_ev, 32);
-    for (int i = 0; i < n_fs; i++) { 
-        // إذا كان الـ seq مصفراً، فهذا مخلفات بافر، لا تطبعه
+    // 3. قراءة أحداث نظام الملفات - اقرأ 256 حدث بنسخة واحدة
+    int n_fs = fsread(fs_ev, 256);
+    for (int i = 0; i < n_fs; i++) {
         if (fs_ev[i].seq != 0) {
             print_fs_event(&fs_ev[i]);
         }
     }
-    // الخروج وإنهاء البرنامج فوراً دون الدخول في حلقة لانهائية
+    
     exit(0); 
 }

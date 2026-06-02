@@ -24,13 +24,6 @@ struct cpu {
   struct context context;     // swtch() here to enter scheduler().
   int noff;                   // Depth of push_off() nesting.
   int intena;                 // Were interrupts enabled before push_off()?
-  int active;                 // CPU is online and started.
-  int current_pid;            // Currently running process.
-  int current_state;          // State of current process.
-  int last_pid;               // Last process that ran on this CPU.
-  int last_state;             // Last state of that process when it left CPU.
-  uint64 active_ticks;        // Total ticks this CPU spent running processes.
-  uint64 run_start_ticks;     // Last run start timestamp.
 };
 
 extern struct cpu cpus[NCPU];
@@ -96,7 +89,6 @@ struct proc {
   enum procstate state;        // Process state
   void *chan;                  // If non-zero, sleeping on chan
   int killed;                  // If non-zero, have been killed
-  uint state_history;          // Bitset of states the process has entered
   int xstate;                  // Exit status to be returned to parent's wait
   int pid;                     // Process ID
 
@@ -113,9 +105,3 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 };
-
-extern struct proc proc[NPROC];
-extern struct spinlock procstat_lock;
-extern uint64 proc_total_created;
-extern uint64 proc_total_exited;
-extern uint64 proc_state_unique[6];

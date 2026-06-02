@@ -15,6 +15,8 @@
 #include "sleeplock.h"
 #include "file.h"
 #include "fcntl.h"
+#include "schedlog.h"
+#include "procinfo.h"
 
 // Fetch the nth word-sized system call argument as a file descriptor
 // and return both the descriptor and the corresponding struct file.
@@ -523,3 +525,97 @@ sys_fsread(void)
   // استدعاء الوظيفة الحقيقية وإعادة نتيجتها
   return fslog_read_many((struct fs_event *)addr, n);
 }
+
+uint64
+sys_schedread(void)
+{
+  uint64 addr;
+  int n;
+
+  argaddr(0, &addr);
+  argint(1, &n);
+
+  if(n <= 0)
+    return 0;
+  if(n > 32)
+    n = 32;
+
+  return schedread((struct sched_event *)addr, n);
+}
+
+uint64
+sys_getcpuinfo(void)
+{
+  uint64 addr;
+  int ncpu;
+  struct cpu_info info;
+  int i;
+  extern struct cpu cpus[NCPU];
+
+  argaddr(0, &addr);
+  argint(1, &ncpu);
+
+  if(ncpu <= 0 || ncpu > NCPU)
+    ncpu = NCPU;
+
+  // Fill in CPU info for each CPU
+  for(i = 0; i < ncpu; i++) {
+    memset(&info, 0, sizeof(info));
+    
+    info.cpu = i;
+    if(cpus[i].proc != 0) {
+      struct proc *p = cpus[i].proc;
+      info.active = 1;
+      info.current_pid = p->pid;
+      info.current_state = p->state;
+      
+      // Copy process name
+      safestrcpy(info.proc_name, p->name, PROC_NAME_LEN);
+      
+      // Get context from trapframe if available
+      if(p->trapframe) {
+        info.context_eip = p->trapframe->epc;  // instruction pointer
+        info.context_esp = p->trapframe->sp;   // stack pointer
+      }
+    }
+    info.busy_percent = 0;  // Simplified
+    
+    if(copyout(myproc()->pagetable, addr + i * sizeof(struct cpu_info), 
+               (char *)&info, sizeof(info)) < 0)
+      return -1;
+  }
+
+  return ncpu;
+}
+
+uint64
+sys_getprocstats(void)
+{
+  uint64 addr;
+  struct proc_stats stats;
+  struct proc *p;
+  extern struct proc proc[];
+
+  argaddr(0, &addr);
+
+  memset(&stats, 0, sizeof(stats));
+  stats.total_created = 0;
+  stats.total_exited = 0;
+
+  // Walk through all processes
+  for(p = proc; p < &proc[NPROC]; p++) {
+    if(p->state != UNUSED) {
+      stats.current_count[p->state]++;
+      stats.unique_count[p->state]++;
+      if(p->state == RUNNING) {
+        stats.total_created++;
+      }
+    }
+  }
+
+  if(copyout(myproc()->pagetable, addr, (char *)&stats, sizeof(stats)) < 0)
+    return -1;
+
+  return 0;
+}
+
