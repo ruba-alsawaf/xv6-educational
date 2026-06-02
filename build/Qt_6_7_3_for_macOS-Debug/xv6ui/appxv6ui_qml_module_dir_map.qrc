@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/">
+    <file alias="/qt/qml/xv6ui">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/build/Qt_6_7_3_for_macOS-Debug/xv6ui</file>
+
+  </qresource>
+</RCC>

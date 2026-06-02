@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/qt/qml/xv6ui/">
+    <file alias="test.png">C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/test.png</file>
+  </qresource>
+</RCC>
+

@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="/qt/qml/xv6ui/">
+    <file alias="Main.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/Main.qml</file>
+    <file alias="ChatbotPanel.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/ChatbotPanel.qml</file>
+    <file alias="CpuSchedulingPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/CpuSchedulingPage.qml</file>
+    <file alias="MemoryManagementPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/MemoryManagementPage.qml</file>
+    <file alias="KernelGuardPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/KernelGuardPage.qml</file>
+    <file alias="ProcessForkPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/ProcessForkPage.qml</file>
+    <file alias="FileSystemLessonPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/FileSystemLessonPage.qml</file>
+    <file alias="OsArchitecturePage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/OsArchitecturePage.qml</file>
+    <file alias="CpuPrivilegeModesPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/CpuPrivilegeModesPage.qml</file>
+    <file alias="TrapsOverviewPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/TrapsOverviewPage.qml</file>
+    <file alias="MemoryTranslationPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/MemoryTranslationPage.qml</file>
+    <file alias="KernelSpacePage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/KernelSpacePage.qml</file>
+    <file alias="UserAddressSpacePage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/UserAddressSpacePage.qml</file>
+    <file alias="ContextSwitchPage.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/ContextSwitchPage.qml</file>
+    <file alias="FileSystem.qml">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/FileSystem.qml</file>
+    <file alias="NavigationLogic.js">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/NavigationLogic.js</file>
+    <file alias="test.png">/Users/joudy/Downloads/xv6-educational-frontend-dashboard/test.png</file>
+  </qresource>
+</RCC>
+

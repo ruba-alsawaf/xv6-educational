@@ -1,0 +1,1327 @@
+{
+    "formatRevision": 1,
+    "modules": [
+        {
+            "moduleFiles": [
+                {
+                    "entries": [
+                        {
+                            "codegenResult": 2,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "cpuModelData",
+                            "line": 10,
+                            "message": "Cannot generate efficient code for storing an array in a non-sequence type"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 41,
+                            "durationMicroseconds": 0,
+                            "functionName": "timelineModelData",
+                            "line": 11,
+                            "message": "Cannot generate efficient code for storing an array in a non-sequence type"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 41,
+                            "durationMicroseconds": 0,
+                            "functionName": "processStatesData",
+                            "line": 13,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 19,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 8,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 22,
+                            "durationMicroseconds": 0,
+                            "functionName": "onTriggered",
+                            "line": 23,
+                            "message": "Cannot access value for name dbManager"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 23,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 33,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 37,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 21,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 38,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 43,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 25,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 44,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 45,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 28,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 50,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 52,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 79,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 55,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "top",
+                            "line": 62,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 73,
+                            "durationMicroseconds": 0,
+                            "functionName": "bottom",
+                            "line": 62,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 94,
+                            "durationMicroseconds": 0,
+                            "functionName": "left",
+                            "line": 62,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 114,
+                            "durationMicroseconds": 0,
+                            "functionName": "right",
+                            "line": 62,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 65,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 67,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 73,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 67,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 107,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 67,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 51,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 69,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 46,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 70,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 112,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 70,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 48,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 75,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 65,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 76,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 113,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 77,
+                            "message": "Cannot load property color from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 80,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 48,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 82,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 91,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 81,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 46,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 85,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 111,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 85,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 94,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 69,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 94,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 91,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 94,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 37,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 96,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 100,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 77,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 100,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 111,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 100,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 51,
+                            "durationMicroseconds": 0,
+                            "functionName": "percentage",
+                            "line": 101,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 97,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 104,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 71,
+                            "durationMicroseconds": 0,
+                            "functionName": "to",
+                            "line": 105,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 107,
+                            "durationMicroseconds": 0,
+                            "functionName": "loops",
+                            "line": 105,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 65,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 107,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 63,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 109,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 132,
+                            "durationMicroseconds": 0,
+                            "functionName": "maskSource",
+                            "line": 109,
+                            "message": "Cannot access value for name cardMask"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 42,
+                            "durationMicroseconds": 4000,
+                            "functionName": "onPaint",
+                            "line": 113,
+                            "message": "Cannot generate efficient code for call to untyped JavaScript function"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 59,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 111,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 55,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 112,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 70,
+                            "durationMicroseconds": 0,
+                            "functionName": "on_WaveOffsetChanged",
+                            "line": 112,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 128,
+                            "durationMicroseconds": 0,
+                            "functionName": "onPercentageChanged",
+                            "line": 112,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 64,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 132,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 204,
+                            "durationMicroseconds": 0,
+                            "functionName": "style",
+                            "line": 132,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 229,
+                            "durationMicroseconds": 0,
+                            "functionName": "styleColor",
+                            "line": 132,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 50,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 132,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 185,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 132,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 136,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 77,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 136,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 111,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 136,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 138,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 128,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 139,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 141,
+                            "message": "Cannot load property running from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::processStatesData with type QVariant."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 80,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 149,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 124,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 149,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 113,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 150,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 50,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 152,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 74,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 152,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 145,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 152,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 50,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 153,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 74,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 153,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 153,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 153,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 42,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 156,
+                            "message": "Cannot load property total from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::processStatesData with type QVariant."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 162,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 156,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 20,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 166,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 42,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 166,
+                            "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml)::parent with type QQuickItem."
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 91,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 166,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "loops",
+                            "line": 172,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 173,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 138,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 173,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 174,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 122,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 174,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 42,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 175,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "target",
+                            "line": 176,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 122,
+                            "durationMicroseconds": 0,
+                            "functionName": "type",
+                            "line": 176,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 180,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 37,
+                            "durationMicroseconds": 0,
+                            "functionName": "left",
+                            "line": 182,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 57,
+                            "durationMicroseconds": 0,
+                            "functionName": "right",
+                            "line": 182,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 76,
+                            "durationMicroseconds": 0,
+                            "functionName": "top",
+                            "line": 182,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 117,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 182,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 75,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 186,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 43,
+                            "durationMicroseconds": 0,
+                            "functionName": "trackWidth",
+                            "line": 198,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "top",
+                            "line": 194,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 64,
+                            "durationMicroseconds": 0,
+                            "functionName": "bottom",
+                            "line": 194,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 85,
+                            "durationMicroseconds": 0,
+                            "functionName": "left",
+                            "line": 194,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 105,
+                            "durationMicroseconds": 0,
+                            "functionName": "right",
+                            "line": 194,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 54,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 201,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 201,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 203,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 205,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 71,
+                            "durationMicroseconds": 0,
+                            "functionName": "spacing",
+                            "line": 205,
+                            "message": "Cannot access value for name graphArea"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 207,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 209,
+                            "message": "Cannot access value for name graphArea"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 83,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 208,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 86,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 209,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 40,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 214,
+                            "message": "Cannot access value for name graphArea"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 70,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 214,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 103,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 214,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 44,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 217,
+                            "message": "Cannot access value for name schedulingRec"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 218,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 48,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 222,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 72,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 222,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 52,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 224,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 226,
+                            "message": "Cannot access value for name trackBox"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 103,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 226,
+                            "message": "Cannot access value for name trackBox"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 227,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 44,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 235,
+                            "message": "Cannot access value for name schedulingRec"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 45,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 236,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 48,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 240,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 72,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 240,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 52,
+                            "durationMicroseconds": 0,
+                            "functionName": "model",
+                            "line": 242,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 245,
+                            "message": "Cannot access value for name trackBox"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 103,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 245,
+                            "message": "Cannot access value for name trackBox"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 246,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 74,
+                            "durationMicroseconds": 0,
+                            "functionName": "isProcess",
+                            "line": 249,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 85,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 252,
+                            "message": "Cannot access value for name modelData"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 62,
+                            "durationMicroseconds": 0,
+                            "functionName": "visible",
+                            "line": 254,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 71,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 252,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 103,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 253,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 62,
+                            "durationMicroseconds": 0,
+                            "functionName": "enabled",
+                            "line": 259,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 64,
+                            "durationMicroseconds": 0,
+                            "functionName": "onEntered",
+                            "line": 263,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 63,
+                            "durationMicroseconds": 0,
+                            "functionName": "onExited",
+                            "line": 273,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 67,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 258,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 39,
+                            "durationMicroseconds": 0,
+                            "functionName": "height",
+                            "line": 290,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 30,
+                            "durationMicroseconds": 0,
+                            "functionName": "opacity",
+                            "line": 291,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "x",
+                            "line": 292,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "horizontalCenter",
+                            "line": 314,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 319,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 325,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 75,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 326,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 328,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 334,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 335,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 339,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 75,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 340,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 342,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 28,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 348,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 28,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 349,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 47,
+                            "durationMicroseconds": 0,
+                            "functionName": "horizontalCenter",
+                            "line": 355,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 359,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 119,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 360,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 100,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 360,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 35,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 362,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 79,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 363,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 62,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 368,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 115,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 368,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "verticalCenter",
+                            "line": 372,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 119,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 373,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 100,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 373,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 35,
+                            "durationMicroseconds": 0,
+                            "functionName": "text",
+                            "line": 375,
+                            "message": "Cannot access value for name cpuSchedulingPage"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 79,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 376,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 24,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 385,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 31,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 386,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 70,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 390,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        }
+                    ],
+                    "filePath": "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuSchedulingPage.qml"
+                }
+            ],
+            "moduleId": "xv6ui(appxv6ui)"
+        }
+    ]
+}

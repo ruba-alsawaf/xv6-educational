@@ -1,0 +1,114 @@
+[
+    {
+        "classes": [
+            {
+                "classInfos": [
+                    {
+                        "name": "QML.Element",
+                        "value": "auto"
+                    }
+                ],
+                "className": "ChatBotClient",
+                "methods": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "message",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "sendMessage",
+                        "returnType": "void"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "ChatBotClient",
+                "signals": [
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "answer",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "responseReceived",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "errorString",
+                                "type": "QString"
+                            }
+                        ],
+                        "name": "errorOccurred",
+                        "returnType": "void"
+                    }
+                ],
+                "slots": [
+                    {
+                        "access": "private",
+                        "arguments": [
+                            {
+                                "name": "reply",
+                                "type": "QNetworkReply*"
+                            }
+                        ],
+                        "name": "onReplyFinished",
+                        "returnType": "void"
+                    }
+                ],
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "chatbotclient.h",
+        "outputRevision": 68
+    },
+    {
+        "classes": [
+            {
+                "className": "DbManager",
+                "methods": [
+                    {
+                        "access": "public",
+                        "name": "getLatestCpuMetrics",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getTimelineMetrics",
+                        "returnType": "QVariantList"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getAverageCpuUsage",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "name": "getProcessStatesCount",
+                        "returnType": "QVariantMap"
+                    }
+                ],
+                "object": true,
+                "qualifiedClassName": "DbManager",
+                "superClasses": [
+                    {
+                        "access": "public",
+                        "name": "QObject"
+                    }
+                ]
+            }
+        ],
+        "inputFile": "dbmanager.h",
+        "outputRevision": 68
+    }
+]
