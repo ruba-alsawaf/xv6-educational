@@ -8,8 +8,8 @@
 // المصفوفات العالمية لحماية الـ Stack
 static struct cpu_info cpus[NCPU];
 static struct proc_stats stats;
-static struct cs_event cs_ev[32];
-static struct fs_event fs_ev[32];
+static struct cs_event cs_ev[256];
+static struct fs_event fs_ev[256];
 
 static const char *state_names[PROC_STATE_COUNT] = {
   "UNUSED", "USED", "SLEEPING", "RUNNABLE", "RUNNING", "ZOMBIE"
@@ -126,22 +126,20 @@ main(void)
     }
     printf("]}\n");
 
-   // 2. قراءة أحداث المعالج المتوفرة في البفر حالياً
-    int n_cs = csread(cs_ev, 32);
-    for (int i = 0; i < n_cs; i++) { // الدوران فقط حتى n_cs الحقيقية
+    // 2. قراءة أحداث المعالج - اقرأ 256 حدث بنسخة واحدة
+    int n_cs = csread(cs_ev, 256);
+    for (int i = 0; i < n_cs; i++) {
         if (cs_ev[i].type == 1) 
             print_cs_event(&cs_ev[i]);
     }
 
-    
-// 3. قراءة أحداث نظام الملفات المتوفرة في البفر حالياً
-    int n_fs = fsread(fs_ev, 32);
-    for (int i = 0; i < n_fs; i++) { 
-        // إذا كان الـ seq مصفراً، فهذا مخلفات بافر، لا تطبعه
+    // 3. قراءة أحداث نظام الملفات - اقرأ 256 حدث بنسخة واحدة
+    int n_fs = fsread(fs_ev, 256);
+    for (int i = 0; i < n_fs; i++) {
         if (fs_ev[i].seq != 0) {
             print_fs_event(&fs_ev[i]);
         }
     }
-    // الخروج وإنهاء البرنامج فوراً دون الدخول في حلقة لانهائية
+    
     exit(0); 
 }

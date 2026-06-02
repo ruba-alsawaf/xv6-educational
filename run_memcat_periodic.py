@@ -14,8 +14,9 @@ DB_PATH = "events.db"
 SESSION_ID = str(uuid.uuid4())
 
 MEMCAT_RE = re.compile(
-    r"#\d+\s+seq=(?P<seq>\d+)\s+tick=(?P<ticks>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
-    r"\s+type=(?P<type>\S+)\s+src=(?P<source>\S+)\s+name=(?P<name>\S+)\s+old=(?P<old>\S+)\s+new=(?P<new>\S+)"
+    r"#\d+\s+seq=(?P<seq>\d+)\s+tick=(?P<tick>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
+    r"\s+type=(?P<type>\S+)\s+src=(?P<src>\S+)\s+va=(?P<va>[\da-fA-Fx]+)\s+pa=(?P<pa>[\da-fA-Fx]+)"
+    r"\s+perm=(?P<perm>[^\s]*)\s+kind=(?P<kind>\S+)\s+name=(?P<name>\S+)\s+old=(?P<old>[\da-fA-Fx]+)\s+new=(?P<new>[\da-fA-Fx]+)"
 )
 
 
@@ -31,19 +32,26 @@ def parse_mem_event(line: str) -> dict | None:
     if not m:
         return None
 
-    oldsz = parse_int(m.group("old"))
-    newsz = parse_int(m.group("new"))
+    old_val = parse_int(m.group("old"))
+    new_val = parse_int(m.group("new"))
+    va_val = parse_int(m.group("va"))
+    pa_val = parse_int(m.group("pa"))
+    perm_val = m.group("perm") if m.group("perm") else None
 
     return {
         "seq": int(m.group("seq")),
-        "ticks": int(m.group("ticks")),
+        "tick": int(m.group("tick")),
         "cpu": int(m.group("cpu")),
         "pid": int(m.group("pid")),
         "type": m.group("type"),
-        "source": m.group("source"),
+        "src": m.group("src"),
+        "va": va_val if va_val is not None else 0,
+        "pa": pa_val if pa_val is not None else 0,
+        "perm": perm_val,
+        "kind": m.group("kind"),
         "name": m.group("name"),
-        "oldsz": oldsz if oldsz is not None else 0,
-        "newsz": newsz if newsz is not None else 0,
+        "old": old_val if old_val is not None else 0,
+        "new": new_val if new_val is not None else 0,
     }
 
 
@@ -51,20 +59,24 @@ def insert_mem_event(cur: sqlite3.Cursor, event: dict) -> None:
     cur.execute(
         """
         INSERT INTO mem_events
-        (session_id, seq, ticks, cpu, pid, type, source, name, oldsz, newsz)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        (session_id, seq, tick, cpu, pid, type, src, va, pa, perm, kind, name, old, new)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             SESSION_ID,
             event["seq"],
-            event["ticks"],
+            event["tick"],
             event["cpu"],
             event["pid"],
             event["type"],
-            event["source"],
+            event["src"],
+            event["va"],
+            event["pa"],
+            event["perm"],
+            event["kind"],
             event["name"],
-            event["oldsz"],
-            event["newsz"],
+            event["old"],
+            event["new"],
         ),
     )
 
@@ -76,14 +88,18 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             session_id TEXT NOT NULL,
             seq INTEGER,
-            ticks INTEGER,
+            tick INTEGER,
             cpu INTEGER,
             pid INTEGER,
             type TEXT,
-            source TEXT,
+            src TEXT,
+            va INTEGER,
+            pa INTEGER,
+            perm TEXT,
+            kind TEXT,
             name TEXT,
-            oldsz INTEGER,
-            newsz INTEGER,
+            old INTEGER,
+            new INTEGER,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         """
@@ -133,7 +149,7 @@ def main() -> None:
                             try:
                                 insert_mem_event(cur, mem_event)
                                 con.commit()
-                                print(f"[OK] Saved MEM event seq={mem_event['seq']} pid={mem_event['pid']}")
+                                print(f"[OK] Saved MEM event seq={mem_event['seq']} pid={mem_event['pid']} type={mem_event['type']}")
                             except sqlite3.Error as e:
                                 print(f"[ERR] SQLite failed: {e}")
             except IOError:
