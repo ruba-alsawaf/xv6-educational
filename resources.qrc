@@ -3,6 +3,7 @@
         <file>CPUSchedulingLogo.svg</file>
         <file>FileSystemLogo.svg</file>
         <file>MemoryManagmentLogo.svg</file>
+        <file>chat-bot.svg</file>
     </qresource>
     <qresource prefix="/">
         <file>ProcessForkPage.qml</file>
@@ -15,5 +16,6 @@
         <file>KernelSpacePage.qml</file>
         <file>UserAddressSpacePage.qml</file>
         <file>ContextSwitchPage.qml</file>
+        <file>ChatbotPanel.qml</file>
     </qresource>
 </RCC>
