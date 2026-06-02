@@ -30,6 +30,7 @@ main()
     virtio_disk_init(); // emulated hard disk
     cslog_init();
     fslog_init();
+    memlog_init();
     userinit();      // first user process
     __sync_synchronize();
     started = 1;
