@@ -68,6 +68,7 @@ install(TARGETS appxv6ui
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
 target_link_libraries(appxv6ui
     PRIVATE
         Qt6::Quick
@@ -75,3 +76,4 @@ target_link_libraries(appxv6ui
         Qt6::Sql
         Qt6::Network
 )
+
