@@ -1,9 +1,0 @@
-module xv6ui
-typeinfo appxv6ui.qmltypes
-prefer :/qt/qml/xv6ui/
-Main 254.0 Main.qml
-NavigationLogic 254.0 NavigationLogic.js
-CpuSchedulingPage 254.0 CpuSchedulingPage.qml
-MemoryManagementPage 254.0 MemoryManagementPage.qml
-depends QtQuick
-

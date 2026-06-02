@@ -1,3 +1,0 @@
-set(__QT_DEPLOY_TARGET_appxv6ui_FILE C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/appxv6ui.exe)
-set(__QT_DEPLOY_TARGET_appxv6ui_TYPE EXECUTABLE)
-set(__QT_DEPLOY_TARGET_appxv6ui_RUNTIME_DLLS C:/Qt/6.11.0/mingw_64/bin/Qt6Quick.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Core5Compat.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Sql.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6OpenGL.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Gui.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6QmlMeta.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6QmlModels.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6QmlWorkerScript.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Qml.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Network.dll;C:/Qt/6.11.0/mingw_64/bin/Qt6Core.dll)
