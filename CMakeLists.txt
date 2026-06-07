@@ -39,6 +39,8 @@ qt_add_qml_module(appxv6ui
         ContextSwitchPage.qml
         FileSystem.qml
         NavigationLogic.js
+        LoginPage.qml
+        CpuQuizPage.qml
     RESOURCES
         test.png
 )

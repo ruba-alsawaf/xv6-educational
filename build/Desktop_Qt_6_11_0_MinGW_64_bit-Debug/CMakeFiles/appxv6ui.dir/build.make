@@ -314,6 +314,34 @@ xv6ui/appxv6ui.qmltypes: appxv6ui_qmltyperegistrations.cpp
 	C:\Qt\Tools\CMake_64\bin\cmake.exe -E make_directory "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache"
 	call .qt\bin\qt_setup_tool_path.bat C:/Qt/6.11.0/mingw_64/bin/qmlcachegen.exe --bare --resource-path /qt/qml/xv6ui/NavigationLogic.js -I "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug" -I C:/Qt/6.11.0/mingw_64/qml -i "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/qmldir" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qmake_xv6ui.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_qml_0.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_res_0.qrc" --dump-aot-stats --module-id=xv6ui(appxv6ui) -o "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp" "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/NavigationLogic.js"
 
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: C:/Qt/6.11.0/mingw_64/bin/qmlcachegen.exe
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/LoginPage.qml
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: .qt/rcc/qmake_xv6ui.qrc
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: .qt/rcc/appxv6ui_raw_qml_0.qrc
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: .qt/rcc/appxv6ui_raw_res_0.qrc
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: xv6ui/appxv6ui.qmltypes
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp: xv6ui/qmldir
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_20) "Generating .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp, .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.aotstats"
+	C:\Qt\Tools\CMake_64\bin\cmake.exe -E make_directory "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache"
+	call .qt\bin\qt_setup_tool_path.bat C:/Qt/6.11.0/mingw_64/bin/qmlcachegen.exe --bare --resource-path /qt/qml/xv6ui/LoginPage.qml -I "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug" -I C:/Qt/6.11.0/mingw_64/qml -i "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/qmldir" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qmake_xv6ui.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_qml_0.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_res_0.qrc" --dump-aot-stats --module-id=xv6ui(appxv6ui) -o "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp" "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/LoginPage.qml"
+
+.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.aotstats: .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp
+	@$(CMAKE_COMMAND) -E touch_nocreate .rcc\qmlcache\appxv6ui_LoginPage_qml.cpp.aotstats
+
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: C:/Qt/6.11.0/mingw_64/bin/qmlcachegen.exe
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuQuizPage.qml
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: .qt/rcc/qmake_xv6ui.qrc
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: .qt/rcc/appxv6ui_raw_qml_0.qrc
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: .qt/rcc/appxv6ui_raw_res_0.qrc
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: xv6ui/appxv6ui.qmltypes
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp: xv6ui/qmldir
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_21) "Generating .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp, .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.aotstats"
+	C:\Qt\Tools\CMake_64\bin\cmake.exe -E make_directory "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache"
+	call .qt\bin\qt_setup_tool_path.bat C:/Qt/6.11.0/mingw_64/bin/qmlcachegen.exe --bare --resource-path /qt/qml/xv6ui/CpuQuizPage.qml -I "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug" -I C:/Qt/6.11.0/mingw_64/qml -i "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/qmldir" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qmake_xv6ui.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_qml_0.qrc" --resource "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_res_0.qrc" --dump-aot-stats --module-id=xv6ui(appxv6ui) -o "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp" "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuQuizPage.qml"
+
+.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.aotstats: .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp
+	@$(CMAKE_COMMAND) -E touch_nocreate .rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp.aotstats
+
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/Main.qml
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuSchedulingPage.qml
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/MemoryManagementPage.qml
@@ -329,25 +357,29 @@ xv6ui/appxv6ui.qmltypes: appxv6ui_qmltyperegistrations.cpp
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/ContextSwitchPage.qml
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/FileSystem.qml
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/NavigationLogic.js
+.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/LoginPage.qml
+.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuQuizPage.qml
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: .qt/rcc/appxv6ui_raw_qml_0.qrc
 .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp: C:/Qt/6.11.0/mingw_64/bin/rcc.exe
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_20) "Running rcc for resource appxv6ui_raw_qml_0"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_22) "Running rcc for resource appxv6ui_raw_qml_0"
 	C:\Qt\6.11.0\mingw_64\bin\rcc.exe --output "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp" --name appxv6ui_raw_qml_0 "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_qml_0.qrc" --no-zstd
 
 .qt/rcc/qrc_appxv6ui_raw_res_0.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/test.png
 .qt/rcc/qrc_appxv6ui_raw_res_0.cpp: .qt/rcc/appxv6ui_raw_res_0.qrc
 .qt/rcc/qrc_appxv6ui_raw_res_0.cpp: C:/Qt/6.11.0/mingw_64/bin/rcc.exe
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_21) "Running rcc for resource appxv6ui_raw_res_0"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_23) "Running rcc for resource appxv6ui_raw_res_0"
 	C:\Qt\6.11.0\mingw_64\bin\rcc.exe --output "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp" --name appxv6ui_raw_res_0 "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/appxv6ui_raw_res_0.qrc" --no-zstd
 
 appxv6ui_autogen/timestamp: C:/Qt/6.11.0/mingw_64/bin/moc.exe
 appxv6ui_autogen/timestamp: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_22) "Automatic MOC and UIC for target appxv6ui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_24) "Automatic MOC and UIC for target appxv6ui"
 	C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_autogen "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/appxv6ui_autogen.dir/AutogenInfo.json" Debug
 	C:\Qt\Tools\CMake_64\bin\cmake.exe -E touch "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/appxv6ui_autogen/timestamp"
 
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/resources.qrc
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: CMakeFiles/appxv6ui_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json
+appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/QuizPage.qml
+appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuQuizPage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/OsArchitecturePage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/KernelSpacePage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/FileSystemLessonPage.qml
@@ -358,28 +390,29 @@ appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/ContextSwitchPage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/UserAddressSpacePage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/MemoryTranslationPage.qml
+appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/LoginPage.qml
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/MemoryManagmentLogo.svg
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/FileSystemLogo.svg
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CPUSchedulingLogo.svg
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Qt/6.11.0/mingw_64/bin/rcc.exe
 appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp: C:/Qt/6.11.0/mingw_64/bin/rcc.exe
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_23) "Automatic RCC for resources.qrc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_25) "Automatic RCC for resources.qrc"
 	C:\Qt\Tools\CMake_64\bin\cmake.exe -E cmake_autorcc "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/appxv6ui_autogen.dir/AutoRcc_resources_EWIEGA46WW_Info.json" Debug
 
 meta_types/appxv6ui_json_file_list.txt: C:/Qt/6.11.0/mingw_64/bin/cmake_automoc_parser.exe
 meta_types/appxv6ui_json_file_list.txt: appxv6ui_autogen/timestamp
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_24) "Running AUTOMOC file extraction for target appxv6ui"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_26) "Running AUTOMOC file extraction for target appxv6ui"
 	C:\Qt\6.11.0\mingw_64\bin\cmake_automoc_parser.exe --cmake-autogen-cache-file "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/appxv6ui_autogen.dir/ParseCache.txt" --cmake-autogen-info-file "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/CMakeFiles/appxv6ui_autogen.dir/AutogenInfo.json" --output-file-path "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/meta_types/appxv6ui_json_file_list.txt" --timestamp-file-path "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/meta_types/appxv6ui_json_file_list.txt.timestamp" --cmake-autogen-include-dir-path "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/appxv6ui_autogen/include"
 
 meta_types/qt6appxv6ui_metatypes.json: meta_types/qt6appxv6ui_metatypes.json.gen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_25) "Generating meta_types/qt6appxv6ui_metatypes.json"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_27) "Generating meta_types/qt6appxv6ui_metatypes.json"
 	C:\Qt\Tools\CMake_64\bin\cmake.exe -E true
 
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj: appxv6ui_autogen/mocs_compilation.cpp
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_26) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.obj -MF CMakeFiles\appxv6ui.dir\appxv6ui_autogen\mocs_compilation.cpp.obj.d -o CMakeFiles\appxv6ui.dir\appxv6ui_autogen\mocs_compilation.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\appxv6ui_autogen\mocs_compilation.cpp"
 
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/mocs_compilation.cpp.i: cmake_force
@@ -394,7 +427,7 @@ CMakeFiles/appxv6ui.dir/main.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
 CMakeFiles/appxv6ui.dir/main.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/main.cpp.obj: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/main.cpp
 CMakeFiles/appxv6ui.dir/main.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_27) "Building CXX object CMakeFiles/appxv6ui.dir/main.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/appxv6ui.dir/main.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/main.cpp.obj -MF CMakeFiles\appxv6ui.dir\main.cpp.obj.d -o CMakeFiles\appxv6ui.dir\main.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\main.cpp"
 
 CMakeFiles/appxv6ui.dir/main.cpp.i: cmake_force
@@ -409,7 +442,7 @@ CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
 CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/dbmanager.cpp
 CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_28) "Building CXX object CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/dbmanager.cpp.obj -MF CMakeFiles\appxv6ui.dir\dbmanager.cpp.obj.d -o CMakeFiles\appxv6ui.dir\dbmanager.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\dbmanager.cpp"
 
 CMakeFiles/appxv6ui.dir/dbmanager.cpp.i: cmake_force
@@ -424,7 +457,7 @@ CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj: CMakeFiles/appxv6
 CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj: appxv6ui_qmltyperegistrations.cpp
 CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_29) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -Wa,-mbig-obj -MD -MT CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.obj -MF CMakeFiles\appxv6ui.dir\appxv6ui_qmltyperegistrations.cpp.obj.d -o CMakeFiles\appxv6ui.dir\appxv6ui_qmltyperegistrations.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\appxv6ui_qmltyperegistrations.cpp"
 
 CMakeFiles/appxv6ui.dir/appxv6ui_qmltyperegistrations.cpp.i: cmake_force
@@ -439,7 +472,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_q
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj: .qt/rcc/qrc_qmake_xv6ui.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_30) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_qmake_xv6ui.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_qmake_xv6ui.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_qmake_xv6ui.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_qmake_xv6ui.cpp.i: cmake_force
@@ -454,7 +487,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj: .rcc/qmlcache/appxv6ui_qmlcache_loader.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_31) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_qmlcache_loader.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_qmlcache_loader.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_qmlcache_loader.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_qmlcache_loader.cpp.i: cmake_force
@@ -469,7 +502,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj: .rcc/qmlcache/appxv6ui_Main_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_32) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_Main_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_Main_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_Main_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.i: cmake_force
@@ -484,7 +517,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_33) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuSchedulingPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuSchedulingPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuSchedulingPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.i: cmake_force
@@ -499,7 +532,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_34) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryManagementPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryManagementPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryManagementPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp.i: cmake_force
@@ -514,7 +547,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_35) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelGuardPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelGuardPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelGuardPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.i: cmake_force
@@ -529,7 +562,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_36) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ProcessForkPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ProcessForkPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ProcessForkPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ProcessForkPage_qml.cpp.i: cmake_force
@@ -544,7 +577,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_37) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystemLessonPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystemLessonPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystemLessonPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp.i: cmake_force
@@ -559,7 +592,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_38) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_OsArchitecturePage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_OsArchitecturePage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_OsArchitecturePage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_OsArchitecturePage_qml.cpp.i: cmake_force
@@ -574,7 +607,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_39) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuPrivilegeModesPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuPrivilegeModesPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.i: cmake_force
@@ -589,7 +622,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_40) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_TrapsOverviewPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_TrapsOverviewPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_TrapsOverviewPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_TrapsOverviewPage_qml.cpp.i: cmake_force
@@ -604,7 +637,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_41) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryTranslationPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryTranslationPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_MemoryTranslationPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_MemoryTranslationPage_qml.cpp.i: cmake_force
@@ -619,7 +652,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_42) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelSpacePage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelSpacePage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_KernelSpacePage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.i: cmake_force
@@ -634,7 +667,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_43) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_UserAddressSpacePage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_UserAddressSpacePage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_UserAddressSpacePage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_UserAddressSpacePage_qml.cpp.i: cmake_force
@@ -649,7 +682,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_44) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ContextSwitchPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ContextSwitchPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_ContextSwitchPage_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.i: cmake_force
@@ -664,7 +697,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj: .rcc/qmlcache/appxv6ui_FileSystem_qml.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_45) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystem_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystem_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_FileSystem_qml.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.i: cmake_force
@@ -679,7 +712,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj: .rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_46) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_NavigationLogic_js.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_NavigationLogic_js.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_NavigationLogic_js.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.i: cmake_force
@@ -690,11 +723,41 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.s"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_NavigationLogic_js.cpp" -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_NavigationLogic_js.cpp.s
 
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_49) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp"
+
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp" > CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp.i
+
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp" -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_LoginPage_qml.cpp.s
+
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj: .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_50) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp"
+
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp" > CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp.i
+
+CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s"
+	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp" -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.rcc\qmlcache\appxv6ui_CpuQuizPage_qml.cpp.s
+
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj: CMakeFiles/appxv6ui.dir/flags.make
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj: .qt/rcc/qrc_appxv6ui_raw_qml_0.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_47) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_51) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_qml_0.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_qml_0.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_qml_0.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.i: cmake_force
@@ -709,7 +772,7 @@ CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_a
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj: .qt/rcc/qrc_appxv6ui_raw_res_0.cpp
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_48) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_52) "Building CXX object CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj -MF CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_res_0.cpp.obj.d -o CMakeFiles\appxv6ui.dir\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_res_0.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\rcc\qrc_appxv6ui_raw_res_0.cpp"
 
 CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.i: cmake_force
@@ -724,7 +787,7 @@ CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj: CMake
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj: CMakeFiles/appxv6ui.dir/includes_CXX.rsp
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj: appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj: CMakeFiles/appxv6ui.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_49) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_53) "Building CXX object CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj"
 	C:\Qt\Tools\mingw1310_64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj -MF CMakeFiles\appxv6ui.dir\appxv6ui_autogen\EWIEGA46WW\qrc_resources.cpp.obj.d -o CMakeFiles\appxv6ui.dir\appxv6ui_autogen\EWIEGA46WW\qrc_resources.cpp.obj -c "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\appxv6ui_autogen\EWIEGA46WW\qrc_resources.cpp"
 
 CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.i: cmake_force
@@ -758,6 +821,8 @@ appxv6ui_OBJECTS = \
 "CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj" \
 "CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj" \
 "CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj" \
+"CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj" \
+"CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj" \
 "CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj" \
 "CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj" \
 "CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj"
@@ -786,6 +851,8 @@ appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.obj
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_FileSystem_qml.cpp.obj
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_NavigationLogic_js.cpp.obj
+appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj
+appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_qml_0.cpp.obj
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/rcc/qrc_appxv6ui_raw_res_0.cpp.obj
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/appxv6ui_autogen/EWIEGA46WW/qrc_resources.cpp.obj
@@ -802,7 +869,7 @@ appxv6ui.exe: C:/Qt/6.11.0/mingw_64/lib/libQt6EntryPoint.a
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/linkLibs.rsp
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/objects1.rsp
 appxv6ui.exe: CMakeFiles/appxv6ui.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_50) "Linking CXX executable appxv6ui.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_54) "Linking CXX executable appxv6ui.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\appxv6ui.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -820,6 +887,8 @@ CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_ContextSwitchPage_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.aotstats
+CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp
+CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_FileSystemLessonPage_qml.cpp
@@ -830,6 +899,8 @@ CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_KernelGuardPage_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.aotstats
+CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp
+CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_Main_qml.cpp
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_Main_qml.cpp.aotstats
 CMakeFiles/appxv6ui.dir/depend: .rcc/qmlcache/appxv6ui_MemoryManagementPage_qml.cpp

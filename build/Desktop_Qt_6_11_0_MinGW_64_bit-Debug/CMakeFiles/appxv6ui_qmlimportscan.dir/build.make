@@ -86,6 +86,8 @@ CMakeFiles/appxv6ui_qmlimportscan: .qt/qml_imports/appxv6ui_build.cmake
 .qt/qml_imports/appxv6ui_build.cmake: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/ContextSwitchPage.qml
 .qt/qml_imports/appxv6ui_build.cmake: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/FileSystem.qml
 .qt/qml_imports/appxv6ui_build.cmake: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/NavigationLogic.js
+.qt/qml_imports/appxv6ui_build.cmake: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/LoginPage.qml
+.qt/qml_imports/appxv6ui_build.cmake: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuQuizPage.qml
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --blue --bold --progress-dir="C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Running qmlimportscanner for appxv6ui"
 	cd /d C:\Users\rubaa\DOWNLO~1\TELEGR~1\XV6UI(~2\xv6ui && call "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\bin\qt_setup_tool_path.bat" C:/Qt/6.11.0/mingw_64/bin/qmlimportscanner.exe "@C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/qml_imports/appxv6ui_build.rsp"
 

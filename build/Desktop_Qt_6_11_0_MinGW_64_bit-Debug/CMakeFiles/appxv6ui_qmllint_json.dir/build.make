@@ -81,6 +81,8 @@ CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6
 CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/ContextSwitchPage.qml
 CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/FileSystem.qml
 CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/NavigationLogic.js
+CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/LoginPage.qml
+CMakeFiles/appxv6ui_qmllint_json: C:/Users/rubaa/Downloads/Telegram\ Desktop/xv6ui\ (3)/xv6ui/CpuQuizPage.qml
 CMakeFiles/appxv6ui_qmllint_json: .rcc/qmllint/appxv6ui_json.rsp
 	cd /d C:\Users\rubaa\DOWNLO~1\TELEGR~1\XV6UI(~2\xv6ui && call "C:\Users\rubaa\Downloads\Telegram Desktop\xv6ui (3)\xv6ui\build\Desktop_Qt_6_11_0_MinGW_64_bit-Debug\.qt\bin\qt_setup_tool_path.bat" C:/Qt/6.11.0/mingw_64/bin/qmllint.exe "@C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmllint/appxv6ui_json.rsp"
 

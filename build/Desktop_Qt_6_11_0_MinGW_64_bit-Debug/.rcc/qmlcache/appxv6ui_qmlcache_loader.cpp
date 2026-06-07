@@ -110,6 +110,20 @@ namespace _qt_qml_xv6ui_NavigationLogic_js {
         reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
     };
 }
+namespace _qt_qml_xv6ui_LoginPage_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
+namespace _qt_qml_xv6ui_CpuQuizPage_qml { 
+    extern const unsigned char qmlData[];
+    extern const QQmlPrivate::AOTCompiledFunction aotBuiltFunctions[];
+    const QQmlPrivate::CachedQmlUnit unit = {
+        reinterpret_cast<const QV4::CompiledData::Unit*>(&qmlData), &aotBuiltFunctions[0], nullptr
+    };
+}
 
 }
 namespace {
@@ -139,6 +153,8 @@ Registry::Registry() {
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/xv6ui/ContextSwitchPage.qml"), &QmlCacheGeneratedCode::_qt_qml_xv6ui_ContextSwitchPage_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/xv6ui/FileSystem.qml"), &QmlCacheGeneratedCode::_qt_qml_xv6ui_FileSystem_qml::unit);
     resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/xv6ui/NavigationLogic.js"), &QmlCacheGeneratedCode::_qt_qml_xv6ui_NavigationLogic_js::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/xv6ui/LoginPage.qml"), &QmlCacheGeneratedCode::_qt_qml_xv6ui_LoginPage_qml::unit);
+    resourcePathToCachedUnit.insert(QStringLiteral("/qt/qml/xv6ui/CpuQuizPage.qml"), &QmlCacheGeneratedCode::_qt_qml_xv6ui_CpuQuizPage_qml::unit);
     QQmlPrivate::RegisterQmlUnitCacheHook registration;
     registration.structVersion = 0;
     registration.lookupCachedQmlUnit = &lookupCachedUnit;

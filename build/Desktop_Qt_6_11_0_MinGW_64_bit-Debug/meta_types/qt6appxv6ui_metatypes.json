@@ -32,6 +32,75 @@
                         "lineNumber": 22,
                         "name": "getProcessStatesCount",
                         "returnType": "QVariantMap"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "username",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "password",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 4,
+                        "lineNumber": 24,
+                        "name": "authenticate",
+                        "returnType": "bool"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "username",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "quizName",
+                                "type": "QString"
+                            }
+                        ],
+                        "index": 5,
+                        "lineNumber": 26,
+                        "name": "getQuizScore",
+                        "returnType": "int"
+                    },
+                    {
+                        "access": "public",
+                        "arguments": [
+                            {
+                                "name": "username",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "quizName",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "score",
+                                "type": "int"
+                            }
+                        ],
+                        "index": 6,
+                        "lineNumber": 27,
+                        "name": "saveQuizScore",
+                        "returnType": "void"
+                    },
+                    {
+                        "access": "public",
+                        "index": 7,
+                        "lineNumber": 29,
+                        "name": "getCurrentUser",
+                        "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "index": 8,
+                        "lineNumber": 31,
+                        "name": "logout",
+                        "returnType": "void"
                     }
                 ],
                 "object": true,

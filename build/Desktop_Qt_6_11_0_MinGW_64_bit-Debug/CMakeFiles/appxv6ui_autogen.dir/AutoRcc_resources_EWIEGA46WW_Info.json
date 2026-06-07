@@ -9,6 +9,8 @@
 	"INCLUDE_DIR" : "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/appxv6ui_autogen/include",
 	"INPUTS" : 
 	[
+		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/QuizPage.qml",
+		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuQuizPage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/OsArchitecturePage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/KernelSpacePage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/FileSystemLessonPage.qml",
@@ -19,6 +21,7 @@
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/ContextSwitchPage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/UserAddressSpacePage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/MemoryTranslationPage.qml",
+		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/LoginPage.qml",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/MemoryManagmentLogo.svg",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/FileSystemLogo.svg",
 		"C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CPUSchedulingLogo.svg"

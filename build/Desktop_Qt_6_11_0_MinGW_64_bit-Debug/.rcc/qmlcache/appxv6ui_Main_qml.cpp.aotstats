@@ -10,7 +10,7 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 15,
+                            "line": 16,
                             "message": ""
                         },
                         {
@@ -18,7 +18,7 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fillMode",
-                            "line": 21,
+                            "line": 22,
                             "message": ""
                         },
                         {
@@ -26,7 +26,7 @@
                             "column": 27,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 20,
+                            "line": 21,
                             "message": ""
                         },
                         {
@@ -34,7 +34,7 @@
                             "column": 21,
                             "durationMicroseconds": 0,
                             "functionName": "source",
-                            "line": 28,
+                            "line": 29,
                             "message": ""
                         },
                         {
@@ -42,7 +42,7 @@
                             "column": 27,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 27,
+                            "line": 28,
                             "message": ""
                         },
                         {
@@ -50,7 +50,7 @@
                             "column": 16,
                             "durationMicroseconds": 0,
                             "functionName": "color",
-                            "line": 37,
+                            "line": 38,
                             "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
                         },
                         {
@@ -58,7 +58,7 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 36,
+                            "line": 37,
                             "message": ""
                         },
                         {
@@ -66,7 +66,7 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 42,
+                            "line": 43,
                             "message": ""
                         },
                         {
@@ -74,12 +74,20 @@
                             "column": 26,
                             "durationMicroseconds": 0,
                             "functionName": "orientation",
-                            "line": 44,
+                            "line": 45,
                             "message": "Cannot load property Diagonal from const QMetaObject."
                         },
                         {
                             "codegenResult": 2,
-                            "column": 24,
+                            "column": 50,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 46,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 50,
                             "durationMicroseconds": 0,
                             "functionName": "color",
                             "line": 47,
@@ -87,18 +95,10 @@
                         },
                         {
                             "codegenResult": 2,
-                            "column": 24,
+                            "column": 50,
                             "durationMicroseconds": 0,
                             "functionName": "color",
-                            "line": 51,
-                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 24,
-                            "durationMicroseconds": 0,
-                            "functionName": "color",
-                            "line": 55,
+                            "line": 48,
                             "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
                         },
                         {
@@ -106,255 +106,247 @@
                             "column": 23,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 62,
+                            "line": 55,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 21,
-                            "durationMicroseconds": 0,
-                            "functionName": "height",
-                            "line": 70,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 20,
-                            "durationMicroseconds": 0,
-                            "functionName": "color",
-                            "line": 72,
-                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 31,
+                            "column": 27,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 75,
+                            "line": 60,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 28,
+                            "column": 25,
                             "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 81,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 37,
-                            "durationMicroseconds": 0,
-                            "functionName": "weight",
-                            "line": 89,
+                            "functionName": "height",
+                            "line": 68,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 32,
+                            "column": 24,
                             "durationMicroseconds": 0,
                             "functionName": "color",
-                            "line": 101,
+                            "line": 70,
                             "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
                         },
                         {
                             "codegenResult": 0,
-                            "column": 37,
+                            "column": 35,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 73,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 32,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 79,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 41,
                             "durationMicroseconds": 0,
                             "functionName": "weight",
+                            "line": 87,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
                             "line": 99,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 32,
-                            "durationMicroseconds": 0,
-                            "functionName": "color",
-                            "line": 107,
                             "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
                         },
                         {
                             "codegenResult": 0,
-                            "column": 28,
+                            "column": 41,
                             "durationMicroseconds": 0,
-                            "functionName": "width",
-                            "line": 114,
+                            "functionName": "weight",
+                            "line": 97,
                             "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 36,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 105,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
                         },
                         {
                             "codegenResult": 0,
                             "column": 32,
                             "durationMicroseconds": 0,
                             "functionName": "width",
-                            "line": 193,
+                            "line": 112,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 60,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 137,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 51,
+                            "column": 79,
                             "durationMicroseconds": 0,
                             "functionName": "isSelected",
-                            "line": 197,
+                            "line": 140,
                             "message": "Cannot access value for name navList"
                         },
                         {
                             "codegenResult": 2,
-                            "column": 32,
-                            "durationMicroseconds": 0,
+                            "column": 60,
+                            "durationMicroseconds": 1000,
                             "functionName": "color",
-                            "line": 199,
-                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: call to method rgba, returning QVariant -> QColor stored as QVariant"
+                            "line": 141,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: conversion to QVariant -> QColor stored as QVariant"
                         },
                         {
                             "codegenResult": 0,
-                            "column": 32,
-                            "durationMicroseconds": 0,
-                            "functionName": "scale",
-                            "line": 280,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 40,
-                            "durationMicroseconds": 0,
-                            "functionName": "enabled",
-                            "line": 209,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 46,
-                            "durationMicroseconds": 0,
-                            "functionName": "type",
-                            "line": 220,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 43,
+                            "column": 71,
                             "durationMicroseconds": 0,
                             "functionName": "left",
-                            "line": 225,
+                            "line": 144,
                             "message": ""
                         },
                         {
                             "codegenResult": 0,
-                            "column": 53,
+                            "column": 132,
                             "durationMicroseconds": 0,
                             "functionName": "verticalCenter",
-                            "line": 227,
+                            "line": 144,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 41,
+                            "column": 73,
                             "durationMicroseconds": 0,
                             "functionName": "source",
-                            "line": 233,
+                            "line": 146,
                             "message": "Cannot access value for name iconPath"
                         },
                         {
-                            "codegenResult": 0,
-                            "column": 43,
-                            "durationMicroseconds": 0,
-                            "functionName": "fillMode",
-                            "line": 236,
-                            "message": ""
-                        },
-                        {
                             "codegenResult": 2,
-                            "column": 44,
-                            "durationMicroseconds": 0,
-                            "functionName": "color",
-                            "line": 241,
-                            "message": "Cannot access value for name isSelected"
-                        },
-                        {
-                            "codegenResult": 2,
-                            "column": 39,
+                            "column": 70,
                             "durationMicroseconds": 0,
                             "functionName": "text",
-                            "line": 255,
+                            "line": 147,
                             "message": "Cannot access value for name name"
                         },
                         {
-                            "codegenResult": 2,
-                            "column": 40,
-                            "durationMicroseconds": 0,
-                            "functionName": "color",
-                            "line": 260,
-                            "message": "Cannot access value for name isSelected"
-                        },
-                        {
                             "codegenResult": 0,
-                            "column": 57,
-                            "durationMicroseconds": 0,
-                            "functionName": "verticalCenter",
-                            "line": 256,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 46,
-                            "durationMicroseconds": 0,
-                            "functionName": "weight",
-                            "line": 259,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 54,
-                            "durationMicroseconds": 0,
-                            "functionName": "type",
-                            "line": 273,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 46,
-                            "durationMicroseconds": 0,
-                            "functionName": "type",
-                            "line": 284,
-                            "message": ""
-                        },
-                        {
-                            "codegenResult": 0,
-                            "column": 42,
+                            "column": 70,
                             "durationMicroseconds": 0,
                             "functionName": "cursorShape",
-                            "line": 292,
+                            "line": 153,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 40,
-                            "durationMicroseconds": 0,
+                            "column": 68,
+                            "durationMicroseconds": 1000,
                             "functionName": "onClicked",
-                            "line": 293,
+                            "line": 154,
                             "message": "Cannot access value for name navList"
                         },
                         {
                             "codegenResult": 0,
-                            "column": 43,
+                            "column": 71,
                             "durationMicroseconds": 0,
                             "functionName": "fill",
-                            "line": 290,
+                            "line": 151,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "width",
+                            "line": 164,
                             "message": ""
                         },
                         {
                             "codegenResult": 2,
-                            "column": 20,
+                            "column": 56,
+                            "durationMicroseconds": 0,
+                            "functionName": "color",
+                            "line": 167,
+                            "message": "Cannot generate efficient code for internal conversion with incompatible or ambiguous types: conversion to QVariant -> QColor stored as QVariant"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 71,
+                            "durationMicroseconds": 0,
+                            "functionName": "centerIn",
+                            "line": 170,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 66,
+                            "durationMicroseconds": 0,
+                            "functionName": "weight",
+                            "line": 174,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 66,
+                            "durationMicroseconds": 0,
+                            "functionName": "cursorShape",
+                            "line": 181,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 64,
+                            "durationMicroseconds": 0,
+                            "functionName": "onClicked",
+                            "line": 182,
+                            "message": "Cannot access value for name dbManager"
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 67,
+                            "durationMicroseconds": 0,
+                            "functionName": "fill",
+                            "line": 179,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 2,
+                            "column": 48,
                             "durationMicroseconds": 0,
                             "functionName": "width",
-                            "line": 306,
+                            "line": 195,
                             "message": "Cannot load property spacing from (component in C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/Main.qml)::parent with type QQuickItem."
                         },
                         {
                             "codegenResult": 0,
-                            "column": 21,
+                            "column": 49,
                             "durationMicroseconds": 0,
                             "functionName": "height",
-                            "line": 307,
+                            "line": 196,
+                            "message": ""
+                        },
+                        {
+                            "codegenResult": 0,
+                            "column": 49,
+                            "durationMicroseconds": 0,
+                            "functionName": "onLoginSuccess",
+                            "line": 206,
                             "message": ""
                         }
                     ],

@@ -15,5 +15,8 @@
         <file>KernelSpacePage.qml</file>
         <file>UserAddressSpacePage.qml</file>
         <file>ContextSwitchPage.qml</file>
+        <file>LoginPage.qml</file>
+        <file>QuizPage.qml</file>
+        <file>CpuQuizPage.qml</file>
     </qresource>
 </RCC>

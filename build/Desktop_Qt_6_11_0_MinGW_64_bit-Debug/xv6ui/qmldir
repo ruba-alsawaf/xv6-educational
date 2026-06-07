@@ -16,5 +16,7 @@ UserAddressSpacePage 1.0 UserAddressSpacePage.qml
 ContextSwitchPage 1.0 ContextSwitchPage.qml
 FileSystem 1.0 FileSystem.qml
 NavigationLogic 1.0 NavigationLogic.js
+LoginPage 1.0 LoginPage.qml
+CpuQuizPage 1.0 CpuQuizPage.qml
 depends QtQuick
 

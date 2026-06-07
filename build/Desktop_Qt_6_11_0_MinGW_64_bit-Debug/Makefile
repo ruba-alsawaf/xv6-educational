@@ -599,6 +599,30 @@ build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeMo
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.s
 .PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.cpp.s
 
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.obj: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.obj
+
+# target to build an object file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.obj
+
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.i: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.i
+
+# target to preprocess a source file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.i
+
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.s: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.s
+
+# target to generate assembly for a file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.cpp.s
+
 build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.obj: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.cpp.obj
 .PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.obj
 
@@ -718,6 +742,30 @@ build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePag
 build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.s
 .PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.cpp.s
+
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.obj: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.obj
+
+# target to build an object file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.obj
+
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.i: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.i
+
+# target to preprocess a source file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.i
+
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.s: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.s
+
+# target to generate assembly for a file
+build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\appxv6ui.dir\build.make CMakeFiles/appxv6ui.dir/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s
+.PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.cpp.s
 
 build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.obj: build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.cpp.obj
 .PHONY : build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.obj
@@ -1038,6 +1086,9 @@ help:
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.obj
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.i
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuPrivilegeModesPage_qml.s
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.obj
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.i
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuQuizPage_qml.s
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.obj
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.i
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_CpuSchedulingPage_qml.s
@@ -1053,6 +1104,9 @@ help:
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.obj
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.i
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_KernelSpacePage_qml.s
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.obj
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.i
+	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_LoginPage_qml.s
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.obj
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.i
 	@echo ... build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.rcc/qmlcache/appxv6ui_Main_qml.s

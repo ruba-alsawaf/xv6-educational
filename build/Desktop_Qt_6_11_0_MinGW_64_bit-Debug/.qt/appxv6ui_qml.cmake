@@ -32,6 +32,10 @@ set(src_and_dest_list
     "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/FileSystem.qml"
     "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/NavigationLogic.js"
     "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/NavigationLogic.js"
+    "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/LoginPage.qml"
+    "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/LoginPage.qml"
+    "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/CpuQuizPage.qml"
+    "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/xv6ui/CpuQuizPage.qml"
 
 )
 set(timestamp_file "C:/Users/rubaa/Downloads/Telegram Desktop/xv6ui (3)/xv6ui/build/Desktop_Qt_6_11_0_MinGW_64_bit-Debug/.qt/appxv6ui_qml.txt")
