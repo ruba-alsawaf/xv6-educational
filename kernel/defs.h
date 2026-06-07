@@ -32,9 +32,9 @@ struct file*    filealloc(void);
 void            fileclose(struct file*);
 struct file*    filedup(struct file*);
 void            fileinit(void);
-int             fileread(struct file*, int, uint64, int);
+int             fileread(struct file*, uint64, int n);
 int             filestat(struct file*, uint64 addr);
-int             filewrite(struct file*, int, uint64, int);
+int             filewrite(struct file*, uint64, int n);
 
 // fs.c
 void            fsinit(int);
@@ -79,9 +79,7 @@ void            fslog_bwrite_ev(int dev, int blockno, int buf_id,
                                 int refcnt, int valid, int lru_pos);
 void            fslog_brelease_ev(int dev, int blockno, int buf_id,
                                   int ref_before, int ref_after,
-                                  int valid, int lru_before, int lru_after);                             
-void            state_update_file(int pid, int fd, struct file *f, char *path);
-void            state_remove_fd(int pid, int fd);
+                                  int valid, int lru_before, int lru_after);
 
 // kalloc.c
 void*           kalloc(void);
@@ -217,8 +215,4 @@ void cslog_init(void);
 void cslog_push(struct cs_event *e);
 void cslog_run_start(struct proc *p);
 int  cslog_read_many(struct cs_event *out, int max);
-// memlog.c
-void            memlog_init(void);
-struct mem_event; 
-void            memlog_push(struct mem_event *e);
 

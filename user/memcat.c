@@ -64,25 +64,16 @@ int
 main(void)
 {
   struct mem_event ev[16];
-  int n;
-
-  printf("DEBUG: Starting loop to read events...\n");
+  int n, i;
 
   for(;;){
     n = memread(ev, 16);
+    if(n <= 0)
+      break;
+
+    for(i = 0; i < n; i++){
+     
     
-    printf("DEBUG: memread returned %d\n", n); // إضافة سطر تتبع
-
-    if(n < 0) {
-      printf("DEBUG: Error reading events!\n");
-      break;
-    }
-    if(n == 0) {
-      printf("DEBUG: No events to read, exiting.\n"); // إذا لم يجد شيئاً
-      break;
-    }
-
-    for(int i = 0; i < n; i++){
       printf("#%d seq=%d tick=%d cpu=%d pid=%d type=%s src=%s va=%p pa=%p perm=%s kind=%s name=%s old=%p new=%p\n",
         i,
         (int)ev[i].seq,
