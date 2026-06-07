@@ -18,6 +18,5 @@ struct ringbuf {
 void ringbuf_init(struct ringbuf *rb, char *name, uint elem_size);
 
 int  ringbuf_push(struct ringbuf *rb, void *elem);
-
 int  ringbuf_pop(struct ringbuf *rb, void *dst);
 int  ringbuf_read_many(struct ringbuf *rb, void *out, int max);

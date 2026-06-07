@@ -53,44 +53,6 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
     """)
 
     cur.execute("""
-    CREATE TABLE IF NOT EXISTS cpu_info(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT NOT NULL,
-        cpu INTEGER,
-        active INTEGER,
-        current_pid INTEGER,
-        current_state TEXT,
-        last_pid INTEGER,
-        last_state TEXT,
-        busy_percent INTEGER,
-        active_ticks INTEGER,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-
-    cur.execute("""
-    CREATE TABLE IF NOT EXISTS proc_stats(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        session_id TEXT NOT NULL,
-        total_created INTEGER,
-        total_exited INTEGER,
-        current_unused INTEGER,
-        current_used INTEGER,
-        current_sleeping INTEGER,
-        current_runnable INTEGER,
-        current_running INTEGER,
-        current_zombie INTEGER,
-        unique_unused INTEGER,
-        unique_used INTEGER,
-        unique_sleeping INTEGER,
-        unique_runnable INTEGER,
-        unique_running INTEGER,
-        unique_zombie INTEGER,
-        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
-
-    cur.execute("""
     CREATE INDEX IF NOT EXISTS idx_events_session_seq
     ON events(session_id, seq)
     """)
@@ -103,16 +65,6 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
     cur.execute("""
     CREATE INDEX IF NOT EXISTS idx_fs_events_session_seq
     ON fs_events(session_id, seq)
-    """)
-
-    cur.execute("""
-    CREATE INDEX IF NOT EXISTS idx_cpu_info_session_cpu
-    ON cpu_info(session_id, cpu)
-    """)
-
-    cur.execute("""
-    CREATE INDEX IF NOT EXISTS idx_proc_stats_session
-    ON proc_stats(session_id)
     """)
 
 
@@ -131,91 +83,24 @@ def extract_event_payloads(line: str) -> list[str]:
             if brace_start == -1:
                 break
 
-            depth = 0
-            end = -1
-            for j in range(brace_start, len(line)):
-                if line[j] == "{":
-                    depth += 1
-                elif line[j] == "}":
-                    depth -= 1
-                    if depth == 0:
-                        end = j
-                        break
-
-            if end == -1:
-                break
-
-            payloads.append(line[brace_start:end + 1])
-            i = end + 1
-
-    return payloads
-
-
-def extract_cpu_and_proc_events(line: str) -> list[dict]:
-    """Extract CPU and PROC events from log line with proper brace matching"""
-    events = []
-    
-    # Helper function to extract balanced braces
-    def extract_json(line, search_prefix, pos=0):
-        idx = line.find(search_prefix, pos)
-        if idx == -1:
-            return None, -1
-        
-        brace_start = line.find("{", idx)
-        if brace_start == -1:
-            return None, -1
-        
         depth = 0
         end = -1
-        for i in range(brace_start, len(line)):
-            if line[i] == '{':
+        for j in range(brace_start, len(line)):
+            if line[j] == "{":
                 depth += 1
-            elif line[i] == '}':
+            elif line[j] == "}":
                 depth -= 1
                 if depth == 0:
-                    end = i
+                    end = j
                     break
-        
+
         if end == -1:
-            return None, -1
-        
-        return line[brace_start:end+1], end
-    
-    # Extract CPU info
-    pos = 0
-    while True:
-        json_str, next_pos = extract_json(line, "CPU", pos)
-        if json_str is None:
             break
-        
-        try:
-            payload = clean_payload(json_str)
-            event = json.loads(payload)
-            if "cpu" in event:
-                events.append(event)
-        except:
-            pass
-        
-        pos = next_pos + 1
-    
-    # Extract PROC stats
-    pos = 0
-    while True:
-        json_str, next_pos = extract_json(line, "PROC", pos)
-        if json_str is None:
-            break
-        
-        try:
-            payload = clean_payload(json_str)
-            event = json.loads(payload)
-            if "total_created" in event:
-                events.append(event)
-        except:
-            pass
-        
-        pos = next_pos + 1
-    
-    return events
+
+        payloads.append(line[brace_start:end + 1])
+        i = end + 1
+
+    return payloads
 
 
 def insert_fs_event(cur: sqlite3.Cursor, event: dict) -> None:
@@ -257,61 +142,11 @@ def insert_general_event(cur: sqlite3.Cursor, event: dict) -> None:
     ))
 
 
-def insert_cpu_info(cur: sqlite3.Cursor, event: dict) -> None:
-    cur.execute("""
-    INSERT INTO cpu_info
-    (session_id, cpu, active, current_pid, current_state, last_pid, last_state, busy_percent, active_ticks)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        SESSION_ID,
-        event.get("cpu"),
-        event.get("active"),
-        event.get("current_pid"),
-        event.get("current_state"),
-        event.get("last_pid"),
-        event.get("last_state"),
-        event.get("busy_percent"),
-        event.get("active_ticks")
-    ))
-
-
-def insert_proc_stats(cur: sqlite3.Cursor, event: dict) -> None:
-    cur.execute("""
-    INSERT INTO proc_stats
-    (session_id, total_created, total_exited,
-     current_unused, current_used, current_sleeping, current_runnable, current_running, current_zombie,
-     unique_unused, unique_used, unique_sleeping, unique_runnable, unique_running, unique_zombie)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (
-        SESSION_ID,
-        event.get("total_created"),
-        event.get("total_exited"),
-        event.get("current", {}).get("UNUSED", 0),
-        event.get("current", {}).get("USED", 0),
-        event.get("current", {}).get("SLEEPING", 0),
-        event.get("current", {}).get("RUNNABLE", 0),
-        event.get("current", {}).get("RUNNING", 0),
-        event.get("current", {}).get("ZOMBIE", 0),
-        event.get("unique", {}).get("UNUSED", 0),
-        event.get("unique", {}).get("USED", 0),
-        event.get("unique", {}).get("SLEEPING", 0),
-        event.get("unique", {}).get("RUNNABLE", 0),
-        event.get("unique", {}).get("RUNNING", 0),
-        event.get("unique", {}).get("ZOMBIE", 0)
-    ))
-
-
 def handle_event(cur: sqlite3.Cursor, event: dict) -> None:
     ev_type = event.get("type")
 
     if ev_type == "FS":
         insert_fs_event(cur, event)
-    elif ev_type in ["SCHED_INFO", "ON_CPU", "OFF_CPU"]:
-        insert_general_event(cur, event)
-    elif "cpu" in event:  # CPU info
-        insert_cpu_info(cur, event)
-    elif "total_created" in event:  # PROC stats
-        insert_proc_stats(cur, event)
     else:
         insert_general_event(cur, event)
 

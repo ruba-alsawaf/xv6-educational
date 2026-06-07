@@ -140,6 +140,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_getcpuinfo] sys_getcpuinfo,
 [SYS_getprocstats] sys_getprocstats,
 
+[SYS_memread]   sys_memread,
 
 };
 

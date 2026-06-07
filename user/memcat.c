@@ -74,7 +74,7 @@ main(void)
     for(i = 0; i < n; i++){
      
     
-      printf("#%d seq=%d tick=%d cpu=%d pid=%d type=%s src=%s va=%p pa=%p perm=%s kind=%s name=%s old=%p new=%p\n",
+      printf("#%d seq=%d tick=%d cpu=%d pid=%d type=%s src=%s name=%s old=%p new=%p pa=0x%lx va=0x%lx\n",
         i,
         (int)ev[i].seq,
         ev[i].ticks,
@@ -82,13 +82,11 @@ main(void)
         ev[i].pid,
         etype(ev[i].type),
         esrc(ev[i].source),
-        (void*)ev[i].va,
-        (void*)ev[i].pa,
-        permstr(ev[i].perm),
-        kindstr(ev[i].kind),
         ev[i].name,
         (void*)ev[i].oldsz,
-        (void*)ev[i].newsz);
+        (void*)ev[i].newsz,
+        ev[i].pa,
+        ev[i].va);
     }
   }
 
