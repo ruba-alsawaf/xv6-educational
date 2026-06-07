@@ -9,6 +9,7 @@ struct sleeplock;
 struct stat;
 struct superblock;
 struct sched_event;
+struct mem_event;
 #include "cslog.h"
 
 // bio.c

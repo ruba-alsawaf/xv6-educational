@@ -8,20 +8,15 @@
 #include "proc.h"
 #include "fs.h"
 #include "memevent.h"
-#include "memlog.h"
+
 /*
  * the kernel's page table.
  */
 pagetable_t kernel_pagetable;
 
-// CPU synchronization for safe paging transition
-struct spinlock pagetable_lock;
-volatile int pagetable_ready = 0;  // 0 = not ready, 1 = ready for all CPUs
-
 extern char etext[];  // kernel.ld sets this to end of kernel code.
 
 extern char trampoline[]; // trampoline.S
-extern char stack0[]; // start.c declares the boot stack
 
 // Make a direct-map page table for the kernel.
 pagetable_t
@@ -41,35 +36,15 @@ kvmmake(void)
   // PLIC
   kvmmap(kpgtbl, PLIC, PLIC, 0x4000000, PTE_R | PTE_W);
 
-  // Strict W^X Policy: Separate executable and writable mappings
-  
-  // Map kernel text (.text) as Read+Execute ONLY
-  uint64 text_start = KERNBASE;
-  uint64 text_end = PGROUNDUP((uint64)etext);
-  kvmmap(kpgtbl, text_start, text_start, text_end - text_start, PTE_R | PTE_X);
-  
-  // Map kernel data (.data/.bss) as Read+Write ONLY
-  uint64 data_start = text_end;
-  uint64 data_end = PGROUNDDOWN((uint64)stack0);
-  if(data_start < data_end) {
-    kvmmap(kpgtbl, data_start, data_start, data_end - data_start, PTE_R | PTE_W);
-  }
-  
-  // Map stack0 as Read+Write ONLY with proper alignment
-  uint64 stack_start = PGROUNDDOWN((uint64)stack0);
-  uint64 stack_end = PGROUNDUP(stack_start + 4096 * NCPU);
-  kvmmap(kpgtbl, stack_start, stack_start, stack_end - stack_start, PTE_R | PTE_W);
-  
-  // Map remaining kernel memory as Read+Write
-  uint64 remaining_start = stack_end;
-  uint64 remaining_end = PGROUNDUP(PHYSTOP);
-  if(remaining_start < remaining_end) {
-    kvmmap(kpgtbl, remaining_start, remaining_start, remaining_end - remaining_start, PTE_R | PTE_W);
-  }
+  // map kernel text executable and read-only.
+  kvmmap(kpgtbl, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, PTE_R | PTE_X);
+
+  // map kernel data and the physical RAM we'll make use of.
+  kvmmap(kpgtbl, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, PTE_R | PTE_W);
 
   // map the trampoline for trap entry/exit to
   // the highest virtual address in the kernel.
-  kvmmap(kpgtbl, TRAMPOLINE, V2P(trampoline), PGSIZE, PTE_R | PTE_X);
+  kvmmap(kpgtbl, TRAMPOLINE, (uint64)trampoline, PGSIZE, PTE_R | PTE_X);
 
   // allocate and map a kernel stack for each process.
   proc_mapstacks(kpgtbl);
@@ -91,22 +66,7 @@ kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
 void
 kvminit(void)
 {
-  initlock(&pagetable_lock, "pagetable");
-  
-  // Only bootstrap processor (Hart 0) should initialize the page table
-  if(cpuid() == 0) {
-    printf("kvminit: Hart 0 initializing kernel page table\n");
-    kernel_pagetable = kvmmake();
-    
-    // Memory barrier to ensure page table is fully visible to all CPUs
-    __sync_synchronize();
-    
-    // Signal that page table is ready for all CPUs
-    pagetable_ready = 1;
-    __sync_synchronize();
-  } else {
-    printf("kvminit: Hart %d waiting for page table initialization\n", cpuid());
-  }
+  kernel_pagetable = kvmmake();
 }
 
 // Switch the current CPU's h/w page table register to
@@ -114,48 +74,13 @@ kvminit(void)
 void
 kvminithart()
 {
-  int hart = cpuid();
-  printf("kvminithart: Hart %d starting safe paging transition\n", hart);
-  
-  // Wait until page table is ready (only Hart 0 initializes it)
-  while(!pagetable_ready) {
-    __sync_synchronize();
-  }
-  
-  // Acquire lock to ensure only one CPU transitions at a time
-  acquire(&pagetable_lock);
-  
-  printf("kvminithart: Hart %d acquired pagetable lock\n", hart);
-  
-  // Test that we can execute basic instructions before paging
-  printf("kvminithart: Hart %d pre-paging test passed\n", hart);
-  
-  // Verify this hart has its own stack space
-  uint64 hart_stack = (uint64)stack0 + (hart * 4096);
-  printf("kvminithart: Hart %d using stack at 0x%lx\n", hart, hart_stack);
-  
-  printf("kvminithart: Hart %d about to execute clean transition\n", hart);
-  
-  // Clean assembly transition: sfence.vma -> csrw satp -> sfence.vma -> absolute jump
-  uint64 satp_value = MAKE_SATP(V2P(kernel_pagetable));
-  
-  asm volatile(
-    "sfence.vma\n"          // Ensure all page table writes are visible
-    "csrw satp, %0\n"       // Atomic write to SATP register
-    "sfence.vma\n"          // Flush TLB immediately after SATP write
-    "la t0, 1f\n"           // Load address of continuation label
-    "jr t0\n"               // Absolute jump to force PC to use new mapping
-    "1:\n"                  // Continuation point after paging is enabled
-    : 
-    : "r"(satp_value)
-    : "memory", "t0"
-  );
-  
-  printf("kvminithart: Hart %d successfully passed w_satp - paging enabled!\n", hart);
-  
-  // Release lock for next CPU
-  release(&pagetable_lock);
-  printf("kvminithart: Hart %d released pagetable lock\n", hart);
+  // wait for any previous writes to the page table memory to finish.
+  sfence_vma();
+
+  w_satp(MAKE_SATP(kernel_pagetable));
+
+  // flush stale entries from the TLB.
+  sfence_vma();
 }
 
 // Return the address of the PTE in page table pagetable
@@ -236,31 +161,11 @@ mappages(pagetable_t pagetable, uint64 va, uint64 size, uint64 pa, int perm)
   a = va;
   last = va + size - PGSIZE;
   for(;;){
-       if((pte = walk(pagetable, a, 1)) == 0)
+    if((pte = walk(pagetable, a, 1)) == 0)
       return -1;
     if(*pte & PTE_V)
       panic("mappages: remap");
-
     *pte = PA2PTE(pa) | perm | PTE_V;
-
-    struct proc *p = myproc();
-    if(p){
-      struct mem_event e;
-      memset(&e, 0, sizeof(e));
-      e.ticks  = ticks;
-      e.cpu    = cpuid();
-      e.type   = MEM_MAP;
-      e.pid    = p->pid;
-      e.state  = p->state;
-      e.va     = a;
-      e.pa     = pa;
-      e.perm   = perm;
-      e.source = SRC_MAPPAGES;
-      e.kind   = PAGE_USER;
-      safestrcpy(e.name, p->name, MEM_NM);
-      memlog_push(&e);
-    }
-
     if(a == last)
       break;
     a += PGSIZE;
@@ -295,38 +200,20 @@ uvmunmap(pagetable_t pagetable, uint64 va, uint64 npages, int do_free)
     panic("uvmunmap: not aligned");
 
   for(a = va; a < va + npages*PGSIZE; a += PGSIZE){
-    if((pte = walk(pagetable, a, 0)) == 0)
+    if((pte = walk(pagetable, a, 0)) == 0) // leaf page table entry allocated?
+      continue;   
+    if((*pte & PTE_V) == 0)  // has physical page been allocated?
       continue;
-    if((*pte & PTE_V) == 0)
-      continue;
-
-    uint64 pa = PTE2PA(*pte);
-
-    struct proc *p = myproc();
-    if(p){
-      struct mem_event e;
-      memset(&e, 0, sizeof(e));
-      e.ticks  = ticks;
-      e.cpu    = cpuid();
-      e.type   = MEM_UNMAP;
-      e.pid    = p->pid;
-      e.state  = p->state;
-      e.va     = a;
-      e.pa     = pa;
-      e.len    = PGSIZE;
-      e.source = SRC_UVMUNMAP;
-      e.kind   = PAGE_USER;
-      safestrcpy(e.name, p->name, MEM_NM);
-      memlog_push(&e);
-    }
-
     if(do_free){
+      uint64 pa = PTE2PA(*pte);
       kfree((void*)pa);
     }
     *pte = 0;
   }
 }
 
+// Allocate PTEs and physical memory to grow a process from oldsz to
+// newsz, which need not be page aligned.  Returns new size or 0 on error.
 // Allocate PTEs and physical memory to grow a process from oldsz to
 // newsz, which need not be page aligned.  Returns new size or 0 on error.
 uint64
@@ -337,22 +224,6 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
 
   if(newsz < oldsz)
     return oldsz;
-      struct proc *p = myproc();
-  if(p){
-    struct mem_event e;
-    memset(&e, 0, sizeof(e));
-    e.ticks  = ticks;
-    e.cpu    = cpuid();
-    e.type   = MEM_GROW;
-    e.pid    = p->pid;
-    e.state  = p->state;
-    e.oldsz  = oldsz;
-    e.newsz  = newsz;
-    e.source = SRC_UVMALLOC;
-    e.kind   = PAGE_USER;
-    safestrcpy(e.name, p->name, MEM_NM);
-    memlog_push(&e);
-  }
 
   oldsz = PGROUNDUP(oldsz);
   for(a = oldsz; a < newsz; a += PGSIZE){
@@ -362,11 +233,27 @@ uvmalloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz, int xperm)
       return 0;
     }
     memset(mem, 0, PGSIZE);
+    
+    // محاولة ربط الصفحة بالجدول
     if(mappages(pagetable, a, PGSIZE, (uint64)mem, PTE_R|PTE_U|xperm) != 0){
       kfree(mem);
       uvmdealloc(pagetable, a, oldsz);
       return 0;
     }
+
+    // --- إضافة تسجيل الحدث هنا ---
+    struct mem_event e;
+    e.type = MEM_GROW;            // نوع الحدث
+    e.pid = myproc()->pid;        // معرف العملية
+    e.ticks = ticks;              // الوقت الحالي
+    e.cpu = cpuid();              // رقم المعالج
+    e.va = a;                     // العنوان الافتراضي المخصص
+    e.pa = (uint64)mem;           // العنوان الفيزيائي
+    e.perm = PTE_R|PTE_U|xperm;   // الصلاحيات
+    e.kind = PAGE_USER;           // نوع الصفحة
+    e.source = SRC_UVMALLOC;      // المصدر
+    memlog_push(&e);              // إرسال الحدث إلى الـ Ring Buffer
+    // ----------------------------
   }
   return newsz;
 }
@@ -388,6 +275,7 @@ uvmdealloc(pagetable_t pagetable, uint64 oldsz, uint64 newsz)
 
   return newsz;
 }
+
 // Recursively free page-table pages.
 // All leaf mappings must already have been removed.
 void
@@ -592,24 +480,9 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   if(ismapped(pagetable, va)) {
     return 0;
   }
-
-  struct mem_event e;
-  memset(&e, 0, sizeof(e));
-  e.ticks  = ticks;
-  e.cpu    = cpuid();
-  e.type   = MEM_FAULT;
-  e.pid    = p->pid;
-  e.state  = p->state;
-  e.va     = va;
-  e.source = SRC_VMFAULT;
-  e.kind   = PAGE_USER;
-  safestrcpy(e.name, p->name, MEM_NM);
-  memlog_push(&e);
-
   mem = (uint64) kalloc();
   if(mem == 0)
     return 0;
-
   memset((void *) mem, 0, PGSIZE);
   if (mappages(p->pagetable, va, PGSIZE, mem, PTE_W|PTE_U|PTE_R) != 0) {
     kfree((void *)mem);
@@ -617,6 +490,7 @@ vmfault(pagetable_t pagetable, uint64 va, int read)
   }
   return mem;
 }
+
 int
 ismapped(pagetable_t pagetable, uint64 va)
 {

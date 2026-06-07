@@ -9,8 +9,8 @@ from collections import defaultdict
 
 #test ruba
 
-LOG_PATH = "qemu.log"
-DB_PATH = "events.db"
+LOG_PATH = r"C:\Users\rubaa\Desktop\xv6-educational-main\qemu.log"
+DB_PATH = r"C:\Users\rubaa\Desktop\xv6-educational-main\events.db"
 SESSION_ID = str(uuid.uuid4())
 def extract_json(line: str, marker: str) -> dict | None:
     """Extract JSON object from line starting with marker"""

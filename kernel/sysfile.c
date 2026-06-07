@@ -527,23 +527,6 @@ sys_fsread(void)
 }
 
 uint64
-sys_schedread(void)
-{
-  uint64 addr;
-  int n;
-
-  argaddr(0, &addr);
-  argint(1, &n);
-
-  if(n <= 0)
-    return 0;
-  if(n > 32)
-    n = 32;
-
-  return schedread((struct sched_event *)addr, n);
-}
-
-uint64
 sys_getcpuinfo(void)
 {
   uint64 addr;

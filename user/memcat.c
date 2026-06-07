@@ -19,32 +19,6 @@ etype(int t)
 }
 
 static char*
-permstr(int perm)
-{
-  static char buf[8];
-  int i = 0;
-  
-  if(perm & (1 << 1)) buf[i++] = 'R';
-  if(perm & (1 << 2)) buf[i++] = 'W';
-  if(perm & (1 << 3)) buf[i++] = 'X';
-  if(perm & (1 << 4)) buf[i++] = 'U';
-  buf[i] = '\0';
-  
-  return buf;
-}
-
-static char*
-kindstr(int kind)
-{
-  switch(kind){
-    case PAGE_USER:      return "USER";
-    case PAGE_PAGETABLE: return "PAGETABLE";
-    case PAGE_KERNEL:    return "KERNEL";
-    default:             return "UNKNOWN";
-  }
-}
-
-static char*
 esrc(int s)
 {
   switch(s){
