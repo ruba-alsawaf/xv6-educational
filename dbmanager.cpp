@@ -12,36 +12,53 @@ DbManager::DbManager(QObject *parent) : QObject(parent)
     m_db.setDatabaseName(dbPath);
 
     if (!m_db.open()) {
-        qWarning() << "Error: connection failed!";
+        qWarning() << "❌ Error: connection failed!";
     } else {
         qDebug() << "✅ Database path:" << dbPath;
-
-        QSqlQuery query(m_db);
-
-        // 2. التحقق من الأعمدة (Migration)
-        // هذا الكود يفحص هل عمود quiz_name موجود؟
-        bool hasQuizColumn = false;
-        query.exec("PRAGMA table_info(QuizScores)");
-        while (query.next()) {
-            if (query.value("name").toString() == "quiz_name") {
-                hasQuizColumn = true;
-            }
-        }
-
-        // إذا لم يكن موجوداً، أضيفيه برمجياً في النسخة التي يقرأ منها البرنامج
-        if (!hasQuizColumn) {
-            qDebug() << "⚠️ العمود مفقود، جاري التحديث...";
-            query.exec("ALTER TABLE QuizScores ADD COLUMN quiz_name TEXT");
-        }
-
-        qDebug() << "✅ Database ready with correct schema.";
+        // استدعاء دالة الإنشاء التلقائي المدمجة
+        initDatabase();
     }
 }
+
 DbManager::~DbManager()
 {
     if (m_db.isOpen()) {
         m_db.close();
     }
+}
+
+void DbManager::initDatabase()
+{
+    QSqlQuery query(m_db);
+
+    // قائمة بجميع الجداول
+    QStringList tables = {
+        "CREATE TABLE IF NOT EXISTS cpu_metrics(id INTEGER PRIMARY KEY, session_id TEXT, cpu_id TEXT, active INTEGER, current_pid INTEGER, proc_name TEXT, current_state TEXT, context_eip TEXT, context_esp TEXT, busy_percent INTEGER, total_created INTEGER, total_exited INTEGER, ever_running INTEGER, ever_sleeping INTEGER, ever_zombie INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
+        "CREATE TABLE IF NOT EXISTS proc_stats(id INTEGER PRIMARY KEY, session_id TEXT, total_created INTEGER, total_exited INTEGER, current_unused INTEGER, current_used INTEGER, current_sleeping INTEGER, current_runnable INTEGER, current_running INTEGER, current_zombie INTEGER, unique_unused INTEGER, unique_used INTEGER, unique_sleeping INTEGER, unique_runnable INTEGER, unique_running INTEGER, unique_zombie INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
+        "CREATE TABLE IF NOT EXISTS mem_events(id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, seq INTEGER, tick INTEGER, cpu INTEGER, pid INTEGER, type TEXT, src TEXT, va INTEGER, pa INTEGER, perm TEXT, kind TEXT, name TEXT, old INTEGER, new INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
+        "CREATE TABLE IF NOT EXISTS Students (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL)",
+        "CREATE TABLE IF NOT EXISTS QuizScores (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, quiz_name TEXT, score INTEGER, UNIQUE(username, quiz_name))"
+    };
+
+    for (const QString &sql : tables) {
+        if (!query.exec(sql)) {
+            qWarning() << "❌ Error creating table:" << query.lastError().text();
+        }
+    }
+
+    // الفهارس
+    query.exec("CREATE INDEX IF NOT EXISTS idx_cpu_metrics_session ON cpu_metrics(session_id)");
+    query.exec("CREATE INDEX IF NOT EXISTS idx_proc_stats_session ON proc_stats(session_id)");
+    query.exec("CREATE INDEX IF NOT EXISTS idx_mem_events_session_timestamp ON mem_events(session_id, timestamp)");
+
+    // المستخدم الافتراضي
+    query.exec("SELECT COUNT(*) FROM Students WHERE username = 'student1'");
+    if (query.next() && query.value(0).toInt() == 0) {
+        query.exec("INSERT INTO Students (username, password) VALUES ('student1', '1234')");
+        qDebug() << "ℹ️ Default user 'student1' created.";
+    }
+
+    qDebug() << "✅ Database schema verified and ready.";
 }
 
 QVariantList DbManager::getLatestCpuMetrics()

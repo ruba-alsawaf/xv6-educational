@@ -33,6 +33,7 @@ public:
 private:
     QSqlDatabase m_db;
     QString m_currentUser;
+    void initDatabase();
 };
 
 #endif // DBMANAGER_H
