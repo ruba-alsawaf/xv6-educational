@@ -18,6 +18,7 @@ main()
     printf("\n");
     printf("xv6 kernel is booting\n");
     printf("\n");
+    memlog_init();   // memory event log (must be before kinit)
     kinit();         // physical page allocator
     kvminit();       // create kernel page table
     kvminithart();   // turn on paging
@@ -33,7 +34,6 @@ main()
     virtio_disk_init(); // emulated hard disk
     cslog_init();
     fslog_init();
-    memlog_init();
     userinit();      // first user process
     __sync_synchronize();
     started = 1;

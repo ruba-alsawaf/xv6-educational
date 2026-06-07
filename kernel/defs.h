@@ -217,6 +217,11 @@ void cslog_push(struct cs_event *e);
 void cslog_run_start(struct proc *p);
 int  cslog_read_many(struct cs_event *out, int max);
 
+// memlog.c
+void memlog_init(void);
+void memlog_push(struct mem_event *e);
+int  memlog_read_many(struct mem_event *out, int max);
+
 // sysmemlog.c
 uint64 sys_memread(void);
 
