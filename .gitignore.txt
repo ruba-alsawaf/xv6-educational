@@ -1,0 +1,19 @@
+# Qt generated files
+build/
+*.user
+*.pro.user
+*.autosave
+.qmake.stash
+
+# Executables and objects
+*.o
+*.exe
+*.obj
+*.so
+*.dylib
+*.a
+
+# Misc
+.DS_Store
+.idea/
+.vscode/
