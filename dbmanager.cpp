@@ -3,19 +3,30 @@
 #include <QSqlError>
 #include <QDebug>
 #include <QVariantMap>
+#include <QStandardPaths> // 💡 موديول مهم جداً للمسارات الديناميكية
+#include <QDir>
 
 DbManager::DbManager(QObject *parent) : QObject(parent)
 {
-    // 1. تحديد المسار
-    QString dbPath = "C:/Users/rubaa/Desktop/xv6-educational-main/events.db";
+    // 1. تحديد مسار ديناميكي آمن ومتوافق مع macOS وويندوز تلقائياً
+    QString appDataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir dir(appDataPath);
+    if (!dir.exists()) {
+        dir.mkpath("."); // إنشاء المجلد الخاص بالتطبيق إذا لم يكن موجوداً
+    }
+
+    // اسم ملف قاعدة البيانات الخاص بـ xv6
+    QString dbPath = dir.filePath("events.db");
+
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(dbPath);
 
+    // 2. محاولة فتح قاعدة البيانات
     if (!m_db.open()) {
-        qWarning() << "❌ Error: connection failed!";
+        qWarning() << "❌ Error: database connection failed!" << m_db.lastError().text();
     } else {
-        qDebug() << "✅ Database path:" << dbPath;
-        // استدعاء دالة الإنشاء التلقائي المدمجة
+        qDebug() << "✅ Database initialized successfully at:" << dbPath;
+        // استدعاء دالة الإنشاء التلقائي للمخطط والجداول
         initDatabase();
     }
 }
@@ -29,12 +40,15 @@ DbManager::~DbManager()
 
 void DbManager::initDatabase()
 {
+    // حماية: تأكيد أن القاعدة مفتوحة قبل بدء البناء
+    if (!m_db.isOpen()) return;
+
     QSqlQuery query(m_db);
 
-    // قائمة بجميع الجداول
+    // قائمة بجميع الجداول الأصلية الخاصة بمشروعك
     QStringList tables = {
         "CREATE TABLE IF NOT EXISTS cpu_metrics(id INTEGER PRIMARY KEY, session_id TEXT, cpu_id TEXT, active INTEGER, current_pid INTEGER, proc_name TEXT, current_state TEXT, context_eip TEXT, context_esp TEXT, busy_percent INTEGER, total_created INTEGER, total_exited INTEGER, ever_running INTEGER, ever_sleeping INTEGER, ever_zombie INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
-        "CREATE TABLE IF NOT EXISTS proc_stats(id INTEGER PRIMARY KEY, session_id TEXT, total_created INTEGER, total_exited INTEGER, current_unused INTEGER, current_used INTEGER, current_sleeping INTEGER, current_runnable INTEGER, current_running INTEGER, current_zombie INTEGER, unique_unused INTEGER, unique_used INTEGER, unique_sleeping INTEGER, unique_runnable INTEGER, unique_running INTEGER, unique_zombie INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
+        "CREATE TABLE IF NOT EXISTS proc_stats(id INTEGER PRIMARY KEY, session_id TEXT, total_created INTEGER, total_exited INTEGER, current_unused INTEGER, current_used INTEGER, current_sleeping INTEGER, current_runnable INTEGER, current_running INTEGER, current_zombie INTEGER, unique_unused INTEGER, unique_used INTEGER, unique_sleeping INTEGER, unique_running INTEGER, unique_zombie INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
         "CREATE TABLE IF NOT EXISTS mem_events(id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, seq INTEGER, tick INTEGER, cpu INTEGER, pid INTEGER, type TEXT, src TEXT, va INTEGER, pa INTEGER, perm TEXT, kind TEXT, name TEXT, old INTEGER, new INTEGER, timestamp DATETIME DEFAULT CURRENT_TIMESTAMP)",
         "CREATE TABLE IF NOT EXISTS Students (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL)",
         "CREATE TABLE IF NOT EXISTS QuizScores (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, quiz_name TEXT, score INTEGER, UNIQUE(username, quiz_name))"
@@ -46,12 +60,12 @@ void DbManager::initDatabase()
         }
     }
 
-    // الفهارس
+    // الفهارس لسرعة الاستعلام
     query.exec("CREATE INDEX IF NOT EXISTS idx_cpu_metrics_session ON cpu_metrics(session_id)");
     query.exec("CREATE INDEX IF NOT EXISTS idx_proc_stats_session ON proc_stats(session_id)");
     query.exec("CREATE INDEX IF NOT EXISTS idx_mem_events_session_timestamp ON mem_events(session_id, timestamp)");
 
-    // المستخدم الافتراضي
+    // إنشاء المستخدم الافتراضي إن لم يكن موجوداً
     query.exec("SELECT COUNT(*) FROM Students WHERE username = 'student1'");
     if (query.next() && query.value(0).toInt() == 0) {
         query.exec("INSERT INTO Students (username, password) VALUES ('student1', '1234')");
@@ -68,12 +82,10 @@ QVariantList DbManager::getLatestCpuMetrics()
         if (!m_db.open()) return list;
     }
 
-    // كسر الكاش لضمان جلب البيانات الجديدة الحية
     QSqlQuery pragma(m_db);
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
-    // النسخة الذهبية بالـ UNION ALL لمنع التكرار
     query.prepare(
         "SELECT * FROM ("
         "  SELECT cpu_id, current_pid, current_state, busy_percent "
@@ -179,13 +191,10 @@ int DbManager::getAverageCpuUsage()
         if (!m_db.open()) return 0;
     }
 
-    // كسر الكاش لضمان التحديث المستمر
     QSqlQuery pragma(m_db);
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
-
-    // ✅ العودة لكودك الذهبي الأصلي اللي كان شغال 100% بدون أي تخبيص
     query.prepare(
         "SELECT current_state FROM cpu_metrics "
         "WHERE id IN ("
@@ -212,6 +221,7 @@ int DbManager::getAverageCpuUsage()
 
     return 0;
 }
+
 QVariantMap DbManager::getProcessStatesCount()
 {
     QVariantMap states;
@@ -228,8 +238,6 @@ QVariantMap DbManager::getProcessStatesCount()
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
-
-    // ✅ الحل المنطقي الخاص بكِ: جلب العدادات التراكمية (Cumulative) للعمليات التي مرت على النظام
     query.prepare(
         "SELECT total_created, ever_running, ever_sleeping, ever_zombie "
         "FROM cpu_metrics "
@@ -237,12 +245,9 @@ QVariantMap DbManager::getProcessStatesCount()
         );
 
     if (query.exec() && query.next()) {
-        // سحب القيم التراكمية المحدثة
         states["running"] = query.value("ever_running").toInt();
         states["sleeping"] = query.value("ever_sleeping").toInt();
         states["zombie"] = query.value("ever_zombie").toInt();
-
-        // إجمالي العمليات التي تم خلقها منذ إقلاع الكيرنل
         states["total"] = query.value("total_created").toInt();
     } else {
         qWarning() << "❌ Query failed:" << query.lastError().text();
@@ -253,9 +258,9 @@ QVariantMap DbManager::getProcessStatesCount()
 
 bool DbManager::authenticate(const QString &username, const QString &password)
 {
-    // (تأكدي من تغيير m_db إلى اسم متغير قاعدة البيانات المستخدم لديكِ في الكلاس)
+    // شرط حماية يمنع الانهيار ويطبع خطأ واضحاً إذا كانت القاعدة مغلقة
     if (!m_db.isOpen()) {
-        qDebug() << "[ERR] Database is not open!";
+        qWarning() << "❌ [ERR] Authentication failed: Database is not open!";
         return false;
     }
 
@@ -267,12 +272,12 @@ bool DbManager::authenticate(const QString &username, const QString &password)
         QString dbPassword = query.value(0).toString();
         if (password == dbPassword) {
             m_currentUser = username;
-            qDebug() << "[OK] Login successful for user:" << username;
+            qDebug() << "🔓 [OK] Login successful for user:" << username;
             return true;
         }
     }
 
-    qDebug() << "[ERR] Login failed: Invalid username or password.";
+    qDebug() << "❌ [ERR] Login failed: Invalid username or password.";
     return false;
 }
 
@@ -280,7 +285,6 @@ int DbManager::getQuizScore(const QString &username, const QString &quizName) {
     if (!m_db.isOpen()) return -1;
 
     QSqlQuery query(m_db);
-    // نستخدم ? للربط الموضعي (أضمن 100% من الـ :)
     if (!query.prepare("SELECT score FROM QuizScores WHERE username = ? AND quiz_name = ?")) {
         qWarning() << "❌ Prepare Failed:" << query.lastError().text();
     }
@@ -302,7 +306,6 @@ void DbManager::saveQuizScore(const QString &username, const QString &quizName, 
     if (!m_db.isOpen()) return;
 
     QSqlQuery query(m_db);
-    // نستخدم ? للربط الموضعي
     if (!query.prepare("INSERT OR REPLACE INTO QuizScores (username, quiz_name, score) VALUES (?, ?, ?)")) {
         qWarning() << "❌ Prepare Failed:" << query.lastError().text();
     }
@@ -323,6 +326,6 @@ QString DbManager::getCurrentUser() {
 }
 
 void DbManager::logout() {
-    m_currentUser = ""; // مسح اسم المستخدم الحالي
-    qDebug() << "🚪 User logged out.";
+    m_currentUser = ""; // مسح اسم المستخدم الحالي بأمان
+    qDebug() << "🚪 User logged out successfully.";
 }
