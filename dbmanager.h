@@ -24,6 +24,7 @@ public:
 
     // جلب عدادات حالات العمليات (Running, Sleeping, Zombie)
     Q_INVOKABLE QVariantMap getProcessStatesCount();
+    Q_INVOKABLE QVariantMap getLiveMemoryMetrics();
 
     // نظام التحقق وتسجيل الدخول للطلاب
     Q_INVOKABLE bool authenticate(const QString &username, const QString &password);
@@ -35,6 +36,7 @@ public:
     // إدارة جلسة المستخدم الحالي
     Q_INVOKABLE QString getCurrentUser();
     Q_INVOKABLE void logout();
+
 
 private:
     QSqlDatabase m_db;       // كائن الاتصال بقاعدة البيانات

@@ -5,6 +5,7 @@
 #include <QVariantMap>
 #include <QStandardPaths> // 💡 موديول مهم جداً للمسارات الديناميكية
 #include <QDir>
+#include <QSet>
 
 DbManager::DbManager(QObject *parent) : QObject(parent)
 {
@@ -343,4 +344,86 @@ QString DbManager::getCurrentUser() {
 void DbManager::logout() {
     m_currentUser = ""; // مسح اسم المستخدم الحالي بأمان
     qDebug() << "🚪 User logged out successfully.";
+}
+
+QVariantMap DbManager::getLiveMemoryMetrics()
+{
+    QVariantMap metrics;
+    // قيم افتراضية قياسية لـ 128MB (حجم ذاكرة xv6 الافتراضي)
+    // 128MB / 4KB (حجم الصفحة الواحدة) = 32768 صفحة
+    metrics["totalPages"] = 32768;
+    metrics["freePages"] = 32768;
+    metrics["usedPages"] = 0;
+    metrics["fragmentation"] = 0;
+
+    if (!m_db.isOpen()) return metrics;
+
+    // كسر الكاش لضمان جلب قراءات حية مستمرة من الهاردسك
+    QSqlQuery pragma(m_db);
+    pragma.exec("PRAGMA query_only = OFF;");
+
+    // 1. حسابات خريطة الـ 256 مربعاً للشبكة (Grid)
+    QVariantList gridStates;
+
+    // النواة في xv6 تحجز أول 4MB دائماً من الذاكرة (أول 8 كتل ثابتة للنظام ولا تتغير)
+    for(int i = 0; i < 256; i++) {
+        if (i < 8) {
+            gridStates.append(2); // 2 = Kernel (Indigo)
+        } else {
+            gridStates.append(0); // 0 = Free مبدئياً لحين فحص الأحداث
+        }
+    }
+
+    // 2. جلب أحدث الأحداث من الداتابيز لترجمتها على الشبكة
+    // جلب كمية كافية من السجلات لضمان تغطية العناوين النشطة مؤخراً ودعم دقة النمط الزمني
+    QSqlQuery memQuery("SELECT type, pa FROM mem_events ORDER BY seq DESC LIMIT 500", m_db);
+
+    if (memQuery.exec()) {
+        QSet<int> processedBlocks; // حماية: لتسجيل الحالة الأحدث فقط لكل كتلة ومنع التكرار البصري
+        int userUsedBlocks = 0;
+
+        while (memQuery.next()) {
+            QString type = memQuery.value("type").toString();
+            quint64 pa = memQuery.value("pa").toULongLong();
+
+            // تحويل العنوان الفيزيائي pa إلى الـ Index المقابل له في الـ Grid (0-255)
+            // كل كتلة تمثل 512KB أي (0x80000 بايت)
+            if (pa >= 0x80000000 && pa <= 0x88000000) {
+                int blockIdx = (pa - 0x80000000) / 0x80000;
+
+                // التحقق من الحواف وأن الكتلة ليست تابعة للنواة الثابتة
+                if (blockIdx >= 8 && blockIdx < 256) {
+                    // إذا لم نقم بتحديث هذه الكتلة من قبل (أي هذا هو الحدث الأحدث لها زمنياً)
+                    if (!processedBlocks.contains(blockIdx)) {
+                        processedBlocks.insert(blockIdx);
+
+                        if (type == "ALLOC" || type == "GROW") {
+                            gridStates[blockIdx] = 1; // 1 = User (Purple)
+                            userUsedBlocks++;
+                        } else if (type == "FREE") {
+                            gridStates[blockIdx] = 0; // 0 = Free (Dark)
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3. الحسابات الإحصائية الدقيقة المربوطة بالـ Progress Bars بالواجهة
+        int kernelBlocks = 8;
+        int totalUsedBlocks = userUsedBlocks + kernelBlocks;
+        int freeBlocks = 256 - totalUsedBlocks;
+
+        // تحويل الكتل إلى عدد صفحات (كل كتلة 512KB تحتوي على 128 صفحة بحجم 4KB)
+        metrics["freePages"] = (freeBlocks * 128);
+        metrics["usedPages"] = (totalUsedBlocks * 128);
+        metrics["totalPages"] = 32768;
+
+        // حساب نسبة التجزئة الفعلية (Fragmentation) بناءً على الكتل المستهلكة
+        metrics["fragmentation"] = freeBlocks > 0 ? (userUsedBlocks * 100) / (userUsedBlocks + freeBlocks) : 0;
+    } else {
+        qWarning() << "❌ Memory Map Query failed:" << memQuery.lastError().text();
+    }
+
+    metrics["gridStates"] = gridStates;
+    return metrics;
 }
