@@ -14,7 +14,7 @@ from pathlib import Path
 LOG_PATH = "qemu.log"
 SESSION_ID = str(uuid.uuid4())
 
-# 💡 تحديد مسار الـ AppData المشترك ديناميكياً لكل أنظمة التشغيل ليتطابق مع الـ C++
+# 💡 تحديد مسار الـ AppData المشترك ديناميكياً لكل أنظمة التشغيل ليتطابق مع الـ C++ المحسن
 if sys.platform == "darwin":
     base_dir = Path.home() / "Library" / "Application Support" / "xv6ui"
 elif sys.platform == "win32":
@@ -25,11 +25,11 @@ else:
 base_dir.mkdir(parents=True, exist_ok=True)
 DB_PATH = str(base_dir / "events.db")
 
-# 💡 تم تعديل الـ Regex هنا ليطابق أسطر الـ Logs التي أرسلتِها تماماً بدون أي حياد
+# 💡 تحديث الـ Regex ليتوافق حرفياً مع السجلات الفعلية المخزنة في قاعدة بياناتكِ
 MEMCAT_RE = re.compile(
-    r"(?:#\d+\s+)?seq=(?P<seq>\d+)\s+tick=(?P<tick>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
-    r"\s+type=(?P<type>\S+)\s+src=(?P<src>\S+)\s+name=(?P<name>\S*)\s+old=(?P<old>[\da-fA-Fx]+)"
-    r"\s+new=(?P<new>[\da-fA-Fx]+)\s+pa=(?P<pa>[\da-fA-Fx]+)\s+va=(?P<va>[\da-fA-Fx]+)"
+    r"seq=(?P<seq>\d+)\s+tick=(?P<tick>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
+    r"\s+type=(?P<type>\S+)\s+src=(?P<src>\S+)\s+(?:name=(?P<name>\S+)\s+)?"
+    r"old=(?P<old>\d+)\s+new=(?P<new>\d+)\s+pa=(?P<pa>\d+)\s+va=(?P<va>\d+)"
 )
 
 def parse_int(value: str) -> int:
@@ -39,8 +39,36 @@ def parse_int(value: str) -> int:
         return 0
 
 def parse_mem_event(line: str) -> dict | None:
-    m = MEMCAT_RE.search(line)
+    # تنظيف السطر من محارف الـ الـ # القديمة إن وجدت
+    clean_line = line.replace('#', '').strip()
+    m = MEMCAT_RE.search(clean_line)
     if not m:
+        # محاولة فحص أخرى مرنة في حال كانت العناوين مفصولة بـ طابعات مختلفة
+        fields = clean_line.split()
+        if len(fields) >= 10 and "seq=" in clean_line:
+            try:
+                d = {}
+                for f in fields:
+                    if '=' in f:
+                        k, v = f.split('=', 1)
+                        d[k] = v
+                return {
+                    "seq": int(d.get("seq", 0)),
+                    "tick": int(d.get("tick", 0)),
+                    "cpu": int(d.get("cpu", 0)),
+                    "pid": int(d.get("pid", 0)),
+                    "type": d.get("type", "UNKNOWN"),
+                    "src": d.get("src", "UNKNOWN"),
+                    "va": parse_int(d.get("va", "0")),
+                    "pa": parse_int(d.get("pa", "0")),
+                    "perm": "rwx",
+                    "kind": "page",
+                    "name": d.get("name", "memcat"),
+                    "old": parse_int(d.get("old", "0")),
+                    "new": parse_int(d.get("new", "0")),
+                }
+            except Exception:
+                return None
         return None
 
     return {
@@ -54,7 +82,7 @@ def parse_mem_event(line: str) -> dict | None:
         "pa": parse_int(m.group("pa")),
         "perm": "rwx",
         "kind": "page",
-        "name": m.group("name") if m.group("name") else "kernel",
+        "name": m.group("name") if m.group("name") else "memcat",
         "old": parse_int(m.group("old")),
         "new": parse_int(m.group("new")),
     }
@@ -122,7 +150,7 @@ def main() -> None:
                             try:
                                 insert_mem_event(cur, mem_event)
                                 con.commit()
-                                print(f"[PIPELINE-OK] Ingested log seq={mem_event['seq']} | PID={mem_event['pid']} | Event={mem_event['type']}")
+                                print(f"[PIPELINE-OK] Ingested log seq={mem_event['seq']} | PID={mem_event['pid']} | Event={mem_event['type']} | PA={hex(mem_event['pa'])}")
                             except sqlite3.Error as e:
                                 print(f"[ERR] SQLite Transaction Failure: {e}")
             except IOError:
