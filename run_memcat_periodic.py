@@ -14,26 +14,22 @@ from pathlib import Path
 LOG_PATH = "qemu.log"
 SESSION_ID = str(uuid.uuid4())
 
-# 💡 تحديد مسار الـ AppData المشترك ديناميكياً لكل أنظمة التشغيل حول العالم
+# 💡 تحديد مسار الـ AppData المشترك ديناميكياً لكل أنظمة التشغيل ليتطابق مع الـ C++
 if sys.platform == "darwin":
-    # macOS: ~/Library/Application Support/xv6ui/
     base_dir = Path.home() / "Library" / "Application Support" / "xv6ui"
 elif sys.platform == "win32":
-    # Windows: C:\Users\Username\AppData\Roaming\xv6ui\
     base_dir = Path(os.getenv("APPDATA", ".")) / "xv6ui"
 else:
-    # Linux / Unix: ~/.local/share/xv6ui/
     base_dir = Path.home() / ".local" / "share" / "xv6ui"
 
-# إنشاء المجلد تلقائياً مهما كان نظام التشغيل الحالي
 base_dir.mkdir(parents=True, exist_ok=True)
 DB_PATH = str(base_dir / "events.db")
 
-# الـ Regex المرن والمطهر لقراءة سطور الـ memcat الحية
+# 💡 تم تعديل الـ Regex هنا ليطابق أسطر الـ Logs التي أرسلتِها تماماً بدون أي حياد
 MEMCAT_RE = re.compile(
-    r"#\d+\s+seq=(?P<seq>\d+)\s+tick=(?P<tick>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
-    r"\s+type=(?P<type>\S+)\s+src=(?P<src>\S+)\s+(?:name=(?P<name>\S*))?.*?"
-    r"old=(?P<old>[\da-fA-Fx]+)\s+new=(?P<new>[\da-fA-Fx]+)\s+pa=(?P<pa>[\da-fA-Fx]+)\s+va=(?P<va>[\da-fA-Fx]+)"
+    r"(?:#\d+\s+)?seq=(?P<seq>\d+)\s+tick=(?P<tick>\d+)\s+cpu=(?P<cpu>-?\d+)\s+pid=(?P<pid>-?\d+)"
+    r"\s+type=(?P<type>\S+)\s+src=(?P<src>\S+)\s+name=(?P<name>\S*)\s+old=(?P<old>[\da-fA-Fx]+)"
+    r"\s+new=(?P<new>[\da-fA-Fx]+)\s+pa=(?P<pa>[\da-fA-Fx]+)\s+va=(?P<va>[\da-fA-Fx]+)"
 )
 
 def parse_int(value: str) -> int:
@@ -53,12 +49,12 @@ def parse_mem_event(line: str) -> dict | None:
         "cpu": int(m.group("cpu")),
         "pid": int(m.group("pid")),
         "type": m.group("type"),
-        "src": m.group("src"),  
+        "src": m.group("src"),
         "va": parse_int(m.group("va")),
         "pa": parse_int(m.group("pa")),
         "perm": "rwx",
-        "kind": "heap",
-        "name": m.group("name") if m.group("name") else "unknown",
+        "kind": "page",
+        "name": m.group("name") if m.group("name") else "kernel",
         "old": parse_int(m.group("old")),
         "new": parse_int(m.group("new")),
     }
@@ -92,7 +88,7 @@ def ensure_schema(cur: sqlite3.Cursor) -> None:
 
 def wait_for_log_file(path: Path) -> None:
     while not path.exists():
-        print(f"[WAIT] Waiting for {path} to appear... Make sure xv6/QEMU is up and active.")
+        print(f"[WAIT] Waiting for {path} to appear... Make sure xv6/QEMU is running and writing logs.")
         time.sleep(1)
 
 def main() -> None:
@@ -110,7 +106,7 @@ def main() -> None:
     con.commit()
 
     last_pos = 0
-    print("[INFO] Pipeline Pipeline initialized. Monitoring system traces...")
+    print("[INFO] Pipeline initialized. Monitoring system traces...")
 
     try:
         while True:
