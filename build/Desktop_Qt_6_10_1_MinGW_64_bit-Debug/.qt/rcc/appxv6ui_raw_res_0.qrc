@@ -1,7 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/xv6ui/">
-    <file alias="resources.qrc">C:/Users/kinannotfound/Documents/xv6ui/resources.qrc</file>
-    <file alias="test.png">C:/Users/kinannotfound/Documents/xv6ui/test.png</file>
-  </qresource>
-</RCC>
-

@@ -1,9 +1,0 @@
-<RCC>
-  <qresource prefix="/qt/qml/xv6ui/">
-    <file alias="Main.qml">C:/Users/kinannotfound/Documents/xv6ui/Main.qml</file>
-    <file alias="NavigationLogic.js">C:/Users/kinannotfound/Documents/xv6ui/NavigationLogic.js</file>
-    <file alias="CpuSchedulingPage.qml">C:/Users/kinannotfound/Documents/xv6ui/CpuSchedulingPage.qml</file>
-    <file alias="MemoryManagementPage.qml">C:/Users/kinannotfound/Documents/xv6ui/MemoryManagementPage.qml</file>
-  </qresource>
-</RCC>
-

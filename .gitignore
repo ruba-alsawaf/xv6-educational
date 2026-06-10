@@ -1,0 +1,7 @@
+# Qt Creator build directories
+build/
+
+# Qt Creator user configuration files
+.qtcreator/
+*.qmlc
+*.jsc

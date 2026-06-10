@@ -14,7 +14,7 @@ Rectangle {
 
     property variant hoveredBlockData: null
 
-    // التايمر الأصلي الخفيف المستقر
+    // التايمر الأصلي الخفيف المستقر للتحديث اللحظي للبيانات من الـ C++
     Timer {
         interval: 1000
         running: true
@@ -64,6 +64,7 @@ Rectangle {
                     Repeater {
                         model: cpuSchedulingPage.cpuModelData
                         delegate: Rectangle {
+                            id: cpuCard
                             width: (parent.width - 2 * 15) / 3; height: parent.height; radius: 12; color: Qt.rgba(0, 0, 0, 0.3)
                             Column {
                                 anchors.centerIn: parent; spacing: 8
@@ -71,10 +72,14 @@ Rectangle {
                                 Row {
                                     spacing: 6
                                     Rectangle {
+                                        id: stateDot
                                         width: 8; height: 8; radius: 4;
                                         color: modelData.state === "UNUSED" ? "#97969d" : "#10b981"
                                         anchors.verticalCenter: parent.verticalCenter
-                                        layer.enabled: true; layer.effect: Glow { radius: 4; samples: 9; color: (typeof theme !== 'undefined' ? theme.myColor : "white"); spread: 0.3 }
+
+                                        // 💡 تم حل التعارض هنا: الوهج يتبع لون النقطة ديناميكياً وبأمان 100%
+                                        layer.enabled: true
+                                        layer.effect: Glow { radius: 4; samples: 9; color: stateDot.color; spread: 0.3 }
                                     }
                                     Text {
                                         text: modelData.state === "UNUSED" ? "IDLE" : "ACTIVE"
@@ -168,7 +173,7 @@ Rectangle {
             property real playheadProgress: 0.0
             property real playheadAlpha: 1.0
 
-            SequentialAnimation {
+            幕後 : SequentialAnimation {
                 running: true; loops: Animation.Infinite
                 NumberAnimation { target: schedulingRec; property: "playheadProgress"; from: 0.0; to: 1.0; duration: 10000; easing.type: Easing.Linear }
                 NumberAnimation { target: schedulingRec; property: "playheadAlpha"; to: 0.0; duration: 250; easing.type: Easing.OutQuad }
@@ -281,113 +286,107 @@ Rectangle {
                                     }
                                 }
                             }
+
+                            Rectangle {
+                                id: playhead
+                                width: 2; height: parent.height; color: "#8b5cf6"
+                                opacity: schedulingRec.playheadAlpha
+                                x: 15 + graphArea.labelWidth + graphArea.innerSpacing + (graphArea.trackWidth * schedulingRec.playheadProgress)
+                                y: 0
+                                layer.enabled: true; layer.effect: Glow { radius: 8; samples: 13; color: "#8b5cf6"; spread: 0.3 }
+                            }
                         }
                     }
-                }
-
-                Rectangle {
-                    id: playhead
-                    width: 2; height: parent.height; color: "#8b5cf6"
-                    opacity: schedulingRec.playheadAlpha
-                    x: 15 + graphArea.labelWidth + graphArea.innerSpacing + (graphArea.trackWidth * schedulingRec.playheadProgress)
-                    y: 0
-                    layer.enabled: true; layer.effect: Glow { radius: 8; samples: 13; color: "#8b5cf6"; spread: 0.3 }
                 }
             }
         }
     }
 
     ToolTip {
-            id: processTooltip
-            delay: 0
-            timeout: 5000
+        id: processTooltip
+        delay: 0
+        timeout: 5000
+        padding: 15
 
-            // 1️⃣ استخدام الـ Padding هنا يجعل الخلفية تلتف حول النص بدقة وبدون تمدد عشوائي
-            padding: 15
+        contentItem: Column {
+            spacing: 12
 
-            contentItem: Column {
-                spacing: 12
+            Row {
+                spacing: 8
+                anchors.horizontalCenter: parent.horizontalCenter
 
-                // الصف الأول: نقطة خضراء + رقم الـ PID + اسم العملية
-                Row {
-                    spacing: 8
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Rectangle {
-                        width: 8; height: 8; radius: 4
-                        color: "#34d399"
-                        anchors.verticalCenter: parent.verticalCenter
-                        layer.enabled: true
-                        layer.effect: Glow { radius: 4; samples: 8; color: "#34d399"; spread: 0.3 }
-                    }
-
-                    Text {
-                        text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.t : ""
-                        font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
-                        color: "#ffffff"
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: "•"
-                        font { family: "Segoe UI"; pixelSize: 12 }
-                        color: Qt.rgba(255, 255, 255, 0.3)
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-
-                    Text {
-                        text: (cpuSchedulingPage.hoveredBlockData && cpuSchedulingPage.hoveredBlockData.proc_name) ? cpuSchedulingPage.hoveredBlockData.proc_name : "unknown"
-                        font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
-                        color: "#a78bfa" // لون بنفسجي فاتح لاسم العملية
-                        anchors.verticalCenter: parent.verticalCenter
-                    }
-                }
-
-                // خط فاصل شفاف وأنيق
                 Rectangle {
-                    width: parent.width; height: 1
-                    color: Qt.rgba(255, 255, 255, 0.1)
+                    width: 8; height: 8; radius: 4
+                    color: "#34d399"
+                    anchors.verticalCenter: parent.verticalCenter
+                    layer.enabled: true
+                    layer.effect: Glow { radius: 4; samples: 8; color: "#34d399"; spread: 0.3 }
                 }
 
-                // الصف الثاني: السجلات (EIP و ESP) بتنسيق شبكي صغير
-                Row {
-                    spacing: 20
-                    anchors.horizontalCenter: parent.horizontalCenter
+                Text {
+                    text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.t : ""
+                    font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
+                    color: "#ffffff"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
-                    Column {
-                        spacing: 4
-                        anchors.verticalCenter: parent.verticalCenter
-                        Text { text: "EIP (PC)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
-                        Text {
-                            text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.eip : "0x0"
-                            font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
-                            color: "#f43f5e"
-                        }
-                    }
+                Text {
+                    text: "•"
+                    font { family: "Segoe UI"; pixelSize: 12 }
+                    color: Qt.rgba(255, 255, 255, 0.3)
+                    anchors.verticalCenter: parent.verticalCenter
+                }
 
-                    Rectangle { width: 1; height: 25; color: Qt.rgba(255, 255, 255, 0.1); anchors.verticalCenter: parent.verticalCenter }
-
-                    Column {
-                        spacing: 4
-                        anchors.verticalCenter: parent.verticalCenter
-                        Text { text: "ESP (SP)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
-                        Text {
-                            text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.esp : "0x0"
-                            font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
-                            color: "#38bdf8"
-                        }
-                    }
+                Text {
+                    text: (cpuSchedulingPage.hoveredBlockData && cpuSchedulingPage.hoveredBlockData.proc_name) ? cpuSchedulingPage.hoveredBlockData.proc_name : "unknown"
+                    font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold }
+                    color: "#a78bfa"
+                    anchors.verticalCenter: parent.verticalCenter
                 }
             }
 
-            // 2️⃣ الخلفية: تأثير زجاجي غامق (Glassmorphism) مع حدود خفيفة
-            background: Rectangle {
-                color: Qt.rgba(20 / 255, 15 / 255, 35 / 255, 0.85)
-                border.color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.5)
-                border.width: 1
-                radius: 12
-                layer.enabled: true
-                layer.effect: Glow { radius: 10; samples: 15; color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.2); spread: 0.1 }
+            Rectangle {
+                width: parent.width; height: 1
+                color: Qt.rgba(255, 255, 255, 0.1)
+            }
+
+            Row {
+                spacing: 20
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                Column {
+                    spacing: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "EIP (PC)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
+                    Text {
+                        text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.eip : "0x0"
+                        font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
+                        color: "#f43f5e"
+                    }
+                }
+
+                Rectangle { width: 1; height: 25; color: Qt.rgba(255, 255, 255, 0.1); anchors.verticalCenter: parent.verticalCenter }
+
+                Column {
+                    spacing: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    Text { text: "ESP (SP)"; font { family: "Segoe UI"; pixelSize: 10; weight: Font.Bold } color: Qt.rgba(255, 255, 255, 0.4) }
+                    Text {
+                        text: cpuSchedulingPage.hoveredBlockData ? cpuSchedulingPage.hoveredBlockData.esp : "0x0"
+                        font { family: "Consolas"; pixelSize: 12; weight: Font.Bold }
+                        color: "#38bdf8"
+                    }
+                }
             }
         }
+
+        background: Rectangle {
+            color: Qt.rgba(20 / 255, 15 / 255, 35 / 255, 0.85)
+            border.color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.5)
+            border.width: 1
+            radius: 12
+            layer.enabled: true
+            layer.effect: Glow { radius: 10; samples: 15; color: Qt.rgba(139 / 255, 92 / 255, 246 / 255, 0.2); spread: 0.1 }
+        }
+    }
 }

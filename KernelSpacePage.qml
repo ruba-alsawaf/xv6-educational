@@ -23,7 +23,7 @@ ScrollView {
         // ==========================================
         Rectangle {
             width: parent.width
-            height: 90
+            height: 95
             color: Qt.rgba(255, 255, 255, 0.03)
             radius: 14
             border.color: Qt.rgba(139, 92, 246, 0.25)
@@ -31,10 +31,7 @@ ScrollView {
 
             layer.enabled: true
             layer.effect: Glow {
-                radius: 10
-                samples: 17
-                color: Qt.rgba(139, 92, 246, 0.1)
-                spread: 0.1
+                radius: 10; samples: 17; color: Qt.rgba(139, 92, 246, 0.1); spread: 0.1
             }
 
             Column {
@@ -44,20 +41,22 @@ ScrollView {
                 spacing: 6
 
                 Text {
-                    text: "LESSON 7: RISC-V Sv39 MEMORY TRANSLATION & THE walk() FUNCTION"
+                    text: "LESSON 8: KERNEL ADDRESS SPACE & KVMINIT"
                     color: "#ffffff"
                     font { family: "Segoe UI"; bold: true; pixelSize: 18; letterSpacing: 0.5 }
                 }
                 Text {
-                    text: "💡 GOAL: Understand how hardware maps virtual addresses, and how the xv6 kernel emulates this using software page-table walks."
+                    text: "💡 GOAL: Master how the xv6 kernel designs its rigid virtual-to-physical mapping during boot up, allocates page tables, and isolates raw peripheral hardware using defensive page table entry flags."
                     color: Qt.rgba(255, 255, 255, 0.6)
-                    font { family: "Segoe UI"; pixelSize: 13 }
+                    font { family: "Segoe UI"; pixelSize: 12 }
+                    wrapMode: Text.WordWrap
+                    width: parent.width - 30
                 }
             }
         }
 
         // ==========================================
-        // 2. MAIN LAYOUT: Code Block vs Hardware Mapping Diagram
+        // 2. MAIN LAYOUT: Code Block vs Kernel Memory Map Diagram
         // ==========================================
         Row {
             width: parent.width
@@ -65,8 +64,8 @@ ScrollView {
 
             // 💻 Left Side: Dark Mode Code Block (Software Logic)
             Rectangle {
-                width: (parent.width - 20) * 0.46
-                height: 540
+                width: (parent.width - 20) * 0.48
+                height: 520
                 color: Qt.rgba(0, 0, 0, 0.4)
                 radius: 16
                 border.color: Qt.rgba(255, 255, 255, 0.08)
@@ -82,7 +81,7 @@ ScrollView {
                         Rectangle { width: 10; height: 10; radius: 5; color: "#ef4444" }
                         Rectangle { width: 10; height: 10; radius: 5; color: "#eab308" }
                         Rectangle { width: 10; height: 10; radius: 5; color: "#10b981" }
-                        Text { text: "  vm.c - xv6 Kernel Source"; color: "#97969d"; font { family: "Consolas"; pixelSize: 11 } anchors.verticalCenter: parent.verticalCenter }
+                        Text { text: "  vm.c - kvminit() Code Implementation"; color: "#97969d"; font { family: "Consolas"; pixelSize: 11 } anchors.verticalCenter: parent.verticalCenter }
                     }
 
                     Rectangle { width: parent.width; height: 1; color: Qt.rgba(255, 255, 255, 0.08) }
@@ -94,36 +93,31 @@ ScrollView {
 
                         Column {
                             id: codeColumn
-                            spacing: 4
+                            spacing: 5
 
-                            Row { Text { text: "pte_t"; color: "#60a5fa"; font.family: "Consolas" } Text { text: " *walk(pagetable_t pt, uint64 va, "; color: "white"; font.family: "Consolas" } Text { text: "int"; color: "#60a5fa"; font.family: "Consolas" } Text { text: " alloc) {"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "  if"; color: "#f43f5e"; font.family: "Consolas" } Text { text: "(va >= MAXVA)"; color: "white"; font.family: "Consolas" } }
-                            Text { text: "    panic(\"walk\");"; color: "#a1a1aa"; font.family: "Consolas"; font.italic: true }
+                            Row { Text { text: "void"; color: "#60a5fa"; font.family: "Consolas" } Text { text: " kvminit() {"; color: "white"; font.family: "Consolas" } }
+                            Row { Text { text: "  kpagetable = (pagetable_t) kalloc();"; color: "white"; font.family: "Consolas" } }
+                            Row { Text { text: "  memset(kpagetable, 0, PGSIZE);"; color: "white"; font.family: "Consolas" } }
                             Text { text: "" }
-                            Row { Text { text: "  // Loop 3 levels of Sv39 page tree"; color: "#a1a1aa"; font.family: "Consolas"; font.italic: true } }
-                            Row { Text { text: "  for"; color: "#f43f5e"; font.family: "Consolas" } Text { text: " ("; color: "white"; font.family: "Consolas" } Text { text: "int"; color: "#60a5fa"; font.family: "Consolas" } Text { text: " level = 2; level > 0; level--) {"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "    pte_t"; color: "#60a5fa"; font.family: "Consolas" } Text { text: " *pte = &pt[PX(level, va)];"; color: "white"; font.family: "Consolas" } }
+                            Row { Text { text: "  // 1. Direct map I/O peripherals"; color: "#a1a1aa"; font.family: "Consolas"; font.italic: true } }
+                            Row { Text { text: "  kvm_map(kpagetable, UART0, UART0, PGSIZE, "; color: "white"; font.family: "Consolas" } Text { text: "PTE_R | PTE_W"; color: "#34d399"; font.family: "Consolas" } Text { text: ");"; color: "white"; font.family: "Consolas" } }
+                            Row { Text { text: "  kvm_map(kpagetable, VIRTIO0, VIRTIO0, PGSIZE, "; color: "white"; font.family: "Consolas" } Text { text: "PTE_R | PTE_W"; color: "#34d399"; font.family: "Consolas" } Text { text: ");"; color: "white"; font.family: "Consolas" } }
                             Text { text: "" }
-                            Row { Text { text: "    if"; color: "#f43f5e"; font.family: "Consolas" } Text { text: "(*pte & PTE_V) {"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "      pt = (pagetable_t)PTE2PA(*pte);"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "    } "; color: "white"; font.family: "Consolas" } Text { text: "else"; color: "#f43f5e"; font.family: "Consolas" } Text { text: " {"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "      if"; color: "#f43f5e"; font.family: "Consolas" } Text { text: "(!alloc || (pt = (pde_t*)kalloc()) == 0)"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "        return"; color: "#f43f5e"; font.family: "Consolas" } Text { text: " 0;"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "      memset(pt, 0, PGSIZE);"; color: "white"; font.family: "Consolas" } }
-                            Row { Text { text: "      *pte = PA2PTE(pt) | perm | PTE_V;"; color: "white"; font.family: "Consolas" } }
-                            Text { text: "    }" }
-                            Text { text: "  }" }
-                            Row { Text { text: "  return"; color: "#f43f5e"; font.family: "Consolas" } Text { text: " &pt[PX(0, va)];"; color: "white"; font.family: "Consolas" } }
-                            Text { text: "}"; color: "white"; font.family: "Consolas" }
+                            Row { Text { text: "  // 2. Map kernel text (Read & Execute only)"; color: "#a1a1aa"; font.family: "Consolas"; font.italic: true } }
+                            Row { Text { text: "  kvm_map(kpagetable, KERNBASE, KERNBASE, (uint64)etext-KERNBASE, "; color: "white"; font.family: "Consolas" } Text { text: "PTE_R | PTE_X"; color: "#f43f5e"; font.family: "Consolas" } Text { text: ");"; color: "white"; font.family: "Consolas" } }
+                            Text { text: "" }
+                            Row { Text { text: "  // 3. Map kernel data & RAM physical space"; color: "#a1a1aa"; font.family: "Consolas"; font.italic: true } }
+                            Row { Text { text: "  kvm_map(kpagetable, (uint64)etext, (uint64)etext, PHYSTOP-(uint64)etext, "; color: "white"; font.family: "Consolas" } Text { text: "PTE_R | PTE_W"; color: "#34d399"; font.family: "Consolas" } Text { text: ");"; color: "white"; font.family: "Consolas" } }
+                            Text { text: "}" }
                         }
                     }
                 }
             }
 
-            // 🗺️ Right Side: Hardware Mapping Diagram (Sv39 Scheme)
+            // 🗺️ Right Side: Kernel Memory Map Stack Diagram
             Rectangle {
-                width: (parent.width - 20) * 0.54
-                height: 540
+                width: (parent.width - 20) * 0.52
+                height: 520
                 color: Qt.rgba(255, 255, 255, 0.02)
                 radius: 16
                 border.color: Qt.rgba(139, 92, 246, 0.2)
@@ -133,81 +127,64 @@ ScrollView {
                     anchors.fill: parent
                     anchors.margins: 20
 
-                    // Virtual Address Split Structure
-                    Text { id: vaTitle; text: "VIRTUAL ADDRESS STRUCTURE (39-bit va)"; color: "#c084fc"; font { bold: true; pixelSize: 11; letterSpacing: 0.5 } }
+                    Text { id: mapTitle; text: "KERNEL VIRTUAL ADDRESS SPACE MAP"; color: "#c084fc"; font { bold: true; pixelSize: 11; letterSpacing: 0.5 } }
 
-                    Row {
-                        id: vaBar
-                        anchors.top: vaTitle.bottom
-                        anchors.topMargin: 8
-                        width: parent.width; height: 38
-                        spacing: 2
+                    Column {
+                        id: memoryStack
+                        anchors.top: mapTitle.bottom
+                        anchors.topMargin: 15
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: parent.width * 0.85
+                        spacing: 6
 
-                        Rectangle { width: parent.width * 0.22; height: parent.height; color: Qt.rgba(139, 92, 246, 0.15); border.color: "#8b5cf6"; radius: 4
-                            Column { anchors.centerIn: parent; Text { text: "L2 Index"; color: "white"; font { bold: true; pixelSize: 10 } } Text { text: "9 bits [38:30]"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8 } } }
-                        Rectangle { width: parent.width * 0.22; height: parent.height; color: Qt.rgba(139, 92, 246, 0.15); border.color: "#8b5cf6"; radius: 4
-                            Column { anchors.centerIn: parent; Text { text: "L1 Index"; color: "white"; font { bold: true; pixelSize: 10 } } Text { text: "9 bits [29:21]"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8 } } }
-                        Rectangle { width: parent.width * 0.22; height: parent.height; color: Qt.rgba(139, 92, 246, 0.15); border.color: "#8b5cf6"; radius: 4
-                            Column { anchors.centerIn: parent; Text { text: "L0 Index"; color: "white"; font { bold: true; pixelSize: 10 } } Text { text: "9 bits [20:12]"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8 } } }
-                        Rectangle { width: parent.width * 0.30; height: parent.height; color: Qt.rgba(16, 185, 129, 0.15); border.color: "#10b981"; radius: 4
-                            Column { anchors.centerIn: parent; Text { text: "Offset"; color: "white"; font { bold: true; pixelSize: 10 } } Text { text: "12 bits [11:0]"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8 } } }
+                        // Free Memory RAM Space Block
+                        Rectangle {
+                            width: parent.width; height: 80; radius: 4; color: Qt.rgba(52, 211, 153, 0.12); border.color: "#10b981"
+                            Column { anchors.centerIn: parent; spacing: 2
+                                Text { text: "FREE RAM MEMORY"; color: "white"; font { bold: true; pixelSize: 11 } anchors.horizontalCenter: parent }
+                                Text { text: "Max Limit: PHYSTOP (0x88000000)"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8 }
+                                Text { text: "Permissions: PTE_R | PTE_W (Read & Write Allowed)"; color: "#34d399"; font.pixelSize: 8 } }
+                        }
+
+                        // Kernel Data Segment Block
+                        Rectangle {
+                            width: parent.width; height: 65; radius: 4; color: Qt.rgba(52, 211, 153, 0.08); border.color: "#34d399"
+                            Column { anchors.centerIn: parent; spacing: 2
+                                Text { text: "KERNEL DATA & STACK"; color: "white"; font { bold: true; pixelSize: 11 } }
+                                Text { text: "Start Addr: etext (End of Text Segment)"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8; anchors.horizontalCenter: parent }
+                                Text { text: "Permissions: PTE_R | PTE_W"; color: "#34d399"; font.pixelSize: 8; anchors.horizontalCenter: parent } }
+                        }
+
+                        // Kernel Text Segment Block (Code)
+                        Rectangle {
+                            width: parent.width; height: 65; radius: 4; color: Qt.rgba(244, 63, 94, 0.12); border.color: "#f43f5e"
+                            layer.enabled: true; layer.effect: Glow { radius: 5; samples: 9; color: "#f43f5e"; spread: 0.1 }
+                            Column { anchors.centerIn: parent; spacing: 2
+                                Text { text: "KERNEL TEXT (CODE SEGMENT)"; color: "white"; font { bold: true; pixelSize: 11 } }
+                                Text { text: "Start Addr: KERNBASE (0x80000000)"; color: Qt.rgba(255,255,255,0.4); font.pixelSize: 8; anchors.horizontalCenter: parent }
+                                Text { text: "Permissions: PTE_R | PTE_X (Read & Execute Only)"; color: "#f43f5e"; font.pixelSize: 8; anchors.horizontalCenter: parent } }
+                        }
+
+                        // Peripherals Dev I/O Block
+                        Rectangle {
+                            id: devBlock
+                            width: parent.width; height: 70; radius: 4; color: Qt.rgba(139, 92, 246, 0.15); border.color: "#8b5cf6"
+                            Column { anchors.centerIn: parent; spacing: 2
+                                Text { text: "I/O PERIPHERALS DEVICES"; color: "white"; font { bold: true; pixelSize: 11 } }
+                                Text { text: "Maps: UART0 (Console) & VIRTIO0 (Disk Controllers)"; color: Qt.rgba(255,255,255,0.5); font.pixelSize: 8; anchors.horizontalCenter: parent }
+                                Text { text: "Direct Mapping Mode (pa == va)"; color: "#a78bfa"; font.pixelSize: 8; anchors.horizontalCenter: parent } }
+                        }
                     }
 
-                    Text { text: "THREE-LEVEL PAGE TABLE TREE"; color: "#97969d"; font { bold: true; pixelSize: 10 } anchors.top: vaBar.bottom; anchors.topMargin: 25 }
-
-                    // Graphic Nodes representing the Page Tables
-                    Rectangle { id: tblL2; width: 120; height: 40; x: 10; y: 110; radius: 6; color: Qt.rgba(0,0,0,0.4); border.color: "#8b5cf6"
-                        Text { text: "Root Table (L2)"; color: "white"; font.pixelSize: 10; anchors.centerIn: parent } }
-
-                    Rectangle { id: tblL1; width: 120; height: 40; x: 145; y: 170; radius: 6; color: Qt.rgba(0,0,0,0.4); border.color: "#8b5cf6"
-                        Text { text: "Table Level 1"; color: "white"; font.pixelSize: 10; anchors.centerIn: parent } }
-
-                    Rectangle { id: tblL0; width: 120; height: 40; x: 280; y: 230; radius: 6; color: Qt.rgba(0,0,0,0.4); border.color: "#8b5cf6"
-                        Text { text: "Table Level 0\n(PTE Entry)"; color: "white"; font.pixelSize: 9; horizontalAlignment: Text.AlignHCenter; anchors.centerIn: parent } }
-
-                    // Output Box representing physical translation result
-                    Rectangle { id: paBlock; width: 230; height: 45; x: 120; y: 320; radius: 8; color: Qt.rgba(16, 185, 129, 0.12); border.color: "#10b981"
-                        Row { anchors.centerIn: parent; spacing: 8
-                            Text { text: "PPN (44-bit)"; color: "white"; font { bold: true; pixelSize: 11 } }
-                            Rectangle { width: 1; height: 15; color: Qt.rgba(255,255,255,0.2) }
-                            Text { text: "Offset (12-bit)"; color: "#6ee7b7"; font { bold: true; pixelSize: 11 } } } }
-
-                    Text { text: "PHYSICAL ADDRESS RESULT (56-bit pa)"; color: "#10b981"; font { bold: true; pixelSize: 11 } anchors.top: paBlock.bottom; anchors.topMargin: 6; anchors.horizontalCenter: paBlock.horizontalCenter }
-
-                    // Canvas drawing interconnecting paths
                     Canvas {
                         anchors.fill: parent
                         onAvailableChanged: if(available) requestPaint()
                         onPaint: {
                             var ctx = getContext("2d"); ctx.reset();
-                            ctx.strokeStyle = "#8b5cf6"; ctx.lineWidth = 1.5; ctx.fillStyle = "#8b5cf6";
-
-                            // Arrow from L2 segment to Root Table
-                            ctx.beginPath(); ctx.moveTo(45, 65); ctx.lineTo(45, 110); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(41, 105); ctx.lineTo(45, 110); ctx.lineTo(49, 105); ctx.fill();
-
-                            // Path from L2 Table to L1 Table
-                            ctx.beginPath(); ctx.moveTo(130, 130); ctx.lineTo(205, 130); ctx.lineTo(205, 170); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(201, 165); ctx.lineTo(205, 170); ctx.lineTo(209, 165); ctx.fill();
-
-                            // Path from L1 Table to L0 Table
-                            ctx.beginPath(); ctx.moveTo(265, 190); ctx.lineTo(340, 190); ctx.lineTo(340, 230); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(336, 225); ctx.lineTo(340, 230); ctx.lineTo(344, 225); ctx.fill();
-
-                            // Target path from L0 to PPN section in PA block
-                            ctx.strokeStyle = "#10b981"; ctx.fillStyle = "#10b981";
-                            ctx.beginPath(); ctx.moveTo(340, 270); ctx.lineTo(340, 295); ctx.lineTo(175, 295); ctx.lineTo(175, 320); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(171, 315); ctx.lineTo(175, 320); ctx.lineTo(179, 315); ctx.fill();
-
-                            // Direct passthrough path feeding original Offset bits
-                            ctx.beginPath(); ctx.moveTo(320, 65); ctx.lineTo(320, 95); ctx.lineTo(415, 95); ctx.lineTo(415, 305); ctx.lineTo(285, 305); ctx.lineTo(285, 320); ctx.stroke();
-                            ctx.beginPath(); ctx.moveTo(281, 315); ctx.lineTo(285, 320); ctx.lineTo(289, 315); ctx.fill();
-
-                            // 🔥 [FIXED LINK]: السهم المائل والمتقطع ينطلق الآن بدقة من مستوى سطر حلقة الـ for بالكود
-                            ctx.strokeStyle = Qt.rgba(139, 92, 246, 0.5); ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
+                            ctx.strokeStyle = Qt.rgba(139, 92, 246, 0.45); ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
                             ctx.beginPath();
-                            ctx.moveTo(-180, 138); // نقطة البداية المحاذية لسطر الـ for بدقة
-                            ctx.bezierCurveTo(-100, 138, -50, 48, 10, 48); // مسار مقوس نظيف يرتفع ليتصل بكتلة الـ L2 Index مباشرة دون تداخل
+                            ctx.moveTo(-150, 168);
+                            ctx.bezierCurveTo(-60, 168, -30, 335, 30, 335);
                             ctx.stroke();
                         }
                     }
@@ -216,29 +193,49 @@ ScrollView {
         }
 
         // ==========================================
-        // 3. EXPLANATION SECTION: Core takeaways
+        // 3. EXPLANATION SECTION
         // ==========================================
         Rectangle {
             width: parent.width
-            height: 140
+            height: 220
             color: Qt.rgba(255, 255, 255, 0.01)
             radius: 12
             border.color: Qt.rgba(255, 255, 255, 0.05)
 
             Column {
-                anchors.fill: parent; anchors.margins: 15; spacing: 10
+                anchors.fill: parent
+                anchors.margins: 15
+                spacing: 14
 
-                Row { spacing: 10
-                    Text { text: "📌"; font.pixelSize: 14 }
-                    Text { text: "walk() Function Duty: It emulates in software exactly what the MMU Paging Hardware automatically does behind the scenes to look up the Page Table Entry (PTE) for a given virtual address."; color: Qt.rgba(255, 255, 255, 0.85); font.pixelSize: 12 } }
+                Column {
+                    width: parent.width
+                    spacing: 3
+                    Text { text: "📌 Kernel Direct Mapping Strategy:"; color: "#c084fc"; font { bold: true; pixelSize: 12 } }
+                    Text {
+                        text: "During early boot, kvminit() maps critical hardware device registers (UART0, VIRTIO0) identically into virtual memory spaces. This ensures that the Virtual Address (VA) equals exactly the Physical Address (PA), allowing the kernel to fetch and stream bytes to disk controllers safely without complex translation layers.";
+                        color: Qt.rgba(255, 255, 255, 0.75); font.pixelSize: 11; wrapMode: Text.WordWrap; width: parent.width
+                    }
+                }
 
-                Row { spacing: 10
-                    Text { text: "📌"; font.pixelSize: 14 }
-                    Text { text: "The PX Macro: Extracted indexes use 9 bits per tier directly out of the given Virtual Address to reference array positions inside the corresponding page directories."; color: Qt.rgba(255, 255, 255, 0.85); font.pixelSize: 12 } }
+                Column {
+                    width: parent.width
+                    spacing: 3
+                    Text { text: "📌 Defensive Page Level Security:"; color: "#f43f5e"; font { bold: true; pixelSize: 12 } }
+                    Text {
+                        text: "The kernel code (text segment) starting from 0x80000000 is compiled as Read and Execute only (PTE_R | PTE_X). Omitting the PTE_W (Write) flag prevents the running operating system from being modified or overwritten by software glitches, effectively establishing a hardware-enforced shield around kernel operations.";
+                        color: Qt.rgba(255, 255, 255, 0.75); font.pixelSize: 11; wrapMode: Text.WordWrap; width: parent.width
+                    }
+                }
 
-                Row { spacing: 10
-                    Text { text: "📌"; font.pixelSize: 14 }
-                    Text { text: "PTE_V Flag Assertion: Stands for Valid bit. If matching 1, the hardware proceeds safely down. If matching 0 and alloc flag is true, kalloc() initializes a new page tier on the fly."; color: Qt.rgba(255, 255, 255, 0.85); font.pixelSize: 12 } }
+                Column {
+                    width: parent.width
+                    spacing: 3
+                    Text { text: "📌 The Core Mapping Registry:"; color: "#34d399"; font { bold: true; pixelSize: 12 } }
+                    Text {
+                        text: "Every call to kvm_map() calls the walk() helper under the hood to safely descend the page directory layers. If a path branch is missing, it dynamically invokes kalloc() to construct new page nodes and populates the permissions flags securely.";
+                        color: Qt.rgba(255, 255, 255, 0.75); font.pixelSize: 11; wrapMode: Text.WordWrap; width: parent.width
+                    }
+                }
             }
         }
     }

@@ -26,6 +26,11 @@ DbManager::DbManager(QObject *parent) : QObject(parent)
         qWarning() << "❌ Error: database connection failed!" << m_db.lastError().text();
     } else {
         qDebug() << "✅ Database initialized successfully at:" << dbPath;
+
+        // 💡 دمج ميزة الشات بوت: تفعيل WAL Mode لمنع قفل قاعدة البيانات وتسريع الاستعلامات الحية
+        QSqlQuery pragmaQuery(m_db);
+        pragmaQuery.exec("PRAGMA journal_mode=WAL;");
+
         // استدعاء دالة الإنشاء التلقائي للمخطط والجداول
         initDatabase();
     }
@@ -82,10 +87,12 @@ QVariantList DbManager::getLatestCpuMetrics()
         if (!m_db.open()) return list;
     }
 
+    // كسر الكاش لضمان جلب البيانات الجديدة الحية
     QSqlQuery pragma(m_db);
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
+    // النسخة الذهبية بالـ UNION ALL لمنع التكرار
     query.prepare(
         "SELECT * FROM ("
         "  SELECT cpu_id, current_pid, current_state, busy_percent "
@@ -191,10 +198,13 @@ int DbManager::getAverageCpuUsage()
         if (!m_db.open()) return 0;
     }
 
+    // كسر الكاش لضمان التحديث المستمر
     QSqlQuery pragma(m_db);
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
+
+    // ✅ العودة لكودك الذهبي الأصلي اللي كان شغال 100% بدون أي تخبيص
     query.prepare(
         "SELECT current_state FROM cpu_metrics "
         "WHERE id IN ("
@@ -238,6 +248,8 @@ QVariantMap DbManager::getProcessStatesCount()
     pragma.exec("PRAGMA query_only = OFF;");
 
     QSqlQuery query(m_db);
+
+    // ✅ الحل المنطقي الخاص بكِ: جلب العدادات التراكمية (Cumulative) للعمليات التي مرت على النظام
     query.prepare(
         "SELECT total_created, ever_running, ever_sleeping, ever_zombie "
         "FROM cpu_metrics "
@@ -245,9 +257,12 @@ QVariantMap DbManager::getProcessStatesCount()
         );
 
     if (query.exec() && query.next()) {
+        // سحب القيم التراكمية المحدثة
         states["running"] = query.value("ever_running").toInt();
         states["sleeping"] = query.value("ever_sleeping").toInt();
         states["zombie"] = query.value("ever_zombie").toInt();
+
+        // إجمالي العمليات التي تم خلقها منذ إقلاع الكيرنل
         states["total"] = query.value("total_created").toInt();
     } else {
         qWarning() << "❌ Query failed:" << query.lastError().text();

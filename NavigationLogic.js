@@ -1,4 +1,3 @@
-// NavigationLogic.js
 .pragma library
 
 // الألوان الموحدة للمشروع (Theme)
@@ -15,15 +14,15 @@ function handleTabChange(index) {
         case 0:
             return "CpuSchedulingPage.qml"       // CPU SCHEDULING
         case 1:
-            return "MemoryManagementPage.qml"    // MEMORY MANAGEMENT (مؤقتة)
+            return "MemoryManagementPage.qml"    // MEMORY MANAGEMENT
         case 2:
-            return "FileSystem.qml"              // FILE SYSTEM
+            return "FileSystem.qml"              // FILE SYSTEM DASHBOARD
         case 3:
             return "KernelGuardPage.qml"         // LESSON 1: SYSTEM CALLS
         case 4:
             return "ProcessForkPage.qml"         // LESSON 2: PROCESSES & FORK
         case 5:
-            return "FileSystemLessonPage.qml"    // LESSON 3: FILE SYSTEM
+            return "FileSystemLessonPage.qml"    // LESSON 3: FILE SYSTEM LESSON
         case 6:
             return "OsArchitecturePage.qml"      // OS ARCHITECTURE
         case 7:
@@ -39,7 +38,7 @@ function handleTabChange(index) {
         case 12:
             return "ContextSwitchPage.qml"       // CONTEXT SWITCH
         case 13:
-            return "CpuQuizPage.qml"
+            return "CpuQuizPage.qml"             // 💡 الحفاظ على كويز المعالج الخاص بكِ
 
         default:
             return "CpuSchedulingPage.qml"

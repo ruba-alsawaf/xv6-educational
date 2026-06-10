@@ -31,10 +31,7 @@ ScrollView {
 
             layer.enabled: true
             layer.effect: Glow {
-                radius: 10
-                samples: 17
-                color: Qt.rgba(139, 92, 246, 0.1)
-                spread: 0.1
+                radius: 10; samples: 17; color: Qt.rgba(139, 92, 246, 0.1); spread: 0.1
             }
 
             Column {
@@ -52,6 +49,8 @@ ScrollView {
                     text: "💡 GOAL: Understand how hardware maps virtual addresses, and how the xv6 kernel emulates this using software page-table walks."
                     color: Qt.rgba(255, 255, 255, 0.6)
                     font { family: "Segoe UI"; pixelSize: 13 }
+                    wrapMode: Text.WordWrap
+                    width: parent.width - 30
                 }
             }
         }
@@ -133,7 +132,6 @@ ScrollView {
                     anchors.fill: parent
                     anchors.margins: 20
 
-                    // Virtual Address Split Structure
                     Text { id: vaTitle; text: "VIRTUAL ADDRESS STRUCTURE (39-bit va)"; color: "#c084fc"; font { bold: true; pixelSize: 11; letterSpacing: 0.5 } }
 
                     Row {
@@ -155,7 +153,6 @@ ScrollView {
 
                     Text { text: "THREE-LEVEL PAGE TABLE TREE"; color: "#97969d"; font { bold: true; pixelSize: 10 } anchors.top: vaBar.bottom; anchors.topMargin: 25 }
 
-                    // Graphic Nodes representing the Page Tables
                     Rectangle { id: tblL2; width: 120; height: 40; x: 10; y: 110; radius: 6; color: Qt.rgba(0,0,0,0.4); border.color: "#8b5cf6"
                         Text { text: "Root Table (L2)"; color: "white"; font.pixelSize: 10; anchors.centerIn: parent } }
 
@@ -165,7 +162,6 @@ ScrollView {
                     Rectangle { id: tblL0; width: 120; height: 40; x: 280; y: 230; radius: 6; color: Qt.rgba(0,0,0,0.4); border.color: "#8b5cf6"
                         Text { text: "Table Level 0\n(PTE Entry)"; color: "white"; font.pixelSize: 9; horizontalAlignment: Text.AlignHCenter; anchors.centerIn: parent } }
 
-                    // Output Box representing physical translation result
                     Rectangle { id: paBlock; width: 230; height: 45; x: 120; y: 320; radius: 8; color: Qt.rgba(16, 185, 129, 0.12); border.color: "#10b981"
                         Row { anchors.centerIn: parent; spacing: 8
                             Text { text: "PPN (44-bit)"; color: "white"; font { bold: true; pixelSize: 11 } }
@@ -174,7 +170,6 @@ ScrollView {
 
                     Text { text: "PHYSICAL ADDRESS RESULT (56-bit pa)"; color: "#10b981"; font { bold: true; pixelSize: 11 } anchors.top: paBlock.bottom; anchors.topMargin: 6; anchors.horizontalCenter: paBlock.horizontalCenter }
 
-                    // Canvas drawing interconnecting paths
                     Canvas {
                         anchors.fill: parent
                         onAvailableChanged: if(available) requestPaint()
@@ -182,32 +177,26 @@ ScrollView {
                             var ctx = getContext("2d"); ctx.reset();
                             ctx.strokeStyle = "#8b5cf6"; ctx.lineWidth = 1.5; ctx.fillStyle = "#8b5cf6";
 
-                            // Arrow from L2 segment to Root Table
                             ctx.beginPath(); ctx.moveTo(45, 65); ctx.lineTo(45, 110); ctx.stroke();
                             ctx.beginPath(); ctx.moveTo(41, 105); ctx.lineTo(45, 110); ctx.lineTo(49, 105); ctx.fill();
 
-                            // Path from L2 Table to L1 Table
                             ctx.beginPath(); ctx.moveTo(130, 130); ctx.lineTo(205, 130); ctx.lineTo(205, 170); ctx.stroke();
                             ctx.beginPath(); ctx.moveTo(201, 165); ctx.lineTo(205, 170); ctx.lineTo(209, 165); ctx.fill();
 
-                            // Path from L1 Table to L0 Table
                             ctx.beginPath(); ctx.moveTo(265, 190); ctx.lineTo(340, 190); ctx.lineTo(340, 230); ctx.stroke();
                             ctx.beginPath(); ctx.moveTo(336, 225); ctx.lineTo(340, 230); ctx.lineTo(344, 225); ctx.fill();
 
-                            // Target path from L0 to PPN section in PA block
                             ctx.strokeStyle = "#10b981"; ctx.fillStyle = "#10b981";
                             ctx.beginPath(); ctx.moveTo(340, 270); ctx.lineTo(340, 295); ctx.lineTo(175, 295); ctx.lineTo(175, 320); ctx.stroke();
                             ctx.beginPath(); ctx.moveTo(171, 315); ctx.lineTo(175, 320); ctx.lineTo(179, 315); ctx.fill();
 
-                            // Direct passthrough path feeding original Offset bits
                             ctx.beginPath(); ctx.moveTo(320, 65); ctx.lineTo(320, 95); ctx.lineTo(415, 95); ctx.lineTo(415, 305); ctx.lineTo(285, 305); ctx.lineTo(285, 320); ctx.stroke();
                             ctx.beginPath(); ctx.moveTo(281, 315); ctx.lineTo(285, 320); ctx.lineTo(289, 315); ctx.fill();
 
-                            // 🔥 [FIXED LINK]: السهم المائل والمتقطع ينطلق الآن بدقة من مستوى سطر حلقة الـ for بالكود
                             ctx.strokeStyle = Qt.rgba(139, 92, 246, 0.5); ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
                             ctx.beginPath();
-                            ctx.moveTo(-180, 138); // نقطة البداية المحاذية لسطر الـ for بدقة
-                            ctx.bezierCurveTo(-100, 138, -50, 48, 10, 48); // مسار مقوس نظيف يرتفع ليتصل بكتلة الـ L2 Index مباشرة دون تداخل
+                            ctx.moveTo(-180, 138);
+                            ctx.bezierCurveTo(-100, 138, -50, 48, 10, 48);
                             ctx.stroke();
                         }
                     }

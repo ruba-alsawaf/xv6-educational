@@ -5,26 +5,30 @@ project(xv6ui VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTORCC ON)
 
-# 1. جلب كل المكتبات المطلوبة بما فيها مكتبة الواجهات والـ Sql والـ التأثيرات الرسومية
-find_package(Qt6 REQUIRED COMPONENTS Quick Core5Compat Sql)
+# 1. جلب كل المكتبات المطلوبة بما فيها الـ Sql والـ Network الحيوية للشات بوت
+find_package(Qt6 REQUIRED COMPONENTS Quick Core5Compat Sql Network)
 
 # 2. إعداد مشروع Qt القياسي بالإصدار المطلوب
 qt_standard_project_setup(REQUIRES 6.7)
 
-# 3. إنشاء ملف التنفيذ وربط كل ملفات الـ C++ وملف الموارد qrc فيه دفعة واحدة
+# 3. إنشاء ملف التنفيذ وربط كل ملفات الـ C++ الأساسية وموارد الـ qrc
 qt_add_executable(appxv6ui
     main.cpp
     dbmanager.cpp
     dbmanager.h
+    chatbotclient.cpp
+    chatbotclient.h
     resources.qrc
 )
 
-# 4. إعداد موديل الـ QML وتنظيم الملفات البرمجية والصور بشكل نظيف بدون تكرار
+# 4. إعداد موديل الـ QML وتنظيم كافة الملفات البرمجية والدروس التفاعلية مع الشات بوت
 qt_add_qml_module(appxv6ui
     URI xv6ui
     VERSION 1.0
     QML_FILES
         Main.qml
+        LoginPage.qml
+        ChatbotPanel.qml
         CpuSchedulingPage.qml
         MemoryManagementPage.qml
         KernelGuardPage.qml
@@ -38,11 +42,13 @@ qt_add_qml_module(appxv6ui
         UserAddressSpacePage.qml
         ContextSwitchPage.qml
         FileSystem.qml
-        NavigationLogic.js
-        LoginPage.qml
         CpuQuizPage.qml
+        NavigationLogic.js
     RESOURCES
         test.png
+    SOURCES
+        chatbotclient.h
+        chatbotclient.cpp
 )
 
 # الإعدادات الخاصة بأنظمة التشغيل (Windows / macOS)
@@ -53,12 +59,13 @@ set_target_properties(appxv6ui PROPERTIES
     WIN32_EXECUTABLE TRUE
 )
 
-# 5. ربط المكتبات برمجياً بملف التنفيذ النهائي
+# 5. ربط جميع مكتبات Qt برمجياً بملف التنفيذ النهائي (بما فيها الـ Network)
 target_link_libraries(appxv6ui
     PRIVATE
         Qt6::Quick
         Qt6::Core5Compat
         Qt6::Sql
+        Qt6::Network
 )
 
 # إعدادات التثبيت (Installation)

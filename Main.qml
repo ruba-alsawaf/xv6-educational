@@ -10,8 +10,7 @@ Window {
     visible: true
     title: qsTr("xv6 OS Explorer")
 
-    // ========== 1. الخلفية المشتركة (تبقى في الخارج لتعطي جمالية لشاشة الدخول والبرنامج) ==========
-    // Background Image Container with Blur
+    // ========== 1. الخلفية المشتركة (شاشة الدخول والبرنامج) ==========
     Rectangle {
         anchors.fill: parent
 
@@ -49,13 +48,13 @@ Window {
         }
     }
 
-    // ========== 2. حاوية لوحة التحكم (مخفية في البداية) ==========
+    // ========== 2. حاوية لوحة التحكم (تظهر فقط بعد تسجيل الدخول) ==========
     Item {
         id: mainDashboard
         anchors.fill: parent
         visible: false // مخفية حتى يتم تسجيل الدخول بنجاح
 
-        // --- Main Layout Row --- (تم نقله إلى داخل الـ Item)
+        // --- Main Layout Row ---
         Row {
             anchors.fill: parent
             anchors.margins: 20
@@ -72,7 +71,7 @@ Window {
                 Column {
                     anchors.fill: parent
                     anchors.margins: 20
-                    spacing: 30
+                    spacing: 20
 
                     // Name of the system AREA
                     Column {
@@ -110,15 +109,15 @@ Window {
                     ListView {
                         id: navList
                         width: parent.width
-                        height: 550
+                        height: 520 // حجم مستقر ومثالي للقائمة
                         spacing: 8
+                        clip: true
                         model: ListModel {
                             ListElement { name: "CPU SCHEDULING"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "CpuSchedulingPage.qml" }
                             ListElement { name: "MEMORY MANAGEMENT"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "MemoryManagementPage.qml" }
-                            ListElement { name: "FILE SYSTEM"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FileSystem.qml" }
+                            ListElement { name: "FILE SYSTEM"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FileSystemLessonPage.qml" }
                             ListElement { name: "SYSTEM CALLS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "KernelGuardPage.qml" }
                             ListElement { name: "PROCESSES & FORK"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "ProcessForkPage.qml" }
-                            ListElement { name: "FILE SYSTEM"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FileSystemLessonPage.qml" }
                             ListElement { name: "OS ARCHITECTURE"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "OsArchitecturePage.qml" }
                             ListElement { name: "PRIVILEGE MODES"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "CpuPrivilegeModesPage.qml" }
                             ListElement { name: "TRAPS OVERVIEW"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "TrapsOverviewPage.qml" }
@@ -126,86 +125,182 @@ Window {
                             ListElement { name: "KERNEL ADDRESS SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "KernelSpacePage.qml" }
                             ListElement { name: "LESSON 9: USER SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "UserAddressSpacePage.qml" }
                             ListElement { name: "LESSON 10: CONTEXT SWITCH"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "ContextSwitchPage.qml" }
-                            ListElement {
-                                name: "CPU QUIZ"
-                                iconPath: "/icons/CPUSchedulingLogo.svg"
-                                pageSource: "CpuQuizPage.qml"
-                            }
                         }
 
                         delegate: Rectangle {
-                                                    width: ListView.view.width
-                                                    height: 45
-                                                    radius: 10
-                                                    property bool isSelected: navList.currentIndex === index
-                                                    color: isSelected ? Qt.rgba(75, 42, 192, 0.15) : (mouseArea.containsMouse ? Qt.rgba(255, 255, 255, 0.08) : "transparent")
+                            id: delegateItem
+                            width: ListView.view.width
+                            height: 45
+                            radius: 10
+                            property bool isSelected: navList.currentIndex === index
+                            color: isSelected ? Qt.rgba(75, 42, 192, 0.15) : (mouseArea.containsMouse ? Qt.rgba(255, 255, 255, 0.08) : "transparent")
 
-                                                    Row {
-                                                        anchors.left: parent.left; anchors.leftMargin: 15; anchors.verticalCenter: parent.verticalCenter
-                                                        spacing: 12
-                                                        Image { source: iconPath; width: 20; height: 20 }
-                                                        Text { text: name; font.pixelSize: 13; font.family: "Segoe UI"; color: "white" }
-                                                    }
-                                                    MouseArea {
-                                                        id: mouseArea
-                                                        anchors.fill: parent
-                                                        hoverEnabled: true
-                                                        cursorShape: Qt.PointingHandCursor
-                                                        onClicked: {
-                                                            navList.currentIndex = index;
-                                                            pageLoader.source = Logic.handleTabChange(index);
-                                                        }
-                                                    }
-                                                }
-                                            }
+                            layer.enabled: isSelected
+                            layer.effect: Glow {
+                                radius: 6; samples: 13; color: "#4b2ac0"; spread: 0.2
+                            }
 
-                                            // Logout Button (مضاف هنا في نهاية الـ Column)
-                                            Rectangle {
-                                                width: parent.width
-                                                height: 40
-                                                radius: 10
-                                                color: mouseAreaLogout.containsMouse ? Qt.rgba(255, 92, 92, 0.3) : Qt.rgba(255, 255, 255, 0.05)
+                            Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
-                                                Text {
-                                                    anchors.centerIn: parent
-                                                    text: "Logout"
-                                                    color: "white"
-                                                    font.pixelSize: 13
-                                                    font.weight: Font.Bold
-                                                    font.family: "Segoe UI"
-                                                }
-                                                MouseArea {
-                                                    id: mouseAreaLogout
-                                                    anchors.fill: parent
-                                                    hoverEnabled: true
-                                                    cursorShape: Qt.PointingHandCursor
-                                                    onClicked: {
-                                                        dbManager.logout();
-                                                        mainDashboard.visible = false;
-                                                        loginScreen.visible = true;
-                                                    }
-                                                }
-                                            }
-                                        }
+                            Row {
+                                anchors.left: parent.left; anchors.leftMargin: 15; anchors.verticalCenter: parent.verticalCenter
+                                spacing: 12
+
+                                Image {
+                                    id: navIcon
+                                    source: iconPath; width: 20; height: 20
+                                    fillMode: Image.PreserveAspectFit
+                                    smooth: true
+                                    layer.enabled: true
+                                    layer.effect: ColorOverlay {
+                                        color: isSelected || mouseArea.containsMouse ? "#ffffff" : Qt.rgba(255, 255, 255, 0.5)
                                     }
+                                }
 
-                                    // ========== MAIN CONTENT ==========
-                                    Loader {
-                                        id: pageLoader
-                                        width: parent.width - sidebar.width - parent.spacing
-                                        height: parent.height
-                                        source: "CpuSchedulingPage.qml"
-                                    }
+                                Text {
+                                    id: navText
+                                    text: name; font.pixelSize: 13; font.family: "Segoe UI"; font.weight: Font.Bold
+                                    color: isSelected || mouseArea.containsMouse ? "#ffffff" : Qt.rgba(255, 255, 255, 0.6)
+                                    Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
                                 }
                             }
 
-                            // ========== 3. شاشة تسجيل الدخول ==========
-                            LoginPage {
-                                id: loginScreen
-                                z: 100
-                                onLoginSuccess: {
-                                    loginScreen.visible = false
-                                    mainDashboard.visible = true
+                            scale: mouseArea.containsMouse ? 1.02 : 1.0
+                            Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
+
+                            MouseArea {
+                                id: mouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    navList.currentIndex = index;
+                                    pageLoader.source = Logic.handleTabChange(index);
                                 }
                             }
                         }
+                    }
+
+                    // Logout Button - عاد لمكانه الطبيعي والمستقر أسفل القائمة تماماً
+                    Rectangle {
+                        id: logoutButton
+                        width: parent.width
+                        height: 40
+                        radius: 10
+                        color: mouseAreaLogout.containsMouse ? Qt.rgba(255, 92, 92, 0.3) : Qt.rgba(255, 255, 255, 0.05)
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "Logout"
+                            color: "white"
+                            font.pixelSize: 13
+                            font.weight: Font.Bold
+                            font.family: "Segoe UI"
+                        }
+                        MouseArea {
+                            id: mouseAreaLogout
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                dbManager.logout();
+                                mainDashboard.visible = false;
+                                loginScreen.visible = true;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ========== 3. RIGHT SIDE (Content Area + Chatbot Panel) ==========
+            Column {
+                id: rightColumn
+                width: parent.width - sidebar.width - parent.spacing
+                height: parent.height
+                spacing: 20
+
+                Loader {
+                    id: pageLoader
+                    width: parent.width
+                    height: parent.height - aiPanel.height - (aiPanel.isOpen ? rightColumn.spacing : 0)
+                    source: "CpuSchedulingPage.qml"
+                    clip: true
+
+                    Behavior on height {
+                        NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
+                    }
+                }
+
+                ChatbotPanel {
+                    id: aiPanel
+                    width: parent.width
+                    property bool isOpen: false
+                    height: isOpen ? 280 : 0
+                    visible: height > 0
+                    opacity: isOpen ? 1.0 : 0.0
+
+                    Behavior on height { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 250 } }
+                }
+            }
+        }
+
+        // ========== 4. زر الشات بوت العائم (موقعه الحر والمستقل تماماً في أقصى اليسار تحت الـ Sidebar) ==========
+        Rectangle {
+            id: aiChatButton
+            width: 60
+            height: 60
+            radius: width / 2
+
+            // تم فك الارتباط والتداخل؛ الزر يطفو بحرية الآن أسفل السايدبار بمسافة قريبة جداً من الحافة
+            anchors.bottom: parent.bottom
+            anchors.left: parent.left
+            anchors.bottomMargin: 10  // ملاصق تقريباً للحافة السفلية ليعطي مظهراً فخماً وعصرياً
+            anchors.leftMargin: 35    // محاذاة عمودية هندسية كاملة مع الـ Sidebar
+
+            color: aiMouseAreaBot.containsMouse ? Qt.rgba(255, 255, 255, 0.1) : Qt.rgba(255, 255, 255, 0.05)
+            border.color: aiMouseAreaBot.containsMouse ? "#8b5cf6" : Qt.rgba(255, 255, 255, 0.3)
+            border.width: 1
+
+            layer.enabled: true
+            layer.effect: Glow {
+                radius: 12; samples: 15; color: "#4b2ac0"; spread: 0.2
+            }
+
+            scale: aiMouseAreaBot.containsMouse ? 1.08 : 1.0
+            Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutBack } }
+
+            // سنترة اللوجو المطلقة بدون كتل تفاعلية أو نصوص زائدة
+            Image {
+                id: aiIcon
+                anchors.centerIn: parent
+                width: 28; height: 28
+                source: "/icons/chat-bot.svg"
+                fillMode: Image.PreserveAspectFit
+                smooth: true
+                layer.enabled: true
+                layer.effect: ColorOverlay { color: "#ffffff" }
+            }
+
+            MouseArea {
+                id: aiMouseAreaBot
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                    aiPanel.isOpen = !aiPanel.isOpen
+                }
+            }
+        }
+    }
+
+    // ========== 5. شاشة تسجيل الدخول حارسة النظام ==========
+    LoginPage {
+        id: loginScreen
+        z: 100
+        onLoginSuccess: {
+            loginScreen.visible = false
+            mainDashboard.visible = true
+        }
+    }
+}
