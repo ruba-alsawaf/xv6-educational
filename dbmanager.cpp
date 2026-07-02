@@ -17,7 +17,7 @@ DbManager::DbManager(QObject *parent) : QObject(parent)
     }
 
     // اسم ملف قاعدة البيانات الخاص بـ xv6
-    QString dbPath = dir.filePath("events.db");
+    QString dbPath = dir.filePath("C:/Users/rubaa/Desktop/xv6-educational-main/events.db");
 
     m_db = QSqlDatabase::addDatabase("QSQLITE");
     m_db.setDatabaseName(dbPath);

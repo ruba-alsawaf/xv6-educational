@@ -43,12 +43,20 @@ qt_add_qml_module(appxv6ui
         ContextSwitchPage.qml
         FileSystem.qml
         CpuQuizPage.qml
+        LocksPage.qml
+        PipesPage.qml
+        FsOverviewPage.qml
+        BufferCachePage.qml
+        LoggingPage.qml
+        InodesPage.qml
         NavigationLogic.js
     RESOURCES
         test.png
     SOURCES
         chatbotclient.h
         chatbotclient.cpp
+        SOURCES CoreEngineBackend.h
+        SOURCES CoreEngineBackend.cpp
 )
 
 # الإعدادات الخاصة بأنظمة التشغيل (Windows / macOS)

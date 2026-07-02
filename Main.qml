@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts
 import Qt5Compat.GraphicalEffects
 import "NavigationLogic.js" as Logic
 
@@ -41,7 +42,7 @@ Window {
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            orientation: Gradient.Diagonal
+            orientation: Gradient.Vertical
             GradientStop { position: 0.0; color: Qt.rgba(0, 0, 0, 0.3) }
             GradientStop { position: 0.5; color: Qt.rgba(0, 0, 0, 0) }
             GradientStop { position: 1.0; color: Qt.rgba(0, 0, 0, 0.3) }
@@ -64,18 +65,18 @@ Window {
             Rectangle {
                 id: sidebar
                 width: 280
-                height: parent.height
+                height: parent.height > 0 ? parent.height : 860
                 radius: 20
                 color: Qt.rgba(255, 255, 255, 0.08)
 
-                Column {
+                ColumnLayout {
                     anchors.fill: parent
                     anchors.margins: 20
                     spacing: 20
 
                     // Name of the system AREA
                     Column {
-                        width: parent.width
+                        Layout.fillWidth: true
                         spacing: 8
 
                         Text {
@@ -108,23 +109,29 @@ Window {
                     // Navigation List with Purple Glassy Selection
                     ListView {
                         id: navList
-                        width: parent.width
-                        height: 520 // حجم مستقر ومثالي للقائمة
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
                         spacing: 8
                         clip: true
                         model: ListModel {
                             ListElement { name: "CPU SCHEDULING"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "CpuSchedulingPage.qml" }
                             ListElement { name: "MEMORY MANAGEMENT"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "MemoryManagementPage.qml" }
-                            ListElement { name: "FILE SYSTEM"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FileSystemLessonPage.qml" }
+                            ListElement { name: "FILE SYSTEM"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FileSystem.qml" }
                             ListElement { name: "SYSTEM CALLS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "KernelGuardPage.qml" }
                             ListElement { name: "PROCESSES & FORK"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "ProcessForkPage.qml" }
                             ListElement { name: "OS ARCHITECTURE"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "OsArchitecturePage.qml" }
                             ListElement { name: "PRIVILEGE MODES"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "CpuPrivilegeModesPage.qml" }
                             ListElement { name: "TRAPS OVERVIEW"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "TrapsOverviewPage.qml" }
-                            ListElement { name: "Memory Translation"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "MemoryTranslationPage.qml" }
+                            ListElement { name: "MEMORY TRANSLATION"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "MemoryTranslationPage.qml" }
                             ListElement { name: "KERNEL ADDRESS SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "KernelSpacePage.qml" }
-                            ListElement { name: "LESSON 9: USER SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "UserAddressSpacePage.qml" }
-                            ListElement { name: "LESSON 10: CONTEXT SWITCH"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "ContextSwitchPage.qml" }
+                            ListElement { name: "USER SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "UserAddressSpacePage.qml" }
+                            ListElement { name: "CONTEXT SWITCH"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "ContextSwitchPage.qml" }
+                            ListElement { name: "LOCKS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LocksPage.qml" }
+                            ListElement { name: "PIPES & FILE DESC"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "PipesPage.qml" }
+                            ListElement { name: "FS OVERVIEW"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FsOverviewPage.qml" }
+                            ListElement { name: "BUFFER CACHE"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "BufferCachePage.qml" }
+                            ListElement { name: "LOGGING"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LoggingPage.qml" }
+                            ListElement { name: "INODES & PATHS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "InodesPage.qml" }
                         }
 
                         delegate: Rectangle {
@@ -175,16 +182,16 @@ Window {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     navList.currentIndex = index;
-                                    pageLoader.source = Logic.handleTabChange(index);
+                                    pageLoader.source = model.pageSource;
                                 }
                             }
                         }
                     }
 
-                    // Logout Button - عاد لمكانه الطبيعي والمستقر أسفل القائمة تماماً
+                    // Logout Button
                     Rectangle {
                         id: logoutButton
-                        width: parent.width
+                        Layout.fillWidth: true
                         height: 40
                         radius: 10
                         color: mouseAreaLogout.containsMouse ? Qt.rgba(255, 92, 92, 0.3) : Qt.rgba(255, 255, 255, 0.05)
@@ -228,6 +235,21 @@ Window {
 
                     Behavior on height {
                         NumberAnimation { duration: 350; easing.type: Easing.OutCubic }
+                    }
+
+                    // ── Wire requestNavigate signal from any lesson page ──
+                    Connections {
+                        target: pageLoader.item
+                        ignoreUnknownSignals: true
+                        function onRequestNavigate(pageSource) {
+                            pageLoader.source = pageSource;
+                            for(var i = 0; i < navList.model.count; i++) {
+                                if(navList.model.get(i).pageSource === pageSource) {
+                                    navList.currentIndex = i;
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
 

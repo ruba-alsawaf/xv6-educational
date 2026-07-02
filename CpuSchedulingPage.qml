@@ -173,7 +173,7 @@ Rectangle {
             property real playheadProgress: 0.0
             property real playheadAlpha: 1.0
 
-            幕後 : SequentialAnimation {
+            SequentialAnimation {
                 running: true; loops: Animation.Infinite
                 NumberAnimation { target: schedulingRec; property: "playheadProgress"; from: 0.0; to: 1.0; duration: 10000; easing.type: Easing.Linear }
                 NumberAnimation { target: schedulingRec; property: "playheadAlpha"; to: 0.0; duration: 250; easing.type: Easing.OutQuad }
