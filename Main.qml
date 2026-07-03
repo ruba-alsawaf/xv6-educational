@@ -126,6 +126,7 @@ Window {
                             ListElement { name: "KERNEL ADDRESS SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "KernelSpacePage.qml" }
                             ListElement { name: "USER SPACE"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "UserAddressSpacePage.qml" }
                             ListElement { name: "CONTEXT SWITCH"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "ContextSwitchPage.qml" }
+                            ListElement { name: "ROUND-ROBIN"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "RoundRobinPage.qml" }
                             ListElement { name: "LOCKS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LocksPage.qml" }
                             ListElement { name: "PIPES & FILE DESC"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "PipesPage.qml" }
                             ListElement { name: "FS OVERVIEW"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FsOverviewPage.qml" }

@@ -402,6 +402,114 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── USER ADDRESS SPACE EXPLORER ─────────────────────────────────
+        Rectangle {
+            id: uasSim
+            width:parent.width; height:uasCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(236,72,153,0.2); border.width:1
+
+            property int stackFrames: 1
+            property int maxFrames: 5
+            property int selSeg: 0
+            property var segments: [
+                {name:"TRAMPOLINE",  va:"MAXVA-1 page", color:"#ec4899", pct:0.04,
+                 desc:"Kernel page mapped into user space (read-only). Contains uservec/userret. Lets the CPU switch address spaces without changing PC mid-trap."},
+                {name:"TRAPFRAME",   va:"MAXVA-2 pages",color:"#f97316", pct:0.04,
+                 desc:"Per-process struct p→trapframe. Kernel writes registers here on trap entry; restores on return. User code cannot write here (not mapped U-accessible)."},
+                {name:"STACK",       va:"grows down ↓", color:"#fbbf24", pct:0.12,
+                 desc:"User call stack. Each function call pushes a frame (return addr, saved regs, locals). sp register points to current top. Guard page (PTE_V=0) below catches overflow — causes page fault."},
+                {name:"HEAP",        va:"grows up ↑",   color:"#a78bfa", pct:0.18,
+                 desc:"Dynamic memory (malloc/sbrk). Grows upward via sbrk() syscall. xv6 allocates one page at a time. p→sz tracks the current top of heap."},
+                {name:"DATA/BSS",    va:"above text",   color:"#10b981", pct:0.1,
+                 desc:"Initialized globals (DATA) and zero-initialized globals (BSS). Loaded from the ELF binary by exec(). BSS pages are zeroed by the kernel."},
+                {name:"TEXT",        va:"0x0 (base)",   color:"#06b6d4", pct:0.12,
+                 desc:"Executable code. Loaded by exec() from the ELF. Read+execute only (PTE_R|PTE_X). The entry point (main) is in this segment."}
+            ]
+
+            Column {
+                id:uasCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"📐"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"USER ADDRESS SPACE — click segments, simulate stack growth"; color:"#ec4899"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"xv6 Sv39: 39-bit VA. User space top=MAXVA (0x40_0000_0000). Each process gets an isolated VA space."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                Row { spacing:16; width:parent.width
+
+                    // Visual map
+                    Column { spacing:3; width:120
+                        Text { text:"HIGH (MAXVA)"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:8; horizontalAlignment:Text.AlignRight; width:parent.width }
+                        Repeater { model:uasSim.segments
+                            delegate: Rectangle {
+                                property bool active: uasSim.selSeg===index
+                                width:120; height:Math.max(28, modelData.pct*220)+(index===2?uasSim.stackFrames*10:0); radius:6
+                                color:active?Qt.rgba(255,255,255,0.07):Qt.rgba(255,255,255,0.025)
+                                border.color:active?modelData.color:Qt.rgba(255,255,255,0.06); border.width:active?2:1
+                                Text { anchors.centerIn:parent; text:modelData.name+(index===2?"  ["+uasSim.stackFrames+"f]":""); color:active?modelData.color:Qt.rgba(255,255,255,0.4); font.pixelSize:9; font.bold:true; horizontalAlignment:Text.AlignHCenter; width:parent.width-8; wrapMode:Text.WordWrap }
+                                MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:uasSim.selSeg=index }
+                            }
+                        }
+                        Text { text:"LOW (0x0)"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:8; width:parent.width }
+                    }
+
+                    // Detail + stack sim
+                    Column { spacing:12; width:parent.width-136
+
+                        // Segment detail
+                        Rectangle { width:parent.width; height:segDetail.implicitHeight+20; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:uasSim.segments[uasSim.selSeg].color; border.width:1
+                            Column { id:segDetail; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; spacing:6
+                                Row { spacing:10
+                                    Text { text:uasSim.segments[uasSim.selSeg].name; color:uasSim.segments[uasSim.selSeg].color; font.bold:true; font.pixelSize:13 }
+                                    Text { text:uasSim.segments[uasSim.selSeg].va; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; font.family:"Consolas"; anchors.verticalCenter:parent.verticalCenter }
+                                }
+                                Text { text:uasSim.segments[uasSim.selSeg].desc; color:Qt.rgba(255,255,255,0.65); font.pixelSize:11; wrapMode:Text.WordWrap; width:parent.width; lineHeight:1.6 }
+                            }
+                        }
+
+                        // Stack simulator
+                        Column { spacing:8; width:parent.width
+                            Text { text:"STACK FRAME SIMULATOR"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.letterSpacing:1 }
+                            Row { spacing:8
+                                Rectangle { height:32; width:pushBtn.implicitWidth+18; radius:9; color:uasSim.stackFrames<uasSim.maxFrames?Qt.rgba(251/255,191/255,36/255,0.15):Qt.rgba(255,255,255,0.04); border.color:uasSim.stackFrames<uasSim.maxFrames?"#fbbf24":Qt.rgba(255,255,255,0.1); border.width:1
+                                    Text { id:pushBtn; anchors.centerIn:parent; text:"push frame (call)"; color:uasSim.stackFrames<uasSim.maxFrames?"#fbbf24":Qt.rgba(255,255,255,0.2); font.pixelSize:11 }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:if(uasSim.stackFrames<uasSim.maxFrames) uasSim.stackFrames++ }
+                                }
+                                Rectangle { height:32; width:popBtn.implicitWidth+18; radius:9; color:uasSim.stackFrames>1?Qt.rgba(236/255,72/255,153/255,0.12):Qt.rgba(255,255,255,0.04); border.color:uasSim.stackFrames>1?"#ec4899":Qt.rgba(255,255,255,0.1); border.width:1
+                                    Text { id:popBtn; anchors.centerIn:parent; text:"pop frame (return)"; color:uasSim.stackFrames>1?"#ec4899":Qt.rgba(255,255,255,0.2); font.pixelSize:11 }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:if(uasSim.stackFrames>1) uasSim.stackFrames-- }
+                                }
+                            }
+                            // Stack frames visual
+                            Column { spacing:2; width:parent.width
+                                Repeater { model:uasSim.stackFrames
+                                    delegate: Rectangle { width:parent.width; height:26; radius:6
+                                        color:Qt.rgba(251/255,191/255,36/255, 0.06+index*0.05)
+                                        border.color:Qt.rgba(251/255,191/255,36/255,0.25); border.width:1
+                                        Row { anchors.left:parent.left; anchors.leftMargin:10; anchors.verticalCenter:parent.verticalCenter; spacing:12
+                                            Text { text:index===0?"► sp → frame "+(uasSim.stackFrames-index):"    frame "+(uasSim.stackFrames-index); color:index===0?"#fbbf24":Qt.rgba(255,255,255,0.4); font.pixelSize:10; font.family:"Consolas" }
+                                            Text { text:"[ra | s0..s11 | locals]"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.family:"Consolas" }
+                                        }
+                                    }
+                                }
+                                Rectangle { width:parent.width; height:20; radius:6; color:Qt.rgba(244/255,63/255,94/255,0.12); border.color:"#f43f5e"; border.width:1
+                                    Text { anchors.centerIn:parent; text:"GUARD PAGE — PTE_V=0 — stack overflow → page fault here"; color:"#f43f5e"; font.pixelSize:9 }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(16/255,185/255,129/255,0.08); radius:14
@@ -419,3 +527,4 @@ ScrollView {
 
     }
 }
+

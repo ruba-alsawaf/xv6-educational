@@ -533,6 +533,97 @@ ScrollView {
         // ═════════════════════════════════════════════════════════════
         // 6. TAKEAWAY FOOTER
         // ═════════════════════════════════════════════════════════════
+
+        // ── SCAUSE DECODER + SYSCALL EXPLORER ─────────────────────────────
+        Rectangle {
+            id: scauseSim
+            width:parent.width; height:decoderCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(167,139,250,0.2); border.width:1
+
+            property int scauseVal: 8
+            property int syscallNum: 0
+            property var causes: [
+                {val:8,  label:"8 — Environment Call (U-mode)", desc:"User process executed 'ecall'. This is a System Call. Kernel reads a7 for syscall number, dispatches to handler.", color:"#a78bfa"},
+                {val:9,  label:"9 — Environment Call (S-mode)", desc:"Supervisor mode executed 'ecall'. Used for machine-level operations. Rare in xv6.", color:"#a78bfa"},
+                {val:12, label:"12 — Instruction Page Fault", desc:"CPU tried to fetch an instruction from an unmapped page. Likely null pointer or corrupted PC. Kernel kills the process.", color:"#f43f5e"},
+                {val:13, label:"13 — Load Page Fault", desc:"Read from an unmapped or protected virtual address. sval register holds the faulting VA. Results in process termination.", color:"#f43f5e"},
+                {val:15, label:"15 — Store Page Fault", desc:"Write to an unmapped or read-only virtual address. Copy-on-write systems handle this; xv6 does not — process is killed.", color:"#f43f5e"},
+                {val:2,  label:"2 — Illegal Instruction", desc:"CPU decoded an invalid opcode, or tried a privileged instruction in U-mode (e.g. csrw from user code). Process killed.", color:"#fbbf24"},
+                {val:0x80000001, label:"0x80000001 — Timer Interrupt", desc:"Timer interrupt fired. sstatus.SIE was set. This triggers yield() → Round-Robin preemption. scause high bit=1 means Interrupt.", color:"#10b981"},
+                {val:0x80000009, label:"0x80000009 — External Interrupt", desc:"External device (UART, VIRTIO disk) raised an interrupt via PLIC. Kernel reads PLIC claim register to find which device.", color:"#06b6d4"}
+            ]
+
+            Column {
+                id:decoderCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🔍"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"SCAUSE REGISTER DECODER — click any trap cause to decode it"; color:"#a78bfa"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"The scause register tells the kernel WHY the trap fired. Interrupt=1 in high bit, exception code in low bits."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Cause pills
+                Flow { width:parent.width; spacing:6
+                    Repeater {
+                        model: scauseSim.causes.length
+                        delegate: Rectangle {
+                            property var c: scauseSim.causes[index]
+                            property bool active: scauseSim.scauseVal === c.val
+                            height:30; width:causeText.implicitWidth+20; radius:8
+                            color:active?Qt.rgba(167/255,139/255,250/255,0.2):Qt.rgba(255,255,255,0.04)
+                            border.color:active?c.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
+                            Behavior on color{ColorAnimation{duration:100}}
+                            Text { id:causeText; anchors.centerIn:parent; text:c.label; color:active?c.color:Qt.rgba(255,255,255,0.4); font.pixelSize:10; font.bold:active; font.family:"Consolas" }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
+                                onClicked: scauseSim.scauseVal = c.val
+                            }
+                        }
+                    }
+                }
+
+                // Decode result
+                Rectangle {
+                    width:parent.width; height:decodeResult.implicitHeight+24; radius:10
+                    color:Qt.rgba(167/255,139/255,250/255,0.07); border.color:Qt.rgba(167/255,139/255,250/255,0.3); border.width:1
+                    Column {
+                        id:decodeResult
+                        anchors.top:parent.top; anchors.topMargin:12
+                        anchors.left:parent.left; anchors.leftMargin:16
+                        anchors.right:parent.right; anchors.rightMargin:16
+                        spacing:6
+                        Row { spacing:12
+                            Text { text:"scause ="; color:Qt.rgba(255,255,255,0.35); font.pixelSize:11; font.family:"Consolas"; anchors.verticalCenter:parent.verticalCenter }
+                            Text {
+                                text: {
+                                    var v = scauseSim.scauseVal
+                                    var found = null
+                                    for(var i=0;i<scauseSim.causes.length;i++) if(scauseSim.causes[i].val===v){found=scauseSim.causes[i];break}
+                                    return found ? found.label : v.toString()
+                                }
+                                color:"#a78bfa"; font.pixelSize:13; font.bold:true; font.family:"Consolas"; anchors.verticalCenter:parent.verticalCenter
+                            }
+                        }
+                        Text {
+                            width:parent.width
+                            text: {
+                                var v = scauseSim.scauseVal
+                                for(var i=0;i<scauseSim.causes.length;i++) if(scauseSim.causes[i].val===v) return scauseSim.causes[i].desc
+                                return "Unknown cause"
+                            }
+                            color:Qt.rgba(255,255,255,0.72); font.pixelSize:11; wrapMode:Text.WordWrap; lineHeight:1.55
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width: parent.width; height: 65
             color: Qt.rgba(139, 92, 246, 0.08); radius: 14

@@ -14,7 +14,6 @@ Rectangle {
 
     property variant hoveredBlockData: null
 
-    // التايمر الأصلي الخفيف المستقر للتحديث اللحظي للبيانات من الـ C++
     Timer {
         interval: 1000
         running: true
@@ -76,8 +75,6 @@ Rectangle {
                                         width: 8; height: 8; radius: 4;
                                         color: modelData.state === "UNUSED" ? "#97969d" : "#10b981"
                                         anchors.verticalCenter: parent.verticalCenter
-
-                                        // 💡 تم حل التعارض هنا: الوهج يتبع لون النقطة ديناميكياً وبأمان 100%
                                         layer.enabled: true
                                         layer.effect: Glow { radius: 4; samples: 9; color: stateDot.color; spread: 0.3 }
                                     }

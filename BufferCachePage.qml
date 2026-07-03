@@ -207,6 +207,173 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── BUFFER CACHE SIMULATOR ──────────────────────────────────────
+        Rectangle {
+            id: bcSim
+            width:parent.width; height:bcSimCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(16,185,129,0.2); border.width:1
+
+            property var cache: []      // {dev, block, dirty, age}
+            property int capacity: 5
+            property int clock: 0
+            property string lastResult: ""
+            property string lastColor: "#a0a0a0"
+            property var history: []
+
+            property var devOptions:   [1, 1, 2, 2]
+            property var blockOptions: [0, 1, 0, 5]
+            property int selDev:   1
+            property int selBlock: 0
+
+            function bread(dev, blk) {
+                clock++
+                // check cache
+                for(var i=0;i<cache.length;i++){
+                    if(cache[i].dev===dev && cache[i].block===blk){
+                        var c2=cache.slice()
+                        c2[i]={dev:dev,block:blk,dirty:c2[i].dirty,age:clock}
+                        cache=c2
+                        var h2=history.slice(); h2.unshift({op:"HIT",dev:dev,blk:blk,color:"#10b981"}); if(h2.length>6) h2.pop(); history=h2
+                        lastResult="✓ CACHE HIT — block (dev="+dev+", blk="+blk+") found in buffer. No disk I/O."; lastColor="#10b981"; return
+                    }
+                }
+                // miss — need to insert (evict LRU if full)
+                var c3=cache.slice()
+                if(c3.length>=capacity){
+                    var lru=0
+                    for(var j=1;j<c3.length;j++) if(c3[j].age<c3[lru].age) lru=j
+                    var evicted=c3[lru]
+                    c3.splice(lru,1)
+                    var h3=history.slice(); h3.unshift({op:"EVICT",dev:evicted.dev,blk:evicted.block,color:"#f43f5e"}); if(h3.length>6) h3.pop(); history=h3
+                }
+                c3.push({dev:dev,block:blk,dirty:false,age:clock})
+                cache=c3
+                var h4=history.slice(); h4.unshift({op:"MISS→LOAD",dev:dev,blk:blk,color:"#fbbf24"}); if(h4.length>6) h4.pop(); history=h4
+                lastResult="✗ CACHE MISS — disk I/O issued for (dev="+dev+", blk="+blk+"). Block loaded into buffer cache."; lastColor="#fbbf24"
+            }
+
+            function bwrite(dev, blk) {
+                for(var i=0;i<cache.length;i++){
+                    if(cache[i].dev===dev && cache[i].block===blk){
+                        var c2=cache.slice(); c2[i]={dev:dev,block:blk,dirty:true,age:clock}; cache=c2
+                        var h2=history.slice(); h2.unshift({op:"BWRITE",dev:dev,blk:blk,color:"#f97316"}); if(h2.length>6) h2.pop(); history=h2
+                        lastResult="✎ BWRITE — block marked dirty. Will be flushed to disk on brelse/sync."; lastColor="#f97316"; return
+                    }
+                }
+                lastResult="⚠ BWRITE failed — block not in cache. Call bread() first."; lastColor="#f43f5e"
+            }
+
+            Component.onCompleted: {
+                cache=[{dev:1,block:0,dirty:false,age:1},{dev:1,block:1,dirty:false,age:2}]; clock=2
+                lastResult="Cache pre-loaded with 2 blocks. Try bread() or bwrite()."
+            }
+
+            Column {
+                id:bcSimCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"💾"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"BUFFER CACHE SIMULATOR — bread(dev,block) / bwrite()"; color:"#10b981"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"Cache holds "+bcSim.capacity+" buffers (LRU eviction). Dirty blocks must be flushed before reuse."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Cache slots
+                Row { spacing:6; width:parent.width
+                    Repeater {
+                        model: bcSim.capacity
+                        delegate: Rectangle {
+                            property var entry: index < bcSim.cache.length ? bcSim.cache[index] : null
+                            width:(parent.width-24)/5; height:72; radius:10
+                            color:entry?(entry.dirty?Qt.rgba(249/255,115/255,22/255,0.2):Qt.rgba(16/255,185/255,129/255,0.15)):Qt.rgba(255,255,255,0.03)
+                            border.color:entry?(entry.dirty?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.1); border.width:1
+                            Column { anchors.centerIn:parent; spacing:4
+                                Text { text:entry?"SLOT "+index:"EMPTY"; color:entry?"#10b981":Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                                Text { text:entry?("dev="+entry.dev+"
+blk="+entry.block):"—"; color:entry?Qt.rgba(255,255,255,0.75):Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent; horizontalAlignment:Text.AlignHCenter }
+                                Rectangle { width:38; height:14; radius:4; color:entry?(entry.dirty?Qt.rgba(249/255,115/255,22/255,0.3):Qt.rgba(16/255,185/255,129/255,0.3)):Qt.rgba(255,255,255,0.05); anchors.horizontalCenter:parent
+                                    Text { anchors.centerIn:parent; text:entry?(entry.dirty?"dirty":"clean"):"free"; color:entry?(entry.dirty?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.2); font.pixelSize:8 }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Dev/block selector + operation buttons
+                Row { spacing:10; width:parent.width
+                    Column { spacing:6
+                        Text { text:"dev"; color:Qt.rgba(255,255,255,0.4); font.pixelSize:10 }
+                        Row { spacing:4
+                            Repeater { model:[1,2]
+                                delegate: Rectangle {
+                                    width:34; height:28; radius:7
+                                    color:bcSim.selDev===modelData?Qt.rgba(16/255,185/255,129/255,0.2):Qt.rgba(255,255,255,0.05)
+                                    border.color:bcSim.selDev===modelData?"#10b981":Qt.rgba(255,255,255,0.1); border.width:1
+                                    Text { anchors.centerIn:parent; text:""+modelData; color:bcSim.selDev===modelData?"#10b981":Qt.rgba(255,255,255,0.4); font.pixelSize:11; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:bcSim.selDev=modelData }
+                                }
+                            }
+                        }
+                    }
+                    Column { spacing:6
+                        Text { text:"block"; color:Qt.rgba(255,255,255,0.4); font.pixelSize:10 }
+                        Row { spacing:4
+                            Repeater { model:[0,1,2,5,9]
+                                delegate: Rectangle {
+                                    width:30; height:28; radius:7
+                                    color:bcSim.selBlock===modelData?Qt.rgba(16/255,185/255,129/255,0.2):Qt.rgba(255,255,255,0.05)
+                                    border.color:bcSim.selBlock===modelData?"#10b981":Qt.rgba(255,255,255,0.1); border.width:1
+                                    Text { anchors.centerIn:parent; text:""+modelData; color:bcSim.selBlock===modelData?"#10b981":Qt.rgba(255,255,255,0.4); font.pixelSize:11; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:bcSim.selBlock=modelData }
+                                }
+                            }
+                        }
+                    }
+                    Rectangle { height:36; width:bReadBtn.implicitWidth+20; radius:9; anchors.bottom:parent.bottom
+                        color:Qt.rgba(16/255,185/255,129/255,0.15); border.color:"#10b981"; border.width:1
+                        Text { id:bReadBtn; anchors.centerIn:parent; text:"bread()"; color:"#10b981"; font.bold:true; font.pixelSize:12; font.family:"Consolas" }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:bcSim.bread(bcSim.selDev, bcSim.selBlock) }
+                    }
+                    Rectangle { height:36; width:bWrBtn.implicitWidth+20; radius:9; anchors.bottom:parent.bottom
+                        color:Qt.rgba(249/255,115/255,22/255,0.15); border.color:"#f97316"; border.width:1
+                        Text { id:bWrBtn; anchors.centerIn:parent; text:"bwrite()"; color:"#f97316"; font.bold:true; font.pixelSize:12; font.family:"Consolas" }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:bcSim.bwrite(bcSim.selDev, bcSim.selBlock) }
+                    }
+                    Rectangle { height:36; width:rstBtn.implicitWidth+20; radius:9; anchors.bottom:parent.bottom
+                        color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                        Text { id:rstBtn; anchors.centerIn:parent; text:"↺ clear cache"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:{ bcSim.cache=[]; bcSim.clock=0; bcSim.history=[]; bcSim.lastResult="Cache cleared." ; bcSim.lastColor="#a0a0a0" } }
+                    }
+                }
+
+                // Result + history
+                Row { spacing:12; width:parent.width
+                    Rectangle { width:(parent.width-12)*0.6; height:60; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(16,185,129,0.15); border.width:1
+                        Text { anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; anchors.verticalCenter:parent.verticalCenter
+                            text:bcSim.lastResult; color:bcSim.lastColor
+                            wrapMode:Text.WordWrap; font.pixelSize:11; lineHeight:1.5 }
+                    }
+                    Column { width:(parent.width-12)*0.4; spacing:4
+                        Repeater { model:bcSim.history
+                            delegate: Row { spacing:6
+                                Rectangle { width:70; height:16; radius:4; color:Qt.rgba(255,255,255,0.06)
+                                    Text { anchors.centerIn:parent; text:modelData.op; color:modelData.color; font.pixelSize:8; font.bold:true }
+                                }
+                                Text { text:"dev="+modelData.dev+" blk="+modelData.blk; color:Qt.rgba(255,255,255,0.4); font.pixelSize:9; font.family:"Consolas"; anchors.verticalCenter:parent.verticalCenter }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(251/255,191/255,36/255,0.08); radius:14

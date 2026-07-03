@@ -472,6 +472,118 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── SWTCH() REGISTER VISUALIZER ─────────────────────────────────
+        Rectangle {
+            id: swtchVisSim
+            width:parent.width; height:rvSwtchCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(6,182,212,0.2); border.width:1
+
+            property int step: 0
+            property int maxStep: 4
+
+            property var steps: [
+                {title:"BEFORE swtch()", desc:"P1 is running. Its callee-saved regs (ra,sp,s0-s11) are live in the CPU. P2 context is saved in its kernel stack from a previous swtch().", highlight:"none"},
+                {title:"SAVE P1: sd ra,0(a0)",  desc:"swtch() takes *old=&p1→context, *new=&p2→context. First stores P1's ra onto the context struct at address a0. Each sd saves one 8-byte register.", highlight:"p1"},
+                {title:"SAVE P1 sp..s11",       desc:"Continues storing sp, s0, s1, s2, s3, s4, s5 … s11 into P1's context struct. Now P1's full register state is on its kernel stack — safe to abandon.", highlight:"p1"},
+                {title:"RESTORE P2: ld ra,0(a1)",desc:"Loads P2's ra from its context struct (address a1=&p2→context). This is the return address swtch() will jump to when it 'returns'.", highlight:"p2"},
+                {title:"JUMP: ret (to P2's ra)", desc:"After loading sp,s0-s11 from P2's context, swtch() executes ret — which jumps to P2's ra (scheduler or sched). P2 is now running with its own registers.", highlight:"p2"}
+            ]
+
+            function fmtReg(name, val, hl) {
+                return val  // just return the value; colour is set by highlight state
+            }
+
+            Column {
+                id:rvSwtchCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🔀"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"swtch() REGISTER VISUALIZER — step through the context switch"; color:"#06b6d4"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"swtch(old,new) saves callee-saved regs to 'old' context, restores from 'new'. 13 registers total (ra+sp+s0-s11). Defined in kernel/swtch.S."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Step description
+                Rectangle { width:parent.width; height:rvStepBox.implicitHeight+20; radius:10; color:Qt.rgba(0,0,0,0.2)
+                    border.color:swtchVisSim.steps[swtchVisSim.step].highlight==="p1"?"#a78bfa":swtchVisSim.steps[swtchVisSim.step].highlight==="p2"?"#06b6d4":Qt.rgba(255,255,255,0.1); border.width:1.5
+                    Column { id:rvStepBox; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; spacing:6
+                        Text { text:"Step "+(swtchVisSim.step+1)+"/"+swtchVisSim.maxStep+": "+swtchVisSim.steps[swtchVisSim.step].title; color:"#06b6d4"; font.bold:true; font.pixelSize:12 }
+                        Text { text:swtchVisSim.steps[swtchVisSim.step].desc; color:Qt.rgba(255,255,255,0.65); wrapMode:Text.WordWrap; width:parent.width; font.pixelSize:11; lineHeight:1.6 }
+                    }
+                }
+
+                // Register panels side by side
+                Row { spacing:12; width:parent.width
+                    // P1 context
+                    Rectangle { width:(parent.width-12)/2; height:rvP1RegCol.implicitHeight+20; radius:10
+                        color:swtchVisSim.steps[swtchVisSim.step].highlight==="p1"?Qt.rgba(139/255,92/255,246/255,0.12):Qt.rgba(255,255,255,0.02)
+                        border.color:swtchVisSim.steps[swtchVisSim.step].highlight==="p1"?"#a78bfa":Qt.rgba(255,255,255,0.08); border.width:1.5
+                        Behavior on border.color{ColorAnimation{duration:200}}
+                        Column { id:rvP1RegCol; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:12; anchors.right:parent.right; anchors.rightMargin:12; spacing:5
+                            Text { text:"P1 CONTEXT"; color:"#a78bfa"; font.bold:true; font.pixelSize:11 }
+                            Repeater { model:[{r:"ra",v:"sched"},{r:"sp",v:"kstack1"},{r:"s0",v:"0xAAA"},{r:"s1",v:"0xBBB"},{r:"s2",v:"0xCCC"},{r:"s3",v:"0xDDD"},{r:"s4",v:"0xEEE"},{r:"s5",v:"0xFFF"}]
+                                delegate: Row { spacing:10
+                                    property bool saved: swtchVisSim.step >= 2 || (swtchVisSim.step===1 && index===0)
+                                    Text { text:modelData.r+":"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; font.family:"Consolas"; width:26 }
+                                    Text { text:modelData.v; color:parent.saved?"#a78bfa":Qt.rgba(255,255,255,0.45); font.pixelSize:10; font.family:"Consolas"; font.bold:parent.saved }
+                                    Text { text:parent.saved?"← saved":""; color:Qt.rgba(139/255,92/255,246/255,0.6); font.pixelSize:9 }
+                                }
+                            }
+                        }
+                    }
+                    // P2 context
+                    Rectangle { width:(parent.width-12)/2; height:rvP2RegCol.implicitHeight+20; radius:10
+                        color:swtchVisSim.steps[swtchVisSim.step].highlight==="p2"?Qt.rgba(6/255,182/255,212/255,0.12):Qt.rgba(255,255,255,0.02)
+                        border.color:swtchVisSim.steps[swtchVisSim.step].highlight==="p2"?"#06b6d4":Qt.rgba(255,255,255,0.08); border.width:1.5
+                        Behavior on border.color{ColorAnimation{duration:200}}
+                        Column { id:rvP2RegCol; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:12; anchors.right:parent.right; anchors.rightMargin:12; spacing:5
+                            Text { text:"P2 CONTEXT"; color:"#06b6d4"; font.bold:true; font.pixelSize:11 }
+                            Repeater { model:[{r:"ra",v:"scheduler"},{r:"sp",v:"kstack2"},{r:"s0",v:"0x111"},{r:"s1",v:"0x222"},{r:"s2",v:"0x333"},{r:"s3",v:"0x444"},{r:"s4",v:"0x555"},{r:"s5",v:"0x666"}]
+                                delegate: Row { spacing:10
+                                    property bool restored: swtchVisSim.step >= 4 || (swtchVisSim.step===3 && index===0)
+                                    Text { text:modelData.r+":"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; font.family:"Consolas"; width:26 }
+                                    Text { text:modelData.v; color:parent.restored?"#06b6d4":Qt.rgba(255,255,255,0.45); font.pixelSize:10; font.family:"Consolas"; font.bold:parent.restored }
+                                    Text { text:parent.restored?"← active":""; color:Qt.rgba(6/255,182/255,212/255,0.6); font.pixelSize:9 }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Step controls
+                Row { spacing:10; width:parent.width
+                    Rectangle { height:34; width:rvPrevBtn.implicitWidth+20; radius:9; opacity:swtchVisSim.step>0?1:0.3
+                        color:Qt.rgba(6/255,182/255,212/255,0.1); border.color:"#06b6d4"; border.width:1
+                        Text { id:rvPrevBtn; anchors.centerIn:parent; text:"◀ PREV"; color:"#06b6d4"; font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:if(swtchVisSim.step>0) swtchVisSim.step-- }
+                    }
+                    Rectangle { height:34; width:rvNextBtn.implicitWidth+20; radius:9; opacity:swtchVisSim.step<swtchVisSim.maxStep?1:0.3
+                        color:Qt.rgba(6/255,182/255,212/255,0.15); border.color:"#06b6d4"; border.width:1
+                        Text { id:rvNextBtn; anchors.centerIn:parent; text:"NEXT ▶"; color:"#06b6d4"; font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:if(swtchVisSim.step<swtchVisSim.maxStep) swtchVisSim.step++ }
+                    }
+                    Rectangle { height:34; width:rvRstCs.implicitWidth+20; radius:9
+                        color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                        Text { id:rvRstCs; anchors.centerIn:parent; text:"↺ RESET"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:swtchVisSim.step=0 }
+                    }
+                    // progress dots
+                    Row { spacing:6; anchors.verticalCenter:parent.verticalCenter
+                        Repeater { model:swtchVisSim.maxStep+1
+                            delegate: Rectangle { width:8; height:8; radius:4; color:index<=swtchVisSim.step?"#06b6d4":Qt.rgba(255,255,255,0.15) }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(244/255,63/255,94/255,0.08); radius:14
@@ -486,6 +598,5 @@ ScrollView {
                 }
             }
         }
-
     }
 }

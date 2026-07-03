@@ -26,6 +26,48 @@ ScrollView {
     property int  selectedFD: -1
     property int  selectedProc: 0
 
+    // ── Pipe simulator state (at root level for qmlsc) ───────────────
+    property int pipeCapacity: 16
+    property var pipeBufArr: []
+    property var pipeLog: []
+
+    function simPipeWrite(n) {
+        var added = 0
+        for(var i = 0; i < n; i++){
+            if(scrollRoot.pipeBufArr.length >= scrollRoot.pipeCapacity){
+                var l2 = scrollRoot.pipeLog.slice()
+                l2.unshift("write("+n+"): BLOCKED — full at byte "+i+"|#f43f5e")
+                if(l2.length > 6) l2.pop()
+                scrollRoot.pipeLog = l2; return
+            }
+            var b = scrollRoot.pipeBufArr.slice()
+            b.push(String.fromCharCode(65 + scrollRoot.pipeBufArr.length))
+            scrollRoot.pipeBufArr = b; added++
+        }
+        var l = scrollRoot.pipeLog.slice()
+        l.unshift("write("+n+"): wrote "+added+" bytes — buf="+scrollRoot.pipeBufArr.length+"/"+scrollRoot.pipeCapacity+"|#10b981")
+        if(l.length > 6) l.pop()
+        scrollRoot.pipeLog = l
+    }
+
+    function simPipeRead(n) {
+        if(scrollRoot.pipeBufArr.length === 0){
+            var l2 = scrollRoot.pipeLog.slice()
+            l2.unshift("read("+n+"): BLOCKED — empty (sleeping...)|#f43f5e")
+            if(l2.length > 6) l2.pop()
+            scrollRoot.pipeLog = l2; return
+        }
+        var took = Math.min(n, scrollRoot.pipeBufArr.length)
+        var b = scrollRoot.pipeBufArr.slice(); b.splice(0, took)
+        scrollRoot.pipeBufArr = b
+        var l = scrollRoot.pipeLog.slice()
+        l.unshift("read("+n+"): consumed "+took+" bytes — buf="+scrollRoot.pipeBufArr.length+"/"+scrollRoot.pipeCapacity+"|#06b6d4")
+        if(l.length > 6) l.pop()
+        scrollRoot.pipeLog = l
+    }
+
+    function simResetPipe() { scrollRoot.pipeBufArr = []; scrollRoot.pipeLog = [] }
+
     // ── Accordion ─────────────────────────────────────────────────────
     property int openCard: 0
 
@@ -300,6 +342,97 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── PIPE BUFFER SIMULATOR ───────────────────────────────────────
+        Rectangle {
+            id: pipeSimRect
+            width:parent.width; height:pipeSimCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(249,115,22,0.2); border.width:1
+
+            Column {
+                id:pipeSimCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🔄"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"PIPE BUFFER SIMULATOR — PIPESIZE=16 bytes"; color:"#f97316"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"write() blocks when full. read() blocks when empty. Both block until conditions change."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Buffer visualization
+                Row { spacing:3; width:parent.width; height:44
+                    Repeater { model:scrollRoot.pipeCapacity
+                        delegate: Rectangle {
+                            width:(scrollRoot.pipeCapacity>0?(pipeSimCol.width - scrollRoot.pipeCapacity*3)/scrollRoot.pipeCapacity:0); height:44; radius:5
+                            color:index<scrollRoot.pipeBufArr.length?Qt.rgba(249/255,115/255,22/255,0.35):Qt.rgba(255,255,255,0.04)
+                            border.color:index<scrollRoot.pipeBufArr.length?"#f97316":Qt.rgba(255,255,255,0.08); border.width:1
+                            Column { anchors.centerIn:parent; spacing:3
+                                Text { text:index<scrollRoot.pipeBufArr.length?scrollRoot.pipeBufArr[index]:"·"; color:index<scrollRoot.pipeBufArr.length?"#fbbf24":Qt.rgba(255,255,255,0.15); font.pixelSize:9; font.family:"Consolas" }
+                                Text { text:""+index; color:Qt.rgba(255,255,255,0.15); font.pixelSize:7 }
+                            }
+                        }
+                    }
+                }
+
+                // Fill bar
+                Row { spacing:10; width:parent.width
+                    Text { text:"Buffer:"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:11; anchors.verticalCenter:parent.verticalCenter }
+                    Rectangle { id:fillBarBg; width:parent.width-130; height:14; radius:7; color:Qt.rgba(255,255,255,0.06)
+                        Rectangle { width:fillBarBg.width*(scrollRoot.pipeBufArr.length/scrollRoot.pipeCapacity); height:14; radius:7
+                            color:scrollRoot.pipeBufArr.length>=scrollRoot.pipeCapacity?"#f43f5e":scrollRoot.pipeBufArr.length>scrollRoot.pipeCapacity*0.7?"#fbbf24":"#f97316"
+                            Behavior on width{NumberAnimation{duration:120}}
+                        }
+                    }
+                    Text { text:scrollRoot.pipeBufArr.length+"/"+scrollRoot.pipeCapacity; color:"#fbbf24"; font.pixelSize:11; font.family:"Consolas"; width:44 }
+                }
+
+                // Controls
+                Row { spacing:10; width:parent.width
+                    Row { spacing:6
+                        Text { text:"write"; color:"#10b981"; font.pixelSize:11; font.bold:true; anchors.verticalCenter:parent.verticalCenter }
+                        Repeater { model:[1,4,8]
+                            delegate: Rectangle { height:30; width:28; radius:7; color:Qt.rgba(16/255,185/255,129/255,0.15); border.color:"#10b981"; border.width:1
+                                Text { anchors.centerIn:parent; text:"+"+modelData; color:"#10b981"; font.pixelSize:10; font.family:"Consolas" }
+                                MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:scrollRoot.simPipeWrite(modelData) }
+                            }
+                        }
+                    }
+                    Row { spacing:6
+                        Text { text:"read"; color:"#06b6d4"; font.pixelSize:11; font.bold:true; anchors.verticalCenter:parent.verticalCenter }
+                        Repeater { model:[1,3,8]
+                            delegate: Rectangle { height:30; width:28; radius:7; color:Qt.rgba(6/255,182/255,212/255,0.1); border.color:"#06b6d4"; border.width:1
+                                Text { anchors.centerIn:parent; text:"-"+modelData; color:"#06b6d4"; font.pixelSize:10; font.family:"Consolas" }
+                                MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:scrollRoot.simPipeRead(modelData) }
+                            }
+                        }
+                    }
+                    Rectangle { height:30; width:rstPipeBtn.implicitWidth+14; radius:7; color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                        Text { id:rstPipeBtn; anchors.centerIn:parent; text:"reset"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:scrollRoot.simResetPipe() }
+                    }
+                }
+
+                // Log — stored as "msg|color" strings to avoid var-of-objects model
+                Column { spacing:3; width:parent.width
+                    Repeater { model:scrollRoot.pipeLog
+                        delegate: Text {
+                            property string logMsg: modelData.split("|")[0]
+                            property string logCol: modelData.split("|")[1]
+                            text:"› "+logMsg; color:logCol
+                            font.pixelSize:10; font.family:"Consolas"
+                            width:pipeSimCol.width; wrapMode:Text.WordWrap
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(236/255,72/255,153/255,0.08); radius:14
@@ -308,7 +441,7 @@ ScrollView {
                 anchors.fill:parent; anchors.margins:15; spacing:15
                 Text{text:"🌟";font.pixelSize:22;Layout.alignment:Qt.AlignVCenter}
                 Text { Layout.fillWidth:true; Layout.alignment:Qt.AlignVCenter
-                    text:"CORE SUMMARY: A pipe = 512-byte ring buffer (struct pipe). nwrite-nread = bytes pending. Full → writer sleeps. Empty → reader sleeps. Both use sleep()/wakeup() for synchronization. struct file wraps pipe/inode/device with ref count and offset. Per-process ofile[NOFILE=16] array maps integer fd → struct file*. fork() shares open files (filedup increments ref). Lowest available index = new fd number."
+                                        text:"CORE SUMMARY: A pipe = 512-byte ring buffer (struct pipe). nwrite-nread = bytes pending. Full → writer sleeps. Empty → reader sleeps. Both use sleep()/wakeup() for synchronization. struct file wraps pipe/inode/device with ref count and offset. Per-process ofile[NOFILE=16] array maps integer fd → struct file*. fork() shares open files (filedup increments ref). Lowest available index = new fd number."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:12; font.letterSpacing:0.2
                 }
             }

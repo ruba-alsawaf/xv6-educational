@@ -179,6 +179,130 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── CRASH RECOVERY SIMULATOR ────────────────────────────────────
+        Rectangle {
+            id: logSim
+            width:parent.width; height:crashCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(249,115,22,0.2); border.width:1
+
+            property int crashPoint: -1   // -1=no crash, 0=before write_head, 1=after write_head
+            property bool recovered: false
+
+            // Transaction steps visual
+            property var txSteps: [
+                {label:"begin_op()",    desc:"Transaction starts. log.outstanding++.", done:true,  isCommit:false},
+                {label:"log_write(b)",  desc:"Modified buffers added to log list (not disk yet).", done:true,  isCommit:false},
+                {label:"end_op()",      desc:"outstanding--. If 0, triggers commit.", done:true,  isCommit:false},
+                {label:"write_log()",   desc:"Copies data buffers → log area on disk.", done:true,  isCommit:false},
+                {label:"write_head()",  desc:"⬅ COMMIT POINT: writes log header to disk. Atomic sector write.", done:false, isCommit:true},
+                {label:"install_trans()",desc:"Copies log blocks → real disk locations.", done:false, isCommit:false},
+                {label:"clear header",  desc:"Sets log.n=0, writes header. Transaction complete.", done:false, isCommit:false}
+            ]
+
+
+            Column {
+                id:crashCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"💥"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"CRASH RECOVERY SIMULATOR — what does xv6 do on the next boot?"; color:"#f97316"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"write_head() is the atomic commit point. Crash before it = rollback. Crash after = replay."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+                Row { spacing:6; width:parent.width
+                    Repeater {
+                        model: logSim.txSteps
+                        delegate: Rectangle {
+                            property bool isDone: logSim.crashPoint === -1 ? modelData.done : (logSim.crashPoint===0 ? modelData.done && !modelData.isCommit && index < 4 : true)
+                            width:(parent.width-36)/7; height:56; radius:8
+                            color:modelData.isCommit?Qt.rgba(249/255,115/255,22/255,0.2):isDone?Qt.rgba(16/255,185/255,129/255,0.15):Qt.rgba(255,255,255,0.04)
+                            border.color:modelData.isCommit?"#f97316":isDone?"#10b981":Qt.rgba(255,255,255,0.1); border.width:modelData.isCommit?2:1
+                            Column { anchors.centerIn:parent; spacing:3
+                                Text { text:modelData.label; color:modelData.isCommit?"#f97316":isDone?"#10b981":Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent; horizontalAlignment:Text.AlignHCenter; wrapMode:Text.WordWrap; width:parent.parent.width-8 }
+                                Text { text:isDone?"✓":"○"; color:isDone?(modelData.isCommit?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.2); font.pixelSize:14; font.bold:true; anchors.horizontalCenter:parent }
+                            }
+                        }
+                    }
+                }
+
+                // Crash buttons
+                Row { spacing:10; width:parent.width
+                    Rectangle {
+                        height:36; width:crashBtn1.implicitWidth+24; radius:9
+                        color:logSim.crashPoint===0?Qt.rgba(244/255,63/255,94/255,0.25):Qt.rgba(244/255,63/255,94/255,0.12)
+                        border.color:"#f43f5e"; border.width:logSim.crashPoint===0?2:1
+                        Text { id:crashBtn1; anchors.centerIn:parent; text:"💥 CRASH before write_head()"; color:"#f43f5e"; font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:{ logSim.crashPoint=0; logSim.recovered=false } }
+                    }
+                    Rectangle {
+                        height:36; width:crashBtn2.implicitWidth+24; radius:9
+                        color:logSim.crashPoint===1?Qt.rgba(249/255,115/255,22/255,0.25):Qt.rgba(249/255,115/255,22/255,0.12)
+                        border.color:"#f97316"; border.width:logSim.crashPoint===1?2:1
+                        Text { id:crashBtn2; anchors.centerIn:parent; text:"💥 CRASH after write_head()"; color:"#f97316"; font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:{ logSim.crashPoint=1; logSim.recovered=false } }
+                    }
+                    Rectangle {
+                        height:36; width:bootBtn.implicitWidth+24; radius:9
+                        color:Qt.rgba(16/255,185/255,129/255,0.15); border.color:"#10b981"; border.width:1
+                        Text { id:bootBtn; anchors.centerIn:parent; text:"🔄 BOOT (run initlog)"; color:"#10b981"; font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:logSim.recovered=true }
+                    }
+                    Rectangle {
+                        height:36; width:72; radius:9
+                        color:Qt.rgba(255,255,255,0.05); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                        Text { anchors.centerIn:parent; text:"↺ RESET"; color:Qt.rgba(255,255,255,0.4); font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:{ logSim.crashPoint=-1; logSim.recovered=false } }
+                    }
+                }
+
+                // Result panel
+                Rectangle {
+                    width:parent.width; height:recovText.implicitHeight+24; radius:10
+                    color: {
+                        if(parent.crashPoint===-1) return Qt.rgba(255,255,255,0.02)
+                        if(!parent.recovered) return Qt.rgba(244/255,63/255,94/255,0.08)
+                        return parent.crashPoint===0?Qt.rgba(16/255,185/255,129/255,0.08):Qt.rgba(249/255,115/255,22/255,0.08)
+                    }
+                    border.color: {
+                        if(parent.crashPoint===-1) return Qt.rgba(255,255,255,0.06)
+                        if(!parent.recovered) return Qt.rgba(244,63,94,0.3)
+                        return parent.crashPoint===0?"#10b981":"#f97316"
+                    }
+                    border.width:1
+                    Text {
+                        id:recovText
+                        anchors.left:parent.left; anchors.leftMargin:16
+                        anchors.right:parent.right; anchors.rightMargin:16
+                        anchors.verticalCenter:parent.verticalCenter
+                        text: {
+                            var cp = logSim.crashPoint
+                            var rec = logSim.recovered
+                            if(cp===-1) return "Select a crash point above, then press BOOT to see what xv6 does on recovery."
+                            if(cp===0 && !rec) return "💥 CRASHED before write_head(). Log header was never written (n=0). System is in an unknown state."
+                            if(cp===0 && rec) return "✓ SAFE ROLLBACK: initlog() reads log header. n=0 (write_head never wrote). No replay needed. Disk is in the state BEFORE the transaction — as if it never happened. Data is consistent."
+                            if(cp===1 && !rec) return "💥 CRASHED after write_head(). Log header on disk has n>0. install_trans() was not completed."
+                            if(cp===1 && rec) return "✓ REPLAYED: initlog() reads header, finds n>0 — committed transaction. Calls install_trans() to copy log→real disk. Then clears header (n=0). Disk is now FULLY updated. Idempotent: safe to replay multiple times."
+                            return ""
+                        }
+                        color: {
+                            var cp = logSim.crashPoint; var rec = logSim.recovered
+                            if(cp===-1) return Qt.rgba(255,255,255,0.28)
+                            if(!rec) return "#f43f5e"
+                            return cp===0?"#10b981":"#fbbf24"
+                        }
+                        wrapMode:Text.WordWrap; font.pixelSize:12; lineHeight:1.6; font.bold:logSim.recovered
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(249/255,115/255,22/255,0.08); radius:14

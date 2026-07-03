@@ -1,6 +1,5 @@
 .pragma library
 
-// الألوان الموحدة للمشروع (Theme)
 const Colors = {
     primaryOrange: "#FF8C00",
     textInactive: "#97969d",
@@ -11,7 +10,7 @@ const Colors = {
 
 function handleTabChange(index) {
     switch(index) {
-        case 0:  return "CpuSchedulingPage.qml"       // CPU SCHEDULING
+        case 0:  return "CpuSchedulingPage.qml"       // CPU SCHEDULING (Live Dashboard)
         case 1:  return "MemoryManagementPage.qml"    // MEMORY MANAGEMENT
         case 2:  return "FileSystem.qml"              // FILE SYSTEM DASHBOARD
         case 3:  return "KernelGuardPage.qml"         // LESSON 1: SYSTEM CALLS
@@ -23,12 +22,13 @@ function handleTabChange(index) {
         case 9:  return "KernelSpacePage.qml"         // LESSON 7: KERNEL ADDRESS SPACE
         case 10: return "UserAddressSpacePage.qml"    // LESSON 8: USER SPACE
         case 11: return "ContextSwitchPage.qml"       // LESSON 9: CONTEXT SWITCH
-        case 12: return "LocksPage.qml"               // LESSON 10: LOCKS
-        case 13: return "PipesPage.qml"               // LESSON 11: PIPES & FILE DESCRIPTORS
-        case 14: return "FsOverviewPage.qml"          // LESSON 12: FS OVERVIEW
-        case 15: return "BufferCachePage.qml"         // LESSON 13: BUFFER CACHE
-        case 16: return "LoggingPage.qml"             // LESSON 14: LOGGING & CRASH RECOVERY
-        case 17: return "InodesPage.qml"              // LESSON 15: INODES, DIRS & PATHS
+        case 12: return "RoundRobinPage.qml"          // LESSON 10: ROUND-ROBIN SCHEDULING
+        case 13: return "LocksPage.qml"               // LESSON 11: LOCKS
+        case 14: return "PipesPage.qml"               // LESSON 12: PIPES & FILE DESCRIPTORS
+        case 15: return "FsOverviewPage.qml"          // LESSON 13: FS OVERVIEW
+        case 16: return "BufferCachePage.qml"         // LESSON 14: BUFFER CACHE
+        case 17: return "LoggingPage.qml"             // LESSON 15: LOGGING & CRASH RECOVERY
+        case 18: return "InodesPage.qml"              // LESSON 16: INODES, DIRS & PATHS
         default: return "CpuSchedulingPage.qml"
     }
 }

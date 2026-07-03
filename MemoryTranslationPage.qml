@@ -535,6 +535,147 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── Sv39 VIRTUAL ADDRESS DECODER ────────────────────────────────
+        Rectangle {
+            id: sv39Sim
+            width:parent.width; height:sv39Col.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(6,182,212,0.2); border.width:1
+
+            property int vpn2: 0
+            property int vpn1: 0
+            property int vpn0: 1
+            property int pgOff: 0
+            property var vpn2Opts: [0,1,2,255]
+            property var vpn1Opts: [0,1,7,255]
+            property var vpn0Opts: [1,2,5,255]
+            property var offOpts:  [0,4,4095,2048]
+
+            property string physAddr: {
+                var pte2 = vpn2*512+vpn1
+                var pte1 = vpn1*512+vpn0
+                var pte0 = vpn0*8+1
+                var ppn  = pte0
+                var pa   = ppn*4096 + pgOff
+                return "0x"+pa.toString(16).toUpperCase().padStart(12,'0')
+            }
+            property string vaHex: {
+                var v=(vpn2*(1<<18)+vpn1*(1<<9)+vpn0)*(1<<12)+pgOff
+                return "0x"+v.toString(16).toUpperCase().padStart(12,'0')
+            }
+
+            Column {
+                id:sv39Col
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🗺"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"Sv39 ADDRESS DECODER — pick VPN segments and page offset"; color:"#06b6d4"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"39-bit VA → 3 levels of page table (VPN[2]:VPN[1]:VPN[0] each 9 bits) + 12-bit offset"; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Bit-field visualisation
+                Row { spacing:2; height:40; width:parent.width
+                    Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(139/255,92/255,246/255,0.25); border.color:"#8b5cf6"; border.width:1
+                        Column { anchors.centerIn:parent; spacing:2
+                            Text { text:"VPN[2]"; color:"#a78bfa"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.vpn2+" (bits 38–30)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                        }
+                    }
+                    Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(6/255,182/255,212/255,0.2); border.color:"#06b6d4"; border.width:1
+                        Column { anchors.centerIn:parent; spacing:2
+                            Text { text:"VPN[1]"; color:"#06b6d4"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.vpn1+" (bits 29–21)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                        }
+                    }
+                    Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(16/255,185/255,129/255,0.2); border.color:"#10b981"; border.width:1
+                        Column { anchors.centerIn:parent; spacing:2
+                            Text { text:"VPN[0]"; color:"#10b981"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.vpn0+" (bits 20–12)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                        }
+                    }
+                    Rectangle { width:parent.width*12/39; height:40; radius:6; color:Qt.rgba(251/255,191/255,36/255,0.2); border.color:"#fbbf24"; border.width:1
+                        Column { anchors.centerIn:parent; spacing:2
+                            Text { text:"Page Offset"; color:"#fbbf24"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.pgOff+" (bits 11–0)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                        }
+                    }
+                }
+
+                // Selectors
+                Row { spacing:12; width:parent.width
+                    Repeater {
+                        model:[
+                            {label:"VPN[2]", opts:[0,1,2,255], prop:"vpn2", color:"#a78bfa"},
+                            {label:"VPN[1]", opts:[0,1,7,255], prop:"vpn1", color:"#06b6d4"},
+                            {label:"VPN[0]", opts:[1,2,5,255], prop:"vpn0", color:"#10b981"},
+                            {label:"Offset", opts:[0,4,4095,2048], prop:"pgOff", color:"#fbbf24"}
+                        ]
+                        delegate: Column { spacing:6; width:(parent.width-36)/4
+                            Text { text:modelData.label; color:modelData.color; font.pixelSize:10; font.bold:true }
+                            Row { spacing:4
+                                Repeater { model:modelData.opts
+                                    delegate: Rectangle {
+                                        property bool active: {
+                                            switch(modelData.prop){
+                                                case "vpn2": return sv39Sim.vpn2===modelData
+                                                case "vpn1": return sv39Sim.vpn1===modelData
+                                                case "vpn0": return sv39Sim.vpn0===modelData
+                                                default:     return sv39Sim.pgOff===modelData
+                                            }
+                                        }
+                                        width:34; height:28; radius:7
+                                        color:active?Qt.rgba(6/255,182/255,212/255,0.2):Qt.rgba(255,255,255,0.04)
+                                        border.color:active?modelData.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
+                                        Text { anchors.centerIn:parent; text:""+modelData; color:active?modelData.color:Qt.rgba(255,255,255,0.5); font.pixelSize:9; font.family:"Consolas" }
+                                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
+                                            onClicked: {
+                                                switch(modelData.prop){
+                                                    case "vpn2": sv39Sim.vpn2=modelData; break
+                                                    case "vpn1": sv39Sim.vpn1=modelData; break
+                                                    case "vpn0": sv39Sim.vpn0=modelData; break
+                                                    default:     sv39Sim.pgOff=modelData
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Walk result
+                Row { spacing:12; width:parent.width
+                    Rectangle { width:(parent.width-12)/2; height:walkRes.implicitHeight+20; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(6,182,212,0.2); border.width:1
+                        Column { id:walkRes; anchors.top:parent.top; anchors.topMargin:14; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; spacing:6
+                            Text { text:"PAGE TABLE WALK"; color:"#06b6d4"; font.bold:true; font.pixelSize:11 }
+                            Text { text:"1. satp → root PT (PPN of L2 table)"; color:Qt.rgba(255,255,255,0.5); font.pixelSize:10 }
+                            Text { text:"2. PT[VPN[2]="+sv39Sim.vpn2+"] → L1 PTE → PPN"; color:"#a78bfa"; font.pixelSize:10; font.family:"Consolas" }
+                            Text { text:"3. PT[VPN[1]="+sv39Sim.vpn1+"] → L0 PTE → PPN"; color:"#06b6d4"; font.pixelSize:10; font.family:"Consolas" }
+                            Text { text:"4. PT[VPN[0]="+sv39Sim.vpn0+"] → physical page"; color:"#10b981"; font.pixelSize:10; font.family:"Consolas" }
+                            Text { text:"5. PA = PPN<<12 | offset("+sv39Sim.pgOff+")"; color:"#fbbf24"; font.pixelSize:10; font.family:"Consolas" }
+                        }
+                    }
+                    Rectangle { width:(parent.width-12)/2; height:addrCol.implicitHeight+28; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(16,185,129,0.3); border.width:1
+                        Column { id:addrCol; anchors.top:parent.top; anchors.topMargin:14; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; spacing:8
+                            Text { text:"Virtual Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.vaHex; color:"#a78bfa"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"↓  3-level walk  ↓"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:10; anchors.horizontalCenter:parent }
+                            Text { text:"Physical Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent }
+                            Text { text:sv39Sim.physAddr; color:"#10b981"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(59/255,130/255,246/255,0.08); radius:14

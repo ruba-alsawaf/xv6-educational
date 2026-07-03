@@ -222,6 +222,89 @@ ScrollView {
             }
         }
 
+
+        // ── OPEN() CALL TRACE SIMULATOR ──────────────────────────────────
+        Rectangle {
+            id: fsSim
+            width:parent.width; height:traceCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(59,130,246,0.2); border.width:1
+
+            property int traceStep: 0
+
+            // Trace details
+            property var traceDescs: [
+                "",
+                "① FILE DESCRIPTOR LAYER — sys_open() in kernel/sysfile.c\nfdalloc() scans p->ofile[] for the lowest free fd (e.g., fd=3).\nfilealloc() picks a free slot in global ftable[NFILE].\nFile ref set to 1. Calls the layer below to resolve the path.",
+                "② PATHNAME LAYER — namei() in kernel/fs.c\nnamei(\"/README\") calls namex() with absolute=1, starting at root inode (ROOTINO=1).\nSplits path into components: [\"\", \"README\"]. Empty first component = root.",
+                "③ DIRECTORY LAYER — dirlookup() in kernel/fs.c\ndirlookup(root_inode, \"README\", 0) scans root directory data blocks.\nCompares each struct dirent {inum, name} against \"README\".\nFinds match → returns inum for README's inode.",
+                "④ INODE LAYER — iget() + ilock() in kernel/fs.c\niget(dev, inum) finds or allocates in-memory inode (no disk read yet).\nilock() acquires the sleeplock; if !valid, reads dinode from disk.\ntype=T_FILE, nlink=1, size=N bytes confirmed.",
+                "⑤ LOGGING LAYER — begin_op() in kernel/log.c\nbegin_op() called to start a transaction (even for reads, to ensure consistency).\nFor read-only open(), no log_write() calls needed.\nend_op() will be called when done.",
+                "⑥ BUFFER CACHE LAYER — bread() in kernel/bio.c\nbread(dev, blockno) is called to read the inode block from disk.\nbget() checks LRU cache first (BGET_HIT if cached).\nIf cache miss: recycle LRU buffer, read from disk via virtio_disk_rw().",
+                "⑦ DISK LAYER — virtio_disk_rw() in kernel/virtio_disk.c\nDMA descriptor set up pointing to the buffer. VIRTIO_MMIO_QUEUE_NOTIFY written.\nCPU sleeps on buffer (sleep(b, &b->lock)) waiting for interrupt.\nDisk interrupt fires → wakeup(b) → CPU resumes with data. open() returns fd=3 to userspace."
+            ]
+
+
+            Column {
+                id:traceCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🔍"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"open(\"/README\", O_RDONLY) — CALL TRACE THROUGH ALL 7 LAYERS"; color:"#3b82f6"; font.bold:true; font.pixelSize:13; font.letterSpacing:0.3 }
+                        Text { text:"Step through what happens inside the kernel when a process calls open(). Each step activates the corresponding layer."; color:Qt.rgba(255,255,255,0.35); font.pixelSize:11 }
+                    }
+                }
+
+                // Step buttons
+                Row { spacing:8
+                    Repeater {
+                        model: 7
+                        delegate: Rectangle {
+                            property bool active: fsSim.traceStep > index
+                            property bool current: fsSim.traceStep === index + 1
+                            width:36; height:36; radius:18
+                            color: active||current ? Qt.rgba(scrollRoot.layerR[index]/255,scrollRoot.layerG[index]/255,scrollRoot.layerB[index]/255,0.25) : Qt.rgba(255,255,255,0.04)
+                            border.color: active||current ? scrollRoot.layerColors[index] : Qt.rgba(255,255,255,0.1); border.width:current?2:1
+                            Text { anchors.centerIn:parent; text:index+1; color:active||current?scrollRoot.layerColors[index]:Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:13 }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:fsSim.traceStep=index+1 }
+                        }
+                    }
+                    Rectangle { width:90; height:36; radius:9; color:Qt.rgba(59/255,130/255,246/255,0.15); border.color:"#3b82f6"; border.width:1
+                        Text { anchors.centerIn:parent; text:"▷ NEXT"; color:"#60a5fa"; font.bold:true; font.pixelSize:12 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
+                            onClicked: {
+                                if(fsSim.traceStep < 7) fsSim.traceStep++; else fsSim.traceStep=0
+                            }
+                        }
+                    }
+                    Rectangle { width:72; height:36; radius:9; color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                        Text { anchors.centerIn:parent; text:"↺ RESET"; color:Qt.rgba(255,255,255,0.4); font.bold:true; font.pixelSize:12 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:fsSim.traceStep=0 }
+                    }
+                }
+                Rectangle {
+                    width:parent.width; height:traceText.implicitHeight+24; radius:10
+                    color:parent.traceStep>0?Qt.rgba(59/255,130/255,246/255,0.07):Qt.rgba(255,255,255,0.02)
+                    border.color:parent.traceStep>0?Qt.rgba(59/255,130/255,246/255,0.35):Qt.rgba(255,255,255,0.06); border.width:1
+                    Behavior on color { ColorAnimation { duration:150 } }
+                    Text {
+                        id:traceText
+                        anchors.left:parent.left; anchors.leftMargin:16
+                        anchors.right:parent.right; anchors.rightMargin:16
+                        anchors.verticalCenter:parent.verticalCenter
+                        text: fsSim.traceStep>0 ? fsSim.traceDescs[fsSim.traceStep] : "Press ▷ NEXT or click a step number to trace open() through each layer"
+                        color: fsSim.traceStep>0 ? Qt.rgba(255,255,255,0.82) : Qt.rgba(255,255,255,0.28)
+                        wrapMode:Text.WordWrap; font.family:fsSim.traceStep>0?"Consolas":"Segoe UI"; font.pixelSize:11; lineHeight:1.6
+                    }
+                }
+            }
+        }
+
         // ── FOOTER ──────────────────────────────────────────────────────
         Rectangle {
             width:parent.width; height:65
@@ -231,7 +314,7 @@ ScrollView {
                 anchors.fill:parent; anchors.margins:15; spacing:15
                 Text{text:"🌟";font.pixelSize:22;Layout.alignment:Qt.AlignVCenter}
                 Text { Layout.fillWidth:true; Layout.alignment:Qt.AlignVCenter
-                    text:"CORE SUMMARY: xv6 filesystem = 7 layers: FD→Pathname→Directory→Inode→Logging→Buffer Cache→Disk. Disk layout: boot | superblock | log | inodes | bitmap | data. open() call path: namei→iget/ilock→filealloc→fdalloc. Data blocks: 12 direct + 1 indirect (128 blocks) per inode = max 140 pages. Logging ensures crash safety: all writes go through log first, then installed atomically."
+                    text:"CORE SUMMARY: xv6 filesystem = 7 layers: FD→Pathname→Directory→Inode→Logging→Buffer Cache→Disk. Disk layout: boot | superblock | log | inodes | bitmap | data. open() call path: namei→iget/ilock→filealloc→fdalloc. Data blocks: 12 direct + 1 indirect (128 blocks) per inode = max 140 pages. Logging ensures crash safety."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:12; font.letterSpacing:0.2
                 }
             }

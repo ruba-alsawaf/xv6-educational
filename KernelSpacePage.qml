@@ -442,6 +442,77 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── KERNEL MEMORY MAP EXPLORER ───────────────────────────────────
+        Rectangle {
+            id: ksSim
+            width:parent.width; height:ksMapCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(16,185,129,0.2); border.width:1
+
+            property int selRegion: 0
+            property var regions: [
+                {name:"TRAMPOLINE",   addr:"0xFFFF_FFFF_F000",size:"4 KB",  color:"#ec4899",
+                 desc:"Mapped at the very top of both kernel and user address spaces. Contains uservec (save regs) and userret (restore regs). Must be accessible from both spaces during trap handling without changing satp."},
+                {name:"TRAPFRAME",    addr:"0xFFFF_FFFF_E000",size:"4 KB",  color:"#f97316",
+                 desc:"Per-process page, mapped just below trampoline. Stores all 32 general-purpose registers + sepc/sstatus/satp during ecall/trap. The kernel reads it to handle the syscall."},
+                {name:"KERNEL STACK", addr:"per-process",      size:"4 KB × N",color:"#fbbf24",
+                 desc:"Each process has its own kernel stack. Used while the process runs kernel code (syscalls, trap handlers). Guard page below it catches stack overflow (PTE_V=0)."},
+                {name:"KERNEL DATA",  addr:"0x8020_0000+",     size:"varies",  color:"#a78bfa",
+                 desc:"Global kernel variables, per-process structs (proc[], file[], buf[]), run-time data. Compiled into the kernel binary, directly mapped (VA=PA)."},
+                {name:"KERNEL TEXT",  addr:"0x8000_0000",      size:"~128 KB", color:"#06b6d4",
+                 desc:"Kernel executable code. Starts at KERNBASE. Mapped read/execute only. Direct-mapped (VA==PA). Entry point: _entry in entry.S sets up the stack, then calls start()."},
+                {name:"PHYS DEVICES", addr:"0x0000–0x7FFF_FFFF",size:"varies", color:"#10b981",
+                 desc:"UART at 0x1000_0000, PLIC at 0x0C00_0000, CLINT at 0x0200_0000, virtio disk at 0x1000_1000. All direct-mapped into kernel VA so drivers can read/write registers with plain pointer dereference."}
+            ]
+
+            Column {
+                id:ksMapCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🗂"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"KERNEL VIRTUAL MEMORY MAP — click a region to inspect it"; color:"#10b981"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"xv6 kernel virtual space: directly maps all physical RAM + device MMIO. Top pages are per-process (trampoline/trapframe)."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Memory map visual (top-down, highest VA first)
+                Column { spacing:3; width:parent.width
+                    Repeater { model:ksSim.regions
+                        delegate: Rectangle {
+                            property bool active: ksSim.selRegion===index
+                            width:parent.width; height:38; radius:8
+                            color:active?Qt.rgba(16/255,185/255,129/255,0.1):Qt.rgba(255,255,255,0.025)
+                            border.color:active?modelData.color:Qt.rgba(255,255,255,0.06); border.width:active?2:1
+                            Behavior on border.width{NumberAnimation{duration:100}}
+                            Row { anchors.fill:parent; anchors.leftMargin:12; anchors.rightMargin:12; spacing:12
+                                Rectangle { width:10; height:26; radius:4; color:modelData.color; opacity:active?1.0:0.5; anchors.verticalCenter:parent.verticalCenter }
+                                Column { anchors.verticalCenter:parent.verticalCenter; spacing:2
+                                    Text { text:modelData.name; color:active?modelData.color:Qt.rgba(255,255,255,0.5); font.bold:true; font.pixelSize:11 }
+                                    Text { text:modelData.addr+"  |  "+modelData.size; color:Qt.rgba(255,255,255,0.28); font.pixelSize:9; font.family:"Consolas" }
+                                }
+                            }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:ksSim.selRegion=index }
+                        }
+                    }
+                }
+
+                // Detail card
+                Rectangle { width:parent.width; height:regionDetail.implicitHeight+24; radius:10
+                    color:Qt.rgba(0,0,0,0.2); border.color:ksSim.regions[ksSim.selRegion].color; border.width:1
+                    Column { id:regionDetail; anchors.top:parent.top; anchors.topMargin:14; anchors.left:parent.left; anchors.leftMargin:16; anchors.right:parent.right; anchors.rightMargin:16; spacing:8
+                        Text { text:ksSim.regions[ksSim.selRegion].name; color:ksSim.regions[ksSim.selRegion].color; font.bold:true; font.pixelSize:14 }
+                        Text { text:ksSim.regions[ksSim.selRegion].desc; color:Qt.rgba(255,255,255,0.7); font.pixelSize:11; wrapMode:Text.WordWrap; width:parent.width; lineHeight:1.6 }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(139/255,92/255,246/255,0.08); radius:14

@@ -346,6 +346,156 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────
+
+        // ── DEADLOCK SIMULATOR ──────────────────────────────────────────
+        Rectangle {
+            id: lockSim
+            width:parent.width; height:dlCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(244,63,94,0.2); border.width:1
+
+            property bool lockAheldBy1: false
+            property bool lockBheldBy1: false
+            property bool lockAheldBy2: false
+            property bool lockBheldBy2: false
+            property var log: []
+            property bool deadlocked: false
+            property bool safeOrder: true
+
+            function addLog(msg, color) {
+                var l=log.slice(); l.unshift({msg:msg,color:color}); if(l.length>8) l.pop(); log=l
+            }
+
+            function p1AcquireA() {
+                if(lockAheldBy2){addLog("P1 → acquire(lockA): BLOCKED — held by P2",  "#f43f5e"); checkDeadlock(); return}
+                if(lockAheldBy1){addLog("P1 → acquire(lockA): already held",  "#fbbf24"); return}
+                lockAheldBy1=true; addLog("P1 → acquire(lockA): OK ✓", "#10b981")
+            }
+            function p1AcquireB() {
+                if(lockBheldBy2){addLog("P1 → acquire(lockB): BLOCKED — held by P2", "#f43f5e"); checkDeadlock(); return}
+                if(lockBheldBy1){addLog("P1 → acquire(lockB): already held", "#fbbf24"); return}
+                lockBheldBy1=true; addLog("P1 → acquire(lockB): OK ✓", "#10b981")
+            }
+            function p2AcquireB() {
+                if(lockBheldBy1){addLog("P2 → acquire(lockB): BLOCKED — held by P1", "#f43f5e"); checkDeadlock(); return}
+                if(lockBheldBy2){addLog("P2 → acquire(lockB): already held", "#fbbf24"); return}
+                lockBheldBy2=true; addLog("P2 → acquire(lockB): OK ✓", "#10b981")
+            }
+            function p2AcquireA() {
+                if(lockAheldBy1){addLog("P2 → acquire(lockA): BLOCKED — held by P1", "#f43f5e"); checkDeadlock(); return}
+                if(lockAheldBy2){addLog("P2 → acquire(lockA): already held", "#fbbf24"); return}
+                lockAheldBy2=true; addLog("P2 → acquire(lockA): OK ✓", "#10b981")
+            }
+            function p1Release() { lockAheldBy1=false; lockBheldBy1=false; deadlocked=false; addLog("P1 → release all locks", "#a78bfa") }
+            function p2Release() { lockAheldBy2=false; lockBheldBy2=false; deadlocked=false; addLog("P2 → release all locks", "#a78bfa") }
+            function checkDeadlock() {
+                if((lockAheldBy1 && lockBheldBy2) || (lockBheldBy1 && lockAheldBy2))
+                    { deadlocked=true; addLog("☠ DEADLOCK DETECTED — circular wait!", "#f43f5e") }
+            }
+            function resetAll() { lockAheldBy1=false; lockBheldBy1=false; lockAheldBy2=false; lockBheldBy2=false; deadlocked=false; log=[] }
+
+            Column {
+                id:dlCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🔒"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"DEADLOCK SIMULATOR — two processes, two locks"; color:"#f43f5e"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"Acquire in opposite order to trigger deadlock. Same order to stay safe."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Deadlock warning
+                Rectangle {
+                    width:parent.width; height:32; radius:8; visible:lockSim.deadlocked
+                    color:Qt.rgba(244/255,63/255,94/255,0.2); border.color:"#f43f5e"; border.width:1
+                    Text { anchors.centerIn:parent; text:"☠  DEADLOCK — both processes are waiting forever. Only option: kernel panic or lock timeout."; color:"#f43f5e"; font.bold:true; font.pixelSize:11 }
+                }
+
+                // Lock status row
+                Row { spacing:20; width:parent.width; height:52
+                    Repeater { model:[{name:"lockA",color:"#a78bfa"},{name:"lockB",color:"#06b6d4"}]
+                        delegate: Rectangle { width:(parent.width-20)/2; height:52; radius:10; border.width:1
+                            property bool heldBy1: modelData.name==="lockA"?lockSim.lockAheldBy1:lockSim.lockBheldBy1
+                            property bool heldBy2: modelData.name==="lockA"?lockSim.lockAheldBy2:lockSim.lockBheldBy2
+                            color:heldBy1||heldBy2?Qt.rgba(0,0,0,0.2):Qt.rgba(255,255,255,0.02)
+                            border.color:heldBy1?modelData.color:heldBy2?"#ec4899":Qt.rgba(255,255,255,0.1)
+                            Row { anchors.centerIn:parent; spacing:12
+                                Text { text:modelData.name; color:modelData.color; font.bold:true; font.pixelSize:14; font.family:"Consolas" }
+                                Text {
+                                    text: lockSim.heldBy1&&lockSim.heldBy2?"ERR":lockSim.heldBy1?"held by P1":lockSim.heldBy2?"held by P2":"FREE"
+                                    color:lockSim.heldBy1?"#a78bfa":lockSim.heldBy2?"#ec4899":"#10b981"
+                                    font.pixelSize:12; font.bold:true
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Process button panels
+                Row { spacing:12; width:parent.width
+                    // P1 panel
+                    Rectangle { width:(parent.width-12)/2; height:p1col.implicitHeight+20; radius:10; color:Qt.rgba(139/255,92/255,246/255,0.08); border.color:"#a78bfa"; border.width:1
+                        Column { id:p1col; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:12; anchors.right:parent.right; anchors.rightMargin:12; spacing:8
+                            Text { text:"PROCESS 1"; color:"#a78bfa"; font.bold:true; font.pixelSize:12 }
+                            Row { spacing:6
+                                Rectangle { height:30; width:p1a.implicitWidth+16; radius:8; color:Qt.rgba(139/255,92/255,246/255,0.15); border.color:"#a78bfa"; border.width:1
+                                    Text { id:p1a; anchors.centerIn:parent; text:"acquire(lockA)"; color:"#a78bfa"; font.pixelSize:10; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p1AcquireA() }
+                                }
+                                Rectangle { height:30; width:p1b.implicitWidth+16; radius:8; color:Qt.rgba(6/255,182/255,212/255,0.1); border.color:"#06b6d4"; border.width:1
+                                    Text { id:p1b; anchors.centerIn:parent; text:"acquire(lockB)"; color:"#06b6d4"; font.pixelSize:10; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p1AcquireB() }
+                                }
+                            }
+                            Rectangle { height:28; width:p1rel.implicitWidth+16; radius:8; color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                                Text { id:p1rel; anchors.centerIn:parent; text:"release all"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:10 }
+                                MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p1Release() }
+                            }
+                        }
+                    }
+                    // P2 panel
+                    Rectangle { width:(parent.width-12)/2; height:p2col.implicitHeight+20; radius:10; color:Qt.rgba(236/255,72/255,153/255,0.08); border.color:"#ec4899"; border.width:1
+                        Column { id:p2col; anchors.top:parent.top; anchors.topMargin:12; anchors.left:parent.left; anchors.leftMargin:12; anchors.right:parent.right; anchors.rightMargin:12; spacing:8
+                            Text { text:"PROCESS 2"; color:"#ec4899"; font.bold:true; font.pixelSize:12 }
+                            Row { spacing:6
+                                Rectangle { height:30; width:p2b.implicitWidth+16; radius:8; color:Qt.rgba(6/255,182/255,212/255,0.1); border.color:"#06b6d4"; border.width:1
+                                    Text { id:p2b; anchors.centerIn:parent; text:"acquire(lockB)"; color:"#06b6d4"; font.pixelSize:10; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p2AcquireB() }
+                                }
+                                Rectangle { height:30; width:p2a.implicitWidth+16; radius:8; color:Qt.rgba(139/255,92/255,246/255,0.15); border.color:"#a78bfa"; border.width:1
+                                    Text { id:p2a; anchors.centerIn:parent; text:"acquire(lockA)"; color:"#a78bfa"; font.pixelSize:10; font.family:"Consolas" }
+                                    MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p2AcquireA() }
+                                }
+                            }
+                            Rectangle { height:28; width:p2rel.implicitWidth+16; radius:8; color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                                Text { id:p2rel; anchors.centerIn:parent; text:"release all"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:10 }
+                                MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.p2Release() }
+                            }
+                        }
+                    }
+                }
+
+                // Event log
+                Column { spacing:4; width:parent.width
+                    Row { spacing:10; width:parent.width
+                        Text { text:"EVENT LOG"; color:Qt.rgba(255,255,255,0.25); font.pixelSize:9; font.letterSpacing:1; anchors.verticalCenter:parent.verticalCenter }
+                        Rectangle { height:22; width:rstDl.implicitWidth+14; radius:6; color:Qt.rgba(255,255,255,0.04); border.color:Qt.rgba(255,255,255,0.1); border.width:1
+                            Text { id:rstDl; anchors.centerIn:parent; text:"↺ reset"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9 }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:lockSim.resetAll() }
+                        }
+                    }
+                    Repeater { model:lockSim.log
+                        delegate: Text { text:"  "+modelData.msg; color:modelData.color; font.pixelSize:10; font.family:"Consolas"; width:parent.width; wrapMode:Text.WordWrap }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(6/255,182/255,212/255,0.08); radius:14

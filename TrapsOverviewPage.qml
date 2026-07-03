@@ -541,6 +541,118 @@ ScrollView {
         }
 
         // ── TAKEAWAY FOOTER ─────────────────────────────────────────────
+
+        // ── TRAP TYPE SELECTOR & HANDLER TRACE ─────────────────────────
+        Rectangle {
+            id: trapSim
+            width:parent.width; height:trapSelCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(244,63,94,0.2); border.width:1
+
+            property int selTrap: 0
+
+            property var trapTypes: [
+                {name:"Timer Interrupt",   icon:"⏱", scause:"0x8000_0001", color:"#10b981",
+                 what:"RISC-V timer chip fires. sstatus.SIE=1 allows it. CPU vectored to stvec (trampoline).",
+                 handler:"devintr() → clockintr() → yield()",
+                 effect:"yield() sets p→state=RUNNABLE, calls sched() → Round-Robin preemption",
+                 kernel:"kernel/trap.c: clockintr(); kernel/proc.c: yield()"},
+                {name:"System Call (ecall)",icon:"💻", scause:"8",           color:"#a78bfa",
+                 what:"User code executes 'ecall'. Fires synchronous trap. sepc saved, PC→stvec.",
+                 handler:"usertrap() → syscall()",
+                 effect:"Reads a7 (syscall #), dispatches to handler, stores result in trapframe→a0",
+                 kernel:"kernel/trap.c: usertrap(); kernel/syscall.c: syscall()"},
+                {name:"Page Fault",        icon:"❌", scause:"12/13/15",     color:"#f43f5e",
+                 what:"Load/store/fetch on unmapped or protected VA. stval holds the faulting address.",
+                 handler:"usertrap() → p→killed=1",
+                 effect:"xv6 does not handle page faults — it kills the process immediately",
+                 kernel:"kernel/trap.c: usertrap() default case"},
+                {name:"Illegal Instruction",icon:"⛔", scause:"2",          color:"#fbbf24",
+                 what:"CPU decoded an invalid opcode, or user code tried a privileged instruction.",
+                 handler:"usertrap() → p→killed=1",
+                 effect:"Process is terminated. sepc holds the address of the bad instruction.",
+                 kernel:"kernel/trap.c: usertrap() default case"},
+                {name:"UART/Disk Interrupt",icon:"💾", scause:"0x8000_0009",color:"#06b6d4",
+                 what:"External device interrupt via PLIC. devintr() reads PLIC claim to find device.",
+                 handler:"devintr() → uartintr() or virtio_disk_intr()",
+                 effect:"Wakes up sleeping process waiting for I/O. PLIC claim written to complete.",
+                 kernel:"kernel/trap.c: devintr(); kernel/uart.c; kernel/virtio_disk.c"}
+            ]
+
+            property var cur: trapTypes[selTrap]
+
+            Column {
+                id:trapSelCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"⚡"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"TRAP TYPE EXPLORER — click any trap to trace its full path"; color:"#f43f5e"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"All traps enter the kernel the same way (stvec→uservec) but diverge based on scause"; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Trap type pills
+                Row { spacing:8; width:parent.width
+                    Repeater {
+                        model: trapSim.trapTypes
+                        delegate: Rectangle {
+                            property bool active: trapSim.selTrap === index
+                            height:42; width:trapPillCol.implicitWidth+20; radius:10
+                            color:active?Qt.rgba(244/255,63/255,94/255,0.15):Qt.rgba(255,255,255,0.04)
+                            border.color:active?modelData.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
+                            Behavior on color{ColorAnimation{duration:120}}
+                            Column { id:trapPillCol; anchors.centerIn:parent; spacing:2
+                                Text { text:modelData.icon+" "+modelData.name; color:active?modelData.color:"#ffffff"; font.pixelSize:11; font.bold:true; anchors.horizontalCenter:parent }
+                                Text { text:"scause="+modelData.scause; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:trapSim.selTrap=index }
+                        }
+                    }
+                }
+
+                // Detail cards
+                Rectangle {
+                    width:parent.width; height:trapDetail.implicitHeight+24; radius:10
+                    color:Qt.rgba(0,0,0,0.2); border.color:parent.cur.color; border.width:1
+                    Column {
+                        id:trapDetail
+                        anchors.top:parent.top; anchors.topMargin:14
+                        anchors.left:parent.left; anchors.leftMargin:16
+                        anchors.right:parent.right; anchors.rightMargin:16
+                        spacing:10
+                        Row { spacing:10
+                            Rectangle{width:10;height:10;radius:5;color:trapSim.cur.color;anchors.verticalCenter:parent.verticalCenter}
+                            Text { text:trapSim.cur.name; color:trapSim.cur.color; font.bold:true; font.pixelSize:14 }
+                        }
+                        Repeater {
+                            model:[
+                                {label:"WHAT HAPPENS", key:"what"},
+                                {label:"HANDLER CHAIN", key:"handler"},
+                                {label:"EFFECT",        key:"effect"},
+                                {label:"SOURCE FILES",  key:"kernel"}
+                            ]
+                            delegate: Row { width:parent.width; spacing:12
+                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; font.bold:true; font.letterSpacing:0.6; width:90; topPadding:2 }
+                                Text {
+                                    width:parent.width-102
+                                    text: {
+                                        var c = trapSim.cur
+                                        return c[modelData.key]
+                                    }
+                                    color:Qt.rgba(255,255,255,0.75); font.pixelSize:11; wrapMode:Text.WordWrap; lineHeight:1.5; font.family:modelData.key==="kernel"?"Consolas":"Segoe UI"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:65
             color:Qt.rgba(249/255,115/255,22/255,0.08); radius:14

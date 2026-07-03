@@ -75,6 +75,18 @@ ScrollView {
         onTriggered: scrollRoot.forkDot = (scrollRoot.forkDot + 0.008) % 1.0
     }
 
+    // ── Fork simulator state (root level for qmlsc) ─────────────────
+    property var forkTree: []
+    property var forkResetTree: []   // unused placeholder to avoid empty-var quirks
+
+    Component.onCompleted: {
+        scrollRoot.forkTree = [{pid:1,parent:-1,label:"shell (PID 1)",color:"#a78bfa",depth:0}]
+    }
+    property int forkNextPid: 2
+    property int forkSelectedNode: 0
+    property string forkLastAction: "Initial: shell process (PID 1) is running"
+    property var forkNodeColors: ["#a78bfa","#ec4899","#06b6d4","#10b981","#fbbf24","#f97316","#f43f5e","#8b5cf6"]
+
     // ─────────────────────────────────────────────────────────────────
     Column {
         id: mainColumn
@@ -635,6 +647,129 @@ ScrollView {
         // ══════════════════════════════════════════════════════════════
         // 6. TAKEAWAY FOOTER
         // ══════════════════════════════════════════════════════════════
+
+        // ── FORK TREE SIMULATOR ─────────────────────────────────────────
+        Rectangle {
+            id: forkSim
+            width:parent.width; height:forkTreeCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(251,191,36,0.2); border.width:1
+
+            Column {
+                id:forkTreeCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🌳"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"FORK TREE SIMULATOR — build a process tree step by step"; color:"#fbbf24"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"Each fork() creates a child. Parent gets child PID, child gets 0. Try forking multiple times from different processes."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // Node selector
+                Row { spacing:8; width:parent.width
+                    Text { text:"Select parent:"; color:Qt.rgba(255,255,255,0.4); font.pixelSize:11; anchors.verticalCenter:parent.verticalCenter }
+                    Repeater {
+                        model: scrollRoot.forkTree
+                        delegate: Rectangle {
+                            property bool active: scrollRoot.forkSelectedNode === index
+                            height:32; width:nodeLabel.implicitWidth+18; radius:8
+                            color:active?Qt.rgba(251/255,191/255,36/255,0.2):Qt.rgba(255,255,255,0.05)
+                            border.color:active?"#fbbf24":Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
+                            Behavior on color{ColorAnimation{duration:100}}
+                            Text { id:nodeLabel; anchors.centerIn:parent; text:"PID "+modelData.pid; color:active?"#fbbf24":Qt.rgba(255,255,255,0.45); font.pixelSize:11; font.bold:true; font.family:"Consolas" }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:scrollRoot.forkSelectedNode=index }
+                        }
+                    }
+                }
+
+                // Action buttons
+                Row { spacing:8
+                    Rectangle {
+                        height:36; width:forkBtnText.implicitWidth+24; radius:9
+                        color:Qt.rgba(251/255,191/255,36/255,0.2); border.color:"#fbbf24"; border.width:1
+                        Text { id:forkBtnText; anchors.centerIn:parent
+                            text: {
+                                var sel = scrollRoot.forkSelectedNode
+                                var t = scrollRoot.forkTree
+                                return sel < t.length ? "fork() from PID "+t[sel].pid : "fork()"
+                            }
+                            color:"#fbbf24"; font.bold:true; font.pixelSize:12
+                        }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
+                            onClicked: {
+                                if(scrollRoot.forkTree.length >= 8) { scrollRoot.forkLastAction = "Max processes reached (NPROC limit)"; return }
+                                var sel = scrollRoot.forkSelectedNode
+                                var parentNode = scrollRoot.forkTree[sel]
+                                var newPid = scrollRoot.forkNextPid
+                                var nodeDepth = parentNode.depth + 1
+                                var colIdx = (scrollRoot.forkTree.length) % scrollRoot.forkNodeColors.length
+                                var newTree = scrollRoot.forkTree.slice()
+                                newTree.push({pid:newPid, parent:parentNode.pid, label:"child (PID "+newPid+")", color:scrollRoot.forkNodeColors[colIdx], depth:nodeDepth})
+                                scrollRoot.forkTree = newTree
+                                scrollRoot.forkNextPid = newPid + 1
+                                scrollRoot.forkLastAction = "fork() from PID "+parentNode.pid+" → child PID "+newPid+" created. Parent returns "+newPid+", child returns 0."
+                            }
+                        }
+                    }
+                    Rectangle {
+                        height:36; width:72; radius:9
+                        color:Qt.rgba(255,255,255,0.05); border.color:Qt.rgba(255,255,255,0.15); border.width:1
+                        Text { anchors.centerIn:parent; text:"↺ RESET"; color:Qt.rgba(255,255,255,0.4); font.bold:true; font.pixelSize:12 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
+                            onClicked: {
+                                scrollRoot.forkTree = [{pid:1,parent:-1,label:"shell (PID 1)",color:"#a78bfa",depth:0}]
+                                scrollRoot.forkNextPid = 2; scrollRoot.forkSelectedNode = 0
+                                scrollRoot.forkLastAction = "Reset: shell process (PID 1) is running"
+                            }
+                        }
+                    }
+                }
+
+                // Tree visualization
+                Rectangle {
+                    width:parent.width; height:treeViz.implicitHeight+24; radius:10
+                    color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(255,255,255,0.06); border.width:1
+                    Column {
+                        id:treeViz
+                        anchors.top:parent.top; anchors.topMargin:12
+                        anchors.left:parent.left; anchors.leftMargin:14
+                        anchors.right:parent.right; anchors.rightMargin:14
+                        spacing:6
+                        Text { text:"PROCESS TREE"; color:Qt.rgba(255,255,255,0.25); font.pixelSize:9; font.bold:true; font.letterSpacing:1 }
+                        Repeater {
+                            model: scrollRoot.forkTree
+                            delegate: Row {
+                                spacing: 0
+                                Item { width: modelData.depth * 24; height: 1 }
+                                Text { text: modelData.depth > 0 ? "└─ " : ""; color:Qt.rgba(255,255,255,0.2); font.family:"Consolas"; font.pixelSize:12; anchors.verticalCenter:parent.verticalCenter }
+                                Rectangle {
+                                    height:30; width:nodeBox.implicitWidth+20; radius:8
+                                    color:Qt.rgba(0,0,0,0.25); border.color:modelData.color; border.width:1
+                                    Text { id:nodeBox; anchors.centerIn:parent; text:"PID "+modelData.pid+" — "+modelData.label; color:modelData.color; font.pixelSize:11; font.family:"Consolas"; font.bold:true }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Last action log
+                Rectangle {
+                    width:parent.width; height:logText.implicitHeight+16; radius:8
+                    color:Qt.rgba(251/255,191/255,36/255,0.06); border.color:Qt.rgba(251/255,191/255,36/255,0.2); border.width:1
+                    Text { id:logText
+                        width:parent.width-28; anchors.centerIn:parent
+                        text: scrollRoot.forkLastAction
+                        color:Qt.rgba(255,255,255,0.7); font.pixelSize:11; wrapMode:Text.WordWrap; lineHeight:1.5
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width: parent.width; height: 65
             color: Qt.rgba(16, 185, 129, 0.08); radius: 14

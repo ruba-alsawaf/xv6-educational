@@ -834,6 +834,98 @@ ScrollView {
             }
         }
 
+
+        // ── PRIVILEGE TRANSITION SIMULATOR ──────────────────────────────
+        Rectangle {
+            id: privSim
+            width:parent.width; height:privCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(251,191,36,0.2); border.width:1
+
+            property int curMode: 0
+            property var history: []
+            property string desc: "Program is in User mode. Can execute unprivileged instructions only."
+
+            property var modes: [
+                {name:"U-MODE",  full:"User Mode",       color:"#10b981", level:0, desc:"Lowest privilege. Executes application code. Cannot access CSRs or hardware directly."},
+                {name:"S-MODE",  full:"Supervisor Mode",  color:"#a78bfa", level:1, desc:"OS kernel mode (xv6 runs here). Can manage page tables, handle traps, access S-level CSRs."},
+                {name:"M-MODE",  full:"Machine Mode",     color:"#fbbf24", level:2, desc:"Highest privilege. Full hardware access. Usually firmware/OpenSBI. Sets up trap vectors before booting OS."}
+            ]
+
+            property var transitions: [
+                {from:0,to:1,label:"ecall / interrupt",  desc:"U→S: ecall instruction or interrupt. CPU saves sepc/sstatus, jumps to stvec (trampoline). Now in S-mode."},
+                {from:1,to:0,label:"sret",               desc:"S→U: sret returns to user. Restores sepc into PC, switches mode to SPP field of sstatus."},
+                {from:1,to:2,label:"mret / SBI call",    desc:"S→M: only via firmware SBI ecall (OpenSBI). Rarely used in normal xv6 execution."},
+                {from:2,to:1,label:"mret (boot only)",   desc:"M→S: mret at boot hands control to xv6 kernel. Sets mstatus.MPP=S before mret."}
+            ]
+
+            function doTransition(t) {
+                privSim.curMode = t.to
+                privSim.desc = t.desc
+                var h=privSim.history.slice(); h.unshift({label:t.label,from:privSim.modes[t.from].name,to:privSim.modes[t.to].name,color:privSim.modes[t.to].color}); if(h.length>6) h.pop(); privSim.history=h
+            }
+
+            Column {
+                id:privCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"⚔"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"PRIVILEGE MODE SIMULATOR — click a transition to switch modes"; color:"#fbbf24"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"RISC-V has 3 privilege levels: Machine (M) > Supervisor (S) > User (U). xv6 uses S+U only."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                Column { spacing:6; width:parent.width
+                    Repeater { model:[2,1,0]
+                        delegate: Rectangle {
+                            property var m: privSim.modes[modelData]
+                            property bool active: privSim.curMode===modelData
+                            width:parent.width; height:50; radius:10
+                            color:active?Qt.rgba(255,255,255,0.06):Qt.rgba(255,255,255,0.02)
+                            border.color:active?m.color:Qt.rgba(255,255,255,0.07); border.width:active?2:1
+                            Row { anchors.fill:parent; anchors.leftMargin:14; anchors.rightMargin:14; spacing:12
+                                Rectangle { width:60; height:26; radius:8; color:Qt.rgba(255,255,255,0.04); border.color:m.color; border.width:1; anchors.verticalCenter:parent.verticalCenter
+                                    Text { anchors.centerIn:parent; text:m.name+(active?" ◀":""); color:m.color; font.bold:true; font.pixelSize:10 }
+                                }
+                                Column { spacing:3; anchors.verticalCenter:parent.verticalCenter; width:parent.width-90
+                                    Text { text:m.full; color:active?Qt.rgba(255,255,255,0.9):Qt.rgba(255,255,255,0.4); font.bold:true; font.pixelSize:11 }
+                                    Text { text:m.desc; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; width:parent.width; wrapMode:Text.WordWrap }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Text { text:"TRANSITIONS"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.letterSpacing:1 }
+                Grid { columns:2; spacing:8; width:parent.width
+                    Repeater { model:privSim.transitions
+                        delegate: Rectangle {
+                            property bool available: privSim.curMode===modelData.from
+                            width:(parent.width-8)/2; height:44; radius:10
+                            color:available?Qt.rgba(251/255,191/255,36/255,0.12):Qt.rgba(255,255,255,0.02)
+                            border.color:available?"#fbbf24":Qt.rgba(255,255,255,0.07); border.width:available?1.5:1
+                            opacity:available?1.0:0.4
+                            Column { anchors.centerIn:parent; spacing:3
+                                Text { text:privSim.modes[modelData.from].name+" → "+privSim.modes[modelData.to].name; color:available?"#fbbf24":Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:11; anchors.horizontalCenter:parent }
+                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.35); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            }
+                            MouseArea { anchors.fill:parent; cursorShape:available?Qt.PointingHandCursor:Qt.ForbiddenCursor; onClicked: if(available) privSim.doTransition(modelData) }
+                        }
+                    }
+                }
+
+                Rectangle { width:parent.width; height:descTxt2.implicitHeight+20; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(251,191,36,0.15); border.width:1
+                    Text { id:descTxt2; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; anchors.verticalCenter:parent.verticalCenter
+                        text:privSim.desc; color:Qt.rgba(255,255,255,0.65); wrapMode:Text.WordWrap; font.pixelSize:11; lineHeight:1.6 }
+                }
+            }
+        }
+
         // ── TAKEAWAY FOOTER ─────────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 65

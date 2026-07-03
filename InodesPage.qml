@@ -275,6 +275,110 @@ ScrollView {
         }
 
         // ── FOOTER ──────────────────────────────────────────────────────────
+
+        // ── INODE FIELD EXPLORER ────────────────────────────────────────
+        Rectangle {
+            id: inodeSim
+            width:parent.width; height:inodeExpCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(139,92,246,0.2); border.width:1
+
+            property int selField: 0
+            property var fields: [
+                {name:"type",  bytes:"2B",  color:"#ec4899",
+                 desc:"File type: T_FILE(2), T_DIR(1), T_DEVICE(3). 0 means free inode. Set by ialloc() when creating a new file/dir."},
+                {name:"major", bytes:"2B",  color:"#f97316",
+                 desc:"Device major number. Only used when type=T_DEVICE (e.g., console). Indexes into devsw[] table to find read/write handlers."},
+                {name:"minor", bytes:"2B",  color:"#fbbf24",
+                 desc:"Device minor number. Used with major to identify a specific device instance. Ignored for regular files."},
+                {name:"nlink", bytes:"2B",  color:"#a78bfa",
+                 desc:"Hard link count. Number of directory entries pointing to this inode. link() increments it; unlink() decrements. inode is freed only when nlink==0 AND ref==0."},
+                {name:"size",  bytes:"4B",  color:"#10b981",
+                 desc:"File size in bytes. Updated by writei(). Used by readi() to avoid reading past end of file. Directories use this too (each entry is fixed 16 bytes)."},
+                {name:"addrs[0..11]",bytes:"12×4B",color:"#06b6d4",
+                 desc:"Direct block pointers. Each holds a disk block number (uint). addrs[0]–addrs[11] cover the first 12 blocks = 12×BSIZE = 12×1024 = 12 KB of file data."},
+                {name:"addrs[12]",bytes:"4B",color:"#8b5cf6",
+                 desc:"Singly-indirect block pointer. Points to a block containing 256 more block pointers (BSIZE/4). This extends file capacity by 256 KB. Max file = 12+256 = 268 blocks = 268 KB."}
+            ]
+
+            Column {
+                id:inodeExpCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"📁"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Column { spacing:2
+                        Text { text:"INODE STRUCT EXPLORER — click a field to inspect it"; color:"#a78bfa"; font.bold:true; font.pixelSize:13 }
+                        Text { text:"struct dinode (on-disk) = 64 bytes. xv6 inode table in RAM has 'ref' + 'valid' added by the kernel."; color:Qt.rgba(255,255,255,0.32); font.pixelSize:11 }
+                    }
+                }
+
+                // struct layout — visual
+                Row { spacing:4; width:parent.width; height:48
+                    Repeater { model:inodeSim.fields
+                        delegate: Rectangle {
+                            property bool active: inodeSim.selField===index
+                            width: {
+                                var total=parent.width-24
+                                // proportional to byte size
+                                var sizes=[2,2,2,2,4,48,4]; var sum=64
+                                return total*(sizes[index]/sum)
+                            }
+                            height:48; radius:6
+                            color:active?Qt.rgba(139/255,92/255,246/255,0.15):Qt.rgba(255,255,255,0.03)
+                            border.color:active?modelData.color:Qt.rgba(255,255,255,0.07); border.width:active?2:1
+                            Column { anchors.centerIn:parent; spacing:2
+                                Text { text:modelData.name; color:active?modelData.color:Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; anchors.horizontalCenter:parent; width:parent.parent.width-4; wrapMode:Text.WordWrap; horizontalAlignment:Text.AlignHCenter }
+                                Text { text:modelData.bytes; color:Qt.rgba(255,255,255,0.2); font.pixelSize:7; anchors.horizontalCenter:parent }
+                            }
+                            MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:inodeSim.selField=index }
+                        }
+                    }
+                }
+
+                // Byte offset ruler
+                Row { spacing:0; width:parent.width; height:14
+                    Repeater { model:[{off:"0",sz:2},{off:"2",sz:2},{off:"4",sz:2},{off:"6",sz:2},{off:"8",sz:4},{off:"12",sz:48},{off:"60",sz:4}]
+                        delegate: Text {
+                            width:parent.width*(modelData.sz/64); text:modelData.off; color:Qt.rgba(255,255,255,0.15); font.pixelSize:8; font.family:"Consolas"
+                        }
+                    }
+                }
+
+                // Detail panel
+                Rectangle { width:parent.width; height:inodeDetail.implicitHeight+24; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:inodeSim.fields[inodeSim.selField].color; border.width:1
+                    Column { id:inodeDetail; anchors.top:parent.top; anchors.topMargin:14; anchors.left:parent.left; anchors.leftMargin:16; anchors.right:parent.right; anchors.rightMargin:16; spacing:8
+                        Row { spacing:10
+                            Text { text:inodeSim.fields[inodeSim.selField].name; color:inodeSim.fields[inodeSim.selField].color; font.bold:true; font.pixelSize:14; font.family:"Consolas" }
+                            Text { text:inodeSim.fields[inodeSim.selField].bytes; color:Qt.rgba(255,255,255,0.3); font.pixelSize:11; anchors.verticalCenter:parent.verticalCenter }
+                        }
+                        Text { text:inodeSim.fields[inodeSim.selField].desc; color:Qt.rgba(255,255,255,0.7); font.pixelSize:11; wrapMode:Text.WordWrap; width:parent.width; lineHeight:1.7 }
+                    }
+                }
+
+                // Quick facts row
+                Row { spacing:8; width:parent.width
+                    Repeater { model:[
+                        {label:"Max direct",   val:"12 KB",  color:"#06b6d4"},
+                        {label:"Max indirect", val:"256 KB", color:"#8b5cf6"},
+                        {label:"Max file",     val:"268 KB", color:"#10b981"},
+                        {label:"Inode size",   val:"64 B",   color:"#a78bfa"},
+                        {label:"Block size",   val:"1024 B", color:"#fbbf24"}
+                    ]
+                        delegate: Rectangle { height:38; width:(parent.width-32)/5; radius:9; color:Qt.rgba(255,255,255,0.03); border.color:modelData.color; border.width:1
+                            Column { anchors.centerIn:parent; spacing:3
+                                Text { text:modelData.val; color:modelData.color; font.bold:true; font.pixelSize:12; anchors.horizontalCenter:parent }
+                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; anchors.horizontalCenter:parent }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width:parent.width; height:66
             color:Qt.rgba(16/255,185/255,129/255,0.08); radius:14

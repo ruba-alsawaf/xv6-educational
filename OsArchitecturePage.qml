@@ -782,6 +782,120 @@ ScrollView {
         // ══════════════════════════════════════════════════════════════
         // 7. TAKEAWAY FOOTER
         // ══════════════════════════════════════════════════════════════
+
+        // ── MONOLITHIC vs MICROKERNEL COMPARISON ────────────────────────
+        Rectangle {
+            id: archSim
+            width:parent.width; height:archCol.implicitHeight+32
+            color:Qt.rgba(255,255,255,0.015); radius:14
+            border.color:Qt.rgba(139,92,246,0.2); border.width:1
+
+            property bool showMono: true
+            property var monoLayers: [
+            {label:"User Applications", color:"#a78bfa", desc:"Runs in user mode. Uses syscalls via ecall."},
+            {label:"System Call Interface", color:"#8b5cf6", desc:"trap handler → syscall dispatch table."},
+            {label:"VFS / Scheduler / IPC", color:"#7c3aed", desc:"All subsystems live in kernel space."},
+            {label:"Drivers (UART/disk)", color:"#6d28d9", desc:"Device drivers are part of the kernel binary."},
+            {label:"Hardware (RISC-V)", color:"#4c1d95", desc:"Physical CPU, RAM, devices."}
+            ]
+
+            property var microLayers: [
+            {label:"User Applications", color:"#06b6d4", desc:"Normal user programs, system calls via IPC."},
+            {label:"Servers (FS / net / driver)", color:"#0891b2", desc:"Run in user space — isolated from kernel."},
+            {label:"IPC / Message Passing", color:"#0e7490", desc:"Servers talk to each other via messages (slow)."},
+            {label:"Tiny Kernel (scheduling/mem/IPC)", color:"#155e75", desc:"Only minimal primitives in ring 0."},
+            {label:"Hardware (CPU/RAM/devices)", color:"#164e63", desc:"Physical layer."}
+            ]
+
+
+            Column {
+                id:archCol
+                anchors.top:parent.top; anchors.topMargin:18
+                anchors.left:parent.left; anchors.leftMargin:18
+                anchors.right:parent.right; anchors.rightMargin:18
+                spacing:14
+
+                Row { spacing:10
+                    Text { text:"🏗"; font.pixelSize:18; anchors.verticalCenter:parent.verticalCenter }
+                    Text { text:"KERNEL DESIGN COMPARISON"; color:"#a78bfa"; font.bold:true; font.pixelSize:13; anchors.verticalCenter:parent.verticalCenter }
+                }
+
+                // Toggle
+                Row { spacing:0
+                    Rectangle { width:160; height:34; radius:10
+                        color:archSim.showMono?Qt.rgba(139/255,92/255,246/255,0.3):Qt.rgba(255,255,255,0.05)
+                        border.color:archSim.showMono?"#8b5cf6":Qt.rgba(255,255,255,0.1)
+                        border.width:archSim.showMono?1.5:1
+                        Text { anchors.centerIn:parent; text:"Monolithic (xv6)"; color:archSim.showMono?"#a78bfa":Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:archSim.showMono=true }
+                    }
+                    Rectangle { width:160; height:34; radius:10
+                        color:!archSim.showMono?Qt.rgba(6/255,182/255,212/255,0.2):Qt.rgba(255,255,255,0.05)
+                        border.color:!archSim.showMono?"#06b6d4":Qt.rgba(255,255,255,0.1); border.width:!archSim.showMono?1.5:1
+                        Text { anchors.centerIn:parent; text:"Microkernel (Mach/L4)"; color:!archSim.showMono?"#06b6d4":Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:11 }
+                        MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:archSim.showMono=false }
+                    }
+                }
+
+                // Architecture diagram (text-based)
+                Row { spacing:16; width:parent.width
+
+                    // Monolithic column
+                    Column { spacing:6; width:(parent.width-16)/2; visible:archSim.showMono
+                        Repeater { model:archSim.monoLayers
+                            delegate: Rectangle { width:parent.width; height:46; radius:8; color:Qt.rgba(139/255,92/255,246/255,0.15); border.color:modelData.color; border.width:1
+                                Column { anchors.left:parent.left; anchors.leftMargin:12; anchors.verticalCenter:parent.verticalCenter; spacing:2
+                                    Text { text:modelData.label; color:modelData.color; font.bold:true; font.pixelSize:11 }
+                                    Text { text:modelData.desc; color:Qt.rgba(255,255,255,0.4); font.pixelSize:9; width:parent.parent.width-24; wrapMode:Text.WordWrap }
+                                }
+                            }
+                        }
+                        Rectangle { width:parent.width; height:28; radius:8; color:Qt.rgba(16/255,185/255,129/255,0.1); border.color:"#10b981"; border.width:1
+                            Text { anchors.centerIn:parent; text:"✓ Fast IPC (no boundary crossing) but a bug anywhere = kernel panic"; color:"#10b981"; font.pixelSize:9; width:parent.width-16; wrapMode:Text.WordWrap; horizontalAlignment:Text.AlignHCenter }
+                        }
+                    }
+
+                    // Microkernel column
+                    Column { spacing:6; width:(parent.width-16)/2; visible:!archSim.showMono
+                        Repeater { model:archSim.microLayers
+                            delegate: Rectangle { width:parent.width; height:46; radius:8; color:Qt.rgba(6/255,182/255,212/255,0.12); border.color:modelData.color; border.width:1
+                                Column { anchors.left:parent.left; anchors.leftMargin:12; anchors.verticalCenter:parent.verticalCenter; spacing:2
+                                    Text { text:modelData.label; color:modelData.color; font.bold:true; font.pixelSize:11 }
+                                    Text { text:modelData.desc; color:Qt.rgba(255,255,255,0.4); font.pixelSize:9; width:parent.parent.width-24; wrapMode:Text.WordWrap }
+                                }
+                            }
+                        }
+                        Rectangle { width:parent.width; height:28; radius:8; color:Qt.rgba(244/255,63/255,94/255,0.1); border.color:"#f43f5e"; border.width:1
+                            Text { anchors.centerIn:parent; text:"✓ Fault isolation, but IPC cost makes FS/driver slow (L4 solved this via small kernel)"; color:"#f43f5e"; font.pixelSize:9; width:parent.width-16; wrapMode:Text.WordWrap; horizontalAlignment:Text.AlignHCenter }
+                        }
+                    }
+
+                    // Comparison table (side by side properties)
+                    Column { spacing:6; width:(parent.width-16)/2
+                        Repeater {
+                            model:[
+                                {attr:"IPC speed",    mono:"Fast (function call)", micro:"Slow (message pass)"},
+                                {attr:"Code size",    mono:"Large (Linux: ~28M loc)", micro:"Tiny kernel"},
+                                {attr:"Fault domain", mono:"One crash = panic", micro:"Server crash = isolated"},
+                                {attr:"Examples",     mono:"xv6, Linux, Windows NT", micro:"Mach, L4, QNX, MINIX"},
+                                {attr:"Syscall",      mono:"ecall → trap → dispatch", micro:"ecall → IPC → server"}
+                            ]
+                            delegate: Rectangle { width:parent.width; height:42; radius:7; color:Qt.rgba(255,255,255,0.025); border.color:Qt.rgba(255,255,255,0.07); border.width:1
+                                Row { anchors.fill:parent; anchors.margins:8; spacing:6
+                                    Text { text:modelData.attr; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; font.bold:true; width:80; wrapMode:Text.WordWrap; anchors.verticalCenter:parent.verticalCenter }
+                                    Rectangle { width:1; height:26; color:Qt.rgba(255,255,255,0.08) }
+                                    Column { spacing:2; anchors.verticalCenter:parent.verticalCenter; width:parent.width-95
+                                        Text { text:"M: "+modelData.mono; color:"#a78bfa"; font.pixelSize:9; width:parent.width; wrapMode:Text.WordWrap }
+                                        Text { text:"μ: "+modelData.micro; color:"#06b6d4"; font.pixelSize:9; width:parent.width; wrapMode:Text.WordWrap }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Rectangle {
             width: parent.width; height: 65
             color: Qt.rgba(251, 191, 36, 0.08); radius: 14
@@ -802,5 +916,5 @@ ScrollView {
             }
         }
 
-    } // end mainColumn
+    } // end mainC
 }

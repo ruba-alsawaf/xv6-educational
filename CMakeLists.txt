@@ -30,6 +30,7 @@ qt_add_qml_module(appxv6ui
         LoginPage.qml
         ChatbotPanel.qml
         CpuSchedulingPage.qml
+        RoundRobinPage.qml
         MemoryManagementPage.qml
         KernelGuardPage.qml
         ProcessForkPage.qml
