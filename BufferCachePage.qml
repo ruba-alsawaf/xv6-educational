@@ -28,6 +28,40 @@ ScrollView {
     Timer {
         interval: 22; running: true; repeat: true
         onTriggered: scrollRoot.cacheDot = (scrollRoot.cacheDot + 0.004) % 1.0
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#22d3ee"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  BUFFER CACHE"
+                color: "#22d3ee"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("BufferCacheQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  LOGGING"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("LoggingPage.qml")
+            }
+        }
     }
 
     // ── Operation descriptions ────────────────────────────────────────
@@ -71,8 +105,8 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(251,191,36,0.15); border.color: Qt.rgba(251,191,36,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"13"; color:"#fbbf24"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(251,191,36,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"13"; color:"#fbbf24"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(251,191,36,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -118,13 +152,13 @@ ScrollView {
                             Behavior on color{ColorAnimation{duration:130}}
 
                             Column { anchors.centerIn:parent; spacing:4
-                                Text{text:"buf"+index;color:Qt.rgba(255,255,255,0.3);font.pixelSize:8;font.family:"Consolas";anchors.horizontalCenter:parent}
-                                Text{text:scrollRoot.bufBlockno[index]>=0?"blk\n"+scrollRoot.bufBlockno[index]:"FREE";color:scrollRoot.bufBlockno[index]>=0?"#fbbf24":"#4b5563";font.family:"Consolas";font.bold:true;font.pixelSize:scrollRoot.bufBlockno[index]>=0?11:9;horizontalAlignment:Text.AlignHCenter;anchors.horizontalCenter:parent}
+                                Text{text:"buf"+index;color:Qt.rgba(255,255,255,0.3);font.pixelSize:8;font.family:"Consolas";anchors.horizontalCenter:parent.horizontalCenter}
+                                Text{text:scrollRoot.bufBlockno[index]>=0?"blk\n"+scrollRoot.bufBlockno[index]:"FREE";color:scrollRoot.bufBlockno[index]>=0?"#fbbf24":"#4b5563";font.family:"Consolas";font.bold:true;font.pixelSize:scrollRoot.bufBlockno[index]>=0?11:9;horizontalAlignment:Text.AlignHCenter;anchors.horizontalCenter:parent.horizontalCenter}
                                 Row{spacing:4;anchors.horizontalCenter:parent
                                     Rectangle{width:14;height:14;radius:3;color:scrollRoot.bufValid[index]?Qt.rgba(16,185,129,0.3):Qt.rgba(255,255,255,0.05);border.color:scrollRoot.bufValid[index]?"#10b981":Qt.rgba(255,255,255,0.15);border.width:1;Text{anchors.centerIn:parent;text:"V";color:scrollRoot.bufValid[index]?"#10b981":Qt.rgba(255,255,255,0.2);font.pixelSize:8;font.bold:true}}
                                     Rectangle{width:14;height:14;radius:3;color:scrollRoot.bufDirty[index]?Qt.rgba(249,115,22,0.3):Qt.rgba(255,255,255,0.05);border.color:scrollRoot.bufDirty[index]?"#f97316":Qt.rgba(255,255,255,0.15);border.width:1;Text{anchors.centerIn:parent;text:"D";color:scrollRoot.bufDirty[index]?"#f97316":Qt.rgba(255,255,255,0.2);font.pixelSize:8;font.bold:true}}
                                 }
-                                Text{text:"ref="+scrollRoot.bufRefcnt[index];color:scrollRoot.bufRefcnt[index]>0?"#a78bfa":Qt.rgba(255,255,255,0.3);font.pixelSize:9;font.family:"Consolas";anchors.horizontalCenter:parent}
+                                Text{text:"ref="+scrollRoot.bufRefcnt[index];color:scrollRoot.bufRefcnt[index]>0?"#a78bfa":Qt.rgba(255,255,255,0.3);font.pixelSize:9;font.family:"Consolas";anchors.horizontalCenter:parent.horizontalCenter}
                             }
                             MouseArea{anchors.fill:parent;hoverEnabled:true;cursorShape:Qt.PointingHandCursor;onClicked:scrollRoot.selectedBuf=(scrollRoot.selectedBuf===index?-1:index);onEntered:scrollRoot.hoveredBuf=index;onExited:scrollRoot.hoveredBuf=-1}
                         }
@@ -295,9 +329,9 @@ ScrollView {
                             color:entry?(entry.dirty?Qt.rgba(249/255,115/255,22/255,0.2):Qt.rgba(16/255,185/255,129/255,0.15)):Qt.rgba(255,255,255,0.03)
                             border.color:entry?(entry.dirty?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.1); border.width:1
                             Column { anchors.centerIn:parent; spacing:4
-                                Text { text:entry?"SLOT "+index:"EMPTY"; color:entry?"#10b981":Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
+                                Text { text:entry?"SLOT "+index:"EMPTY"; color:entry?"#10b981":Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
                                 Text { text:entry?("dev="+entry.dev+"
-blk="+entry.block):"—"; color:entry?Qt.rgba(255,255,255,0.75):Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent; horizontalAlignment:Text.AlignHCenter }
+blk="+entry.block):"—"; color:entry?Qt.rgba(255,255,255,0.75):Qt.rgba(255,255,255,0.2); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter; horizontalAlignment:Text.AlignHCenter }
                                 Rectangle { width:38; height:14; radius:4; color:entry?(entry.dirty?Qt.rgba(249/255,115/255,22/255,0.3):Qt.rgba(16/255,185/255,129/255,0.3)):Qt.rgba(255,255,255,0.05); anchors.horizontalCenter:parent
                                     Text { anchors.centerIn:parent; text:entry?(entry.dirty?"dirty":"clean"):"free"; color:entry?(entry.dirty?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.2); font.pixelSize:8 }
                                 }
@@ -384,5 +418,22 @@ blk="+entry.block):"—"; color:entry?Qt.rgba(255,255,255,0.75):Qt.rgba(255,255,
                 Text{Layout.fillWidth:true;Layout.alignment:Qt.AlignVCenter;text:"CORE SUMMARY: Buffer cache = NBUF=30 bufs in doubly-linked LRU list. bget() — hit: incr refcnt. miss: recycle tail (LRU, refcnt=0). bread() = bget + disk read if !valid. bwrite() = disk write (no log). brelse() = decr refcnt + move to head (MRU). bpin/bunpin protect buffers from eviction during log transactions. bcache.lock (spinlock) protects list; buf->lock (sleeplock) protects content.";color:"#ffffff";wrapMode:Text.WordWrap;font.family:"Segoe UI";font.bold:true;font.pixelSize:12;font.letterSpacing:0.2}
             }
         }
+
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  LOGGING"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("LoggingPage.qml")
+            }
+        }
+
     }
 }

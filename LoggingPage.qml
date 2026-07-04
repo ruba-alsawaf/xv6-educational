@@ -82,8 +82,8 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(249,115,22,0.15); border.color: Qt.rgba(249,115,22,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"14"; color:"#f97316"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(249,115,22,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"14"; color:"#f97316"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(249,115,22,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -225,8 +225,8 @@ ScrollView {
                             color:modelData.isCommit?Qt.rgba(249/255,115/255,22/255,0.2):isDone?Qt.rgba(16/255,185/255,129/255,0.15):Qt.rgba(255,255,255,0.04)
                             border.color:modelData.isCommit?"#f97316":isDone?"#10b981":Qt.rgba(255,255,255,0.1); border.width:modelData.isCommit?2:1
                             Column { anchors.centerIn:parent; spacing:3
-                                Text { text:modelData.label; color:modelData.isCommit?"#f97316":isDone?"#10b981":Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent; horizontalAlignment:Text.AlignHCenter; wrapMode:Text.WordWrap; width:parent.parent.width-8 }
-                                Text { text:isDone?"✓":"○"; color:isDone?(modelData.isCommit?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.2); font.pixelSize:14; font.bold:true; anchors.horizontalCenter:parent }
+                                Text { text:modelData.label; color:modelData.isCommit?"#f97316":isDone?"#10b981":Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter; horizontalAlignment:Text.AlignHCenter; wrapMode:Text.WordWrap; width:parent.parent.width-8 }
+                                Text { text:isDone?"✓":"○"; color:isDone?(modelData.isCommit?"#f97316":"#10b981"):Qt.rgba(255,255,255,0.2); font.pixelSize:14; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                         }
                     }
@@ -311,6 +311,40 @@ ScrollView {
                 anchors.fill:parent; anchors.margins:15; spacing:15
                 Text{text:"🌟";font.pixelSize:22;Layout.alignment:Qt.AlignVCenter}
                 Text{Layout.fillWidth:true;Layout.alignment:Qt.AlignVCenter;text:"CORE SUMMARY: Write-ahead logging: begin_op→log_write→end_op→commit(write_log+write_head+install_trans+clear). write_head() is THE commit point — single atomic sector write. Crash before write_head: transaction rolled back. Crash after: replayed on recovery. log_write() only records block numbers (absorption deduplicates). install_trans() copies log→real disk. Recovery: read header, if n>0 replay, then clear.";color:"#ffffff";wrapMode:Text.WordWrap;font.family:"Segoe UI";font.bold:true;font.pixelSize:12;font.letterSpacing:0.2}
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#fb923c"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  LOGGING"
+                color: "#fb923c"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("LoggingQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  INODES & PATHS"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("InodesPage.qml")
             }
         }
     }

@@ -145,14 +145,14 @@ ScrollView {
                             font.bold: true
                             font.pixelSize: 20
                             font.family: "Consolas"
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: "LESSON"
                             color: Qt.rgba(96, 165, 250, 0.5)
                             font.pixelSize: 7
                             font.letterSpacing: 1
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                     }
                 }
@@ -449,7 +449,7 @@ ScrollView {
                         Text {
                             text: scrollRoot.stepIcons[index]
                             font.pixelSize: 18
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: scrollRoot.stepTitles[index]
@@ -457,13 +457,13 @@ ScrollView {
                             font.pixelSize: 9
                             font.bold: true
                             font.letterSpacing: 0.4
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: scrollRoot.stepSubtitles[index]
                             color: Qt.rgba(255, 255, 255, 0.28)
                             font.pixelSize: 8
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                             width: parent.parent.width - 8
                             elide: Text.ElideRight
                             horizontalAlignment: Text.AlignHCenter
@@ -703,16 +703,16 @@ ScrollView {
                                 anchors.centerIn: parent; spacing: 4
                                 Text {
                                     text: scrollRoot.instrIcons[index]
-                                    font.pixelSize: 16; anchors.horizontalCenter: parent
+                                    font.pixelSize: 16; anchors.horizontalCenter: parent.horizontalCenter
                                 }
                                 Text {
                                     text: scrollRoot.instrLabels[index]
                                     color: isLast ? (allowed ? "#10b981" : "#f43f5e") : Qt.rgba(255,255,255,0.7)
                                     font.family: "Consolas"; font.pixelSize: 10; font.bold: true
-                                    anchors.horizontalCenter: parent
+                                    anchors.horizontalCenter: parent.horizontalCenter
                                 }
                                 Row {
-                                    anchors.horizontalCenter: parent; spacing: 3
+                                    anchors.horizontalCenter: parent.horizontalCenter; spacing: 3
                                     Rectangle {
                                         width: 5; height: 5; radius: 2.5
                                         color: (scrollRoot.instrModes[index] & 1) !== 0 ? "#a78bfa" : Qt.rgba(255,255,255,0.12)
@@ -911,8 +911,8 @@ ScrollView {
                             border.color:available?"#fbbf24":Qt.rgba(255,255,255,0.07); border.width:available?1.5:1
                             opacity:available?1.0:0.4
                             Column { anchors.centerIn:parent; spacing:3
-                                Text { text:privSim.modes[modelData.from].name+" → "+privSim.modes[modelData.to].name; color:available?"#fbbf24":Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:11; anchors.horizontalCenter:parent }
-                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.35); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                                Text { text:privSim.modes[modelData.from].name+" → "+privSim.modes[modelData.to].name; color:available?"#fbbf24":Qt.rgba(255,255,255,0.3); font.bold:true; font.pixelSize:11; anchors.horizontalCenter:parent.horizontalCenter }
+                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.35); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                             MouseArea { anchors.fill:parent; cursorShape:available?Qt.PointingHandCursor:Qt.ForbiddenCursor; onClicked: if(available) privSim.doTransition(modelData) }
                         }
@@ -944,5 +944,40 @@ ScrollView {
             }
         }
 
-    }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#fbbf24"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  PRIVILEGE MODES"
+                color: "#fbbf24"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("CpuPrivilegeQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  TRAPS OVERVIEW"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("TrapsOverviewPage.qml")
+            }}
+
+
+}
 }

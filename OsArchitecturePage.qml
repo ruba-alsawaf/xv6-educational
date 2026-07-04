@@ -131,14 +131,14 @@ ScrollView {
                             font.bold: true
                             font.pixelSize: 20
                             font.family: "Consolas"
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: "LESSON"
                             color: Qt.rgba(251, 191, 36, 0.5)
                             font.pixelSize: 7
                             font.letterSpacing: 1
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                     }
                 }
@@ -332,7 +332,7 @@ ScrollView {
                         Text {
                             text: scrollRoot.stepIcons[index]
                             font.pixelSize: 18
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: scrollRoot.stepTitles[index]
@@ -340,13 +340,13 @@ ScrollView {
                             font.pixelSize: 9
                             font.bold: true
                             font.letterSpacing: 0.4
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                         }
                         Text {
                             text: scrollRoot.stepSubtitles[index]
                             color: Qt.rgba(255, 255, 255, 0.28)
                             font.pixelSize: 8
-                            anchors.horizontalCenter: parent
+                            anchors.horizontalCenter: parent.horizontalCenter
                             width: parent.parent.width - 8
                             elide: Text.ElideRight
                             horizontalAlignment: Text.AlignHCenter
@@ -916,5 +916,39 @@ ScrollView {
             }
         }
 
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#06b6d4"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  OS ARCHITECTURE"
+                color: "#06b6d4"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("OsArchitectureQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  PRIVILEGE MODES"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("CpuPrivilegeModesPage.qml")
+            }
+        }
     } // end mainC
 }

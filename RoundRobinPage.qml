@@ -91,8 +91,8 @@ ScrollView {
                     width:52; height:52; radius:12; anchors.verticalCenter:parent.verticalCenter
                     color:Qt.rgba(139,92,246,0.15); border.color:Qt.rgba(139,92,246,0.4); border.width:1
                     Column { anchors.centerIn:parent; spacing:1
-                        Text { text:"RR"; color:"#8b5cf6"; font.bold:true; font.pixelSize:16; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"SCHED"; color:Qt.rgba(139,92,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"RR"; color:"#8b5cf6"; font.bold:true; font.pixelSize:16; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"SCHED"; color:Qt.rgba(139,92,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter:parent.verticalCenter; spacing:5; width:parent.width-80
@@ -275,14 +275,14 @@ ScrollView {
 
                     Rectangle { Layout.preferredWidth:108; Layout.fillHeight:true; radius:10; color:Qt.rgba(0,0,0,0.25); border.color:Qt.rgba(139,92,246,0.35); border.width:1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"TIME"; color:Qt.rgba(139,92,246,0.55); font.pixelSize:9; font.bold:true; font.letterSpacing:1; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.timeElapsed; color:"#a78bfa"; font.bold:true; font.pixelSize:30; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"TIME"; color:Qt.rgba(139,92,246,0.55); font.pixelSize:9; font.bold:true; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.timeElapsed; color:"#a78bfa"; font.bold:true; font.pixelSize:30; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle { Layout.preferredWidth:120; Layout.fillHeight:true; radius:10; color:Qt.rgba(0,0,0,0.22); border.color:Qt.rgba(139,92,246,0.2); border.width:1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"QUANTUM LEFT"; color:Qt.rgba(139,92,246,0.45); font.pixelSize:8; font.bold:true; font.letterSpacing:0.5; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.readyQueue.length>0?(scrollRoot.quantum-scrollRoot.currentQuantumUsed):"—"; color:"#8b5cf6"; font.bold:true; font.pixelSize:30; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"QUANTUM LEFT"; color:Qt.rgba(139,92,246,0.45); font.pixelSize:8; font.bold:true; font.letterSpacing:0.5; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.readyQueue.length>0?(scrollRoot.quantum-scrollRoot.currentQuantumUsed):"—"; color:"#8b5cf6"; font.bold:true; font.pixelSize:30; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle { Layout.fillWidth:true; Layout.fillHeight:true; radius:10; color:Qt.rgba(0,0,0,0.18); border.color:Qt.rgba(255,255,255,0.06); border.width:1
@@ -296,8 +296,8 @@ ScrollView {
                                         color:Qt.rgba(scrollRoot.procR[modelData]/255,scrollRoot.procG[modelData]/255,scrollRoot.procB[modelData]/255,index===0?0.28:0.1)
                                         border.color:scrollRoot.procColors[modelData]; border.width:index===0?2:1
                                         Column { anchors.centerIn:parent; spacing:2
-                                            Text { text:scrollRoot.procNames[modelData]; color:"#ffffff"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent }
-                                            Text { text:index===0?"RUN":"wait"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent }
+                                            Text { text:scrollRoot.procNames[modelData]; color:"#ffffff"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent.horizontalCenter }
+                                            Text { text:index===0?"RUN":"wait"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
                                         }
                                     }
                                 }
@@ -435,6 +435,40 @@ ScrollView {
                     text:"CORE SUMMARY: Round-Robin = equal time slices. scheduler() scans proc[] linearly → RUNNABLE → swtch(). Timer interrupt → yield() → p->state=RUNNABLE → back of queue. Context saved in proc.context (s0–s11, ra, sp). Turnaround = completion − arrival. Wait = turnaround − burst. Smaller quantum = more fairness but more context-switch overhead."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:11
                 }
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#14b8a6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  ROUND-ROBIN"
+                color: "#14b8a6"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("RoundRobinQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  LOCKS"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("LocksPage.qml")
             }
         }
     }

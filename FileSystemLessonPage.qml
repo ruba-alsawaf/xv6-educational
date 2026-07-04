@@ -14,7 +14,7 @@ ScrollView {
     Column {
         id: mainColumn
         width: parent.width - 40
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter.horizontalCenter
         anchors.top: parent.top
         anchors.topMargin: 20
         spacing: 25
@@ -175,8 +175,8 @@ ScrollView {
                             width: 80; height: 60; radius: 8; x: 10; y: 45
                             color: Qt.rgba(255, 255, 255, 0.04); border.color: Qt.rgba(255, 255, 255, 0.2)
                             Column { anchors.centerIn: parent; spacing: 4
-                                Text { text: "⚙️"; font.pixelSize: 14; anchors.horizontalCenter: parent }
-                                Text { text: "Process"; color: "white"; font { pixelSize: 11; bold: true } anchors.horizontalCenter: parent } }
+                                Text { text: "⚙️"; font.pixelSize: 14; anchors.horizontalCenter: parent.horizontalCenter.horizontalCenter }
+                                Text { text: "Process"; color: "white"; font { pixelSize: 11; bold: true } anchors.horizontalCenter: parent.horizontalCenter.horizontalCenter } }
                         }
 
                         Rectangle {

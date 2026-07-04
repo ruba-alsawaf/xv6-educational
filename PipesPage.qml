@@ -112,8 +112,8 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(236,72,153,0.15); border.color: Qt.rgba(236,72,153,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"11"; color:"#ec4899"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(236,72,153,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"11"; color:"#ec4899"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(236,72,153,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -174,9 +174,9 @@ ScrollView {
                                     border.width: (isWriteSlot||isReadSlot) ? 2 : 1
 
                                     Column { anchors.centerIn:parent; spacing:3
-                                        Text { text:index.toString(); color:Qt.rgba(255,255,255,0.25); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                                        Text { text:hasData?"█":"·"; color:hasData?"#ec4899":Qt.rgba(255,255,255,0.15); font.pixelSize:hasData?18:14; anchors.horizontalCenter:parent }
-                                        Text { text:isWriteSlot?"W":isReadSlot?"R":""; color:isWriteSlot?"#10b981":"#f43f5e"; font.bold:true; font.pixelSize:8; anchors.horizontalCenter:parent }
+                                        Text { text:index.toString(); color:Qt.rgba(255,255,255,0.25); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                                        Text { text:hasData?"█":"·"; color:hasData?"#ec4899":Qt.rgba(255,255,255,0.15); font.pixelSize:hasData?18:14; anchors.horizontalCenter:parent.horizontalCenter }
+                                        Text { text:isWriteSlot?"W":isReadSlot?"R":""; color:isWriteSlot?"#10b981":"#f43f5e"; font.bold:true; font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
                                     }
                                 }
                             }
@@ -444,6 +444,40 @@ ScrollView {
                                         text:"CORE SUMMARY: A pipe = 512-byte ring buffer (struct pipe). nwrite-nread = bytes pending. Full → writer sleeps. Empty → reader sleeps. Both use sleep()/wakeup() for synchronization. struct file wraps pipe/inode/device with ref count and offset. Per-process ofile[NOFILE=16] array maps integer fd → struct file*. fork() shares open files (filedup increments ref). Lowest available index = new fd number."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:12; font.letterSpacing:0.2
                 }
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#6366f1"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  PIPES & FILE DESC"
+                color: "#6366f1"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("PipesQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  FS OVERVIEW"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("FsOverviewPage.qml")
             }
         }
     }

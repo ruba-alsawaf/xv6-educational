@@ -82,8 +82,8 @@ ScrollView {
                     color: Qt.rgba(6,182,212,0.15); border.color: Qt.rgba(6,182,212,0.4); border.width: 1
                     Column {
                         anchors.centerIn: parent; spacing: 1
-                        Text { text:"10"; color:"#06b6d4"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(6,182,212,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"10"; color:"#06b6d4"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(6,182,212,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column {
@@ -507,6 +507,40 @@ ScrollView {
                     text:"CORE SUMMARY: Spinlock = busy-wait + disable interrupts (push_off/pop_off), use for short sections + ISRs. Sleeplock = sleep while waiting + inner spinlock, use for long blocking ops (disk I/O). Both use __sync_synchronize() memory barriers. Lock ordering prevents deadlock — always acquire in the same global order. Never hold a spinlock while calling sleep()."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:12; font.letterSpacing:0.2
                 }
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#f59e0b"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  LOCKS"
+                color: "#f59e0b"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("LocksQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  PIPES & FILE DESC"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("PipesPage.qml")
             }
         }
     }

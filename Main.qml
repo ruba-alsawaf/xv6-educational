@@ -133,15 +133,33 @@ Window {
                             ListElement { name: "BUFFER CACHE"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "BufferCachePage.qml" }
                             ListElement { name: "LOGGING"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LoggingPage.qml" }
                             ListElement { name: "INODES & PATHS"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "InodesPage.qml" }
+                            ListElement { name: "── QUIZZES ──"; iconPath: ""; pageSource: ""; isQuiz: "sep" }
+                            ListElement { name: "SYSTEM CALLS QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "KernelGuardQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "PROCESSES QUIZ"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "ProcessForkQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "OS ARCH QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "OsArchitectureQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "PRIVILEGE QUIZ"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "CpuPrivilegeQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "TRAPS QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "TrapsOverviewQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "MEM TRANS QUIZ"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "MemoryTranslationQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "KERN SPACE QUIZ"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "KernelSpaceQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "USER SPACE QUIZ"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "UserSpaceQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "CONTEXT SW QUIZ"; iconPath: "/icons/MemoryManagmentLogo.svg"; pageSource: "ContextSwitchQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "ROUND-ROBIN QUIZ"; iconPath: "/icons/CPUSchedulingLogo.svg"; pageSource: "RoundRobinQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "LOCKS QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LocksQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "PIPES QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "PipesQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "FS OVERVIEW QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "FsOverviewQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "BUFFER CACHE QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "BufferCacheQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "LOGGING QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "LoggingQuizPage.qml"; isQuiz: "yes" }
+                            ListElement { name: "INODES QUIZ"; iconPath: "/icons/FileSystemLogo.svg"; pageSource: "InodesQuizPage.qml"; isQuiz: "yes" }
                         }
 
                         delegate: Rectangle {
                             id: delegateItem
                             width: ListView.view.width
-                            height: 45
-                            radius: 10
-                            property bool isSelected: navList.currentIndex === index
-                            color: isSelected ? Qt.rgba(75, 42, 192, 0.15) : (mouseArea.containsMouse ? Qt.rgba(255, 255, 255, 0.08) : "transparent")
+                            property bool isSep: model.isQuiz === "sep"
+                            height: isSep ? 36 : 45
+                            radius: isSep ? 0 : 10
+                            property bool isSelected: !isSep && navList.currentIndex === index
+                            color: isSep ? "transparent" : (isSelected ? Qt.rgba(75, 42, 192, 0.15) : (mouseArea.containsMouse ? Qt.rgba(255, 255, 255, 0.08) : "transparent"))
 
                             layer.enabled: isSelected
                             layer.effect: Glow {
@@ -150,7 +168,18 @@ Window {
 
                             Behavior on color { ColorAnimation { duration: 200; easing.type: Easing.OutQuad } }
 
+                            // Section separator label
+                            Text {
+                                visible: delegateItem.isSep
+                                anchors.centerIn: parent
+                                text: "QUIZZES"
+                                color: Qt.rgba(139, 92, 246, 0.7)
+                                font.pixelSize: 10; font.bold: true; font.family: "Segoe UI"
+                                font.letterSpacing: 2.5
+                            }
+
                             Row {
+                                visible: !delegateItem.isSep
                                 anchors.left: parent.left; anchors.leftMargin: 15; anchors.verticalCenter: parent.verticalCenter
                                 spacing: 12
 
@@ -173,15 +202,16 @@ Window {
                                 }
                             }
 
-                            scale: mouseArea.containsMouse ? 1.02 : 1.0
+                            scale: !isSep && mouseArea.containsMouse ? 1.02 : 1.0
                             Behavior on scale { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
 
                             MouseArea {
                                 id: mouseArea
                                 anchors.fill: parent
                                 hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
+                                cursorShape: delegateItem.isSep ? Qt.ArrowCursor : Qt.PointingHandCursor
                                 onClicked: {
+                                    if (delegateItem.isSep) return;
                                     navList.currentIndex = index;
                                     pageLoader.source = model.pageSource;
                                 }

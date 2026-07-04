@@ -95,8 +95,8 @@ ScrollView {
                     color: Qt.rgba(59,130,246,0.15); border.color: Qt.rgba(59,130,246,0.4); border.width: 1
                     Column {
                         anchors.centerIn: parent; spacing: 1
-                        Text { text:"06"; color:"#3b82f6"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(59,130,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"06"; color:"#3b82f6"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(59,130,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column {
@@ -234,8 +234,8 @@ ScrollView {
                             Behavior on border.color { ColorAnimation { duration:130 } }
                             Column {
                                 anchors.centerIn: parent; spacing: 3
-                                Text { text:scrollRoot.vaHex[index]; color:active?"#3b82f6":Qt.rgba(255,255,255,0.65); font.family:"Consolas"; font.bold:true; font.pixelSize:11; anchors.horizontalCenter:parent }
-                                Text { text:scrollRoot.vaNames[index]; color:Qt.rgba(255,255,255,0.32); font.pixelSize:9; anchors.horizontalCenter:parent }
+                                Text { text:scrollRoot.vaHex[index]; color:active?"#3b82f6":Qt.rgba(255,255,255,0.65); font.family:"Consolas"; font.bold:true; font.pixelSize:11; anchors.horizontalCenter:parent.horizontalCenter }
+                                Text { text:scrollRoot.vaNames[index]; color:Qt.rgba(255,255,255,0.32); font.pixelSize:9; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                             MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:scrollRoot.selectedVA=index }
                         }
@@ -251,9 +251,9 @@ ScrollView {
                         color: Qt.rgba(167/255, 139/255, 250/255, 0.16)
                         border.color: "#a78bfa"; border.width: 1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"VPN[2]"; color:"#a78bfa"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent }
-                            Text { text:"bits 38:30 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.vaVPN2[scrollRoot.selectedVA]; color:"#a78bfa"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[2]"; color:"#a78bfa"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"bits 38:30 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.vaVPN2[scrollRoot.selectedVA]; color:"#a78bfa"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle {
@@ -261,9 +261,9 @@ ScrollView {
                         color: Qt.rgba(59/255,130/255,246/255,0.16)
                         border.color: "#3b82f6"; border.width: 1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"VPN[1]"; color:"#3b82f6"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent }
-                            Text { text:"bits 29:21 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.vaVPN1[scrollRoot.selectedVA]; color:"#3b82f6"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[1]"; color:"#3b82f6"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"bits 29:21 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.vaVPN1[scrollRoot.selectedVA]; color:"#3b82f6"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle {
@@ -271,9 +271,9 @@ ScrollView {
                         color: Qt.rgba(6/255,182/255,212/255,0.16)
                         border.color: "#06b6d4"; border.width: 1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"VPN[0]"; color:"#06b6d4"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent }
-                            Text { text:"bits 20:12 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.vaVPN0[scrollRoot.selectedVA]; color:"#06b6d4"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[0]"; color:"#06b6d4"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"bits 20:12 · 9b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.vaVPN0[scrollRoot.selectedVA]; color:"#06b6d4"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle {
@@ -281,9 +281,9 @@ ScrollView {
                         color: Qt.rgba(16/255,185/255,129/255,0.16)
                         border.color: "#10b981"; border.width: 1
                         Column { anchors.centerIn:parent; spacing:3
-                            Text { text:"OFFSET"; color:"#10b981"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent }
-                            Text { text:"bits 11:0 · 12b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent }
-                            Text { text:scrollRoot.vaOff[scrollRoot.selectedVA]; color:"#10b981"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent }
+                            Text { text:"OFFSET"; color:"#10b981"; font.bold:true; font.pixelSize:10; font.letterSpacing:0.3; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"bits 11:0 · 12b"; color:Qt.rgba(255,255,255,0.35); font.pixelSize:8; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:scrollRoot.vaOff[scrollRoot.selectedVA]; color:"#10b981"; font.family:"Consolas"; font.bold:true; font.pixelSize:13; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                 }
@@ -489,7 +489,7 @@ ScrollView {
                                     border.color:flagOn?flagColors[index]:Qt.rgba(255,255,255,0.15)
                                     Text{anchors.centerIn:parent;text:modelData;color:flagOn?flagColors[index]:Qt.rgba(255,255,255,0.4);font.bold:true;font.pixelSize:13;font.family:"Consolas"}
                                 }
-                                Text{text:flagDescs[index];color:Qt.rgba(255,255,255,0.32);font.pixelSize:8;anchors.horizontalCenter:parent;horizontalAlignment:Text.AlignHCenter;width:parent.parent.width-4;wrapMode:Text.WordWrap}
+                                Text{text:flagDescs[index];color:Qt.rgba(255,255,255,0.32);font.pixelSize:8;anchors.horizontalCenter:parent.horizontalCenter;horizontalAlignment:Text.AlignHCenter;width:parent.parent.width-4;wrapMode:Text.WordWrap}
                             }
                             MouseArea{anchors.fill:parent;cursorShape:Qt.PointingHandCursor;onClicked:{
                                 if(index===0) scrollRoot.pteV=!scrollRoot.pteV;
@@ -584,26 +584,26 @@ ScrollView {
                 Row { spacing:2; height:40; width:parent.width
                     Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(139/255,92/255,246/255,0.25); border.color:"#8b5cf6"; border.width:1
                         Column { anchors.centerIn:parent; spacing:2
-                            Text { text:"VPN[2]"; color:"#a78bfa"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.vpn2+" (bits 38–30)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[2]"; color:"#a78bfa"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.vpn2+" (bits 38–30)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(6/255,182/255,212/255,0.2); border.color:"#06b6d4"; border.width:1
                         Column { anchors.centerIn:parent; spacing:2
-                            Text { text:"VPN[1]"; color:"#06b6d4"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.vpn1+" (bits 29–21)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[1]"; color:"#06b6d4"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.vpn1+" (bits 29–21)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle { width:parent.width*9/39; height:40; radius:6; color:Qt.rgba(16/255,185/255,129/255,0.2); border.color:"#10b981"; border.width:1
                         Column { anchors.centerIn:parent; spacing:2
-                            Text { text:"VPN[0]"; color:"#10b981"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.vpn0+" (bits 20–12)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"VPN[0]"; color:"#10b981"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.vpn0+" (bits 20–12)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                     Rectangle { width:parent.width*12/39; height:40; radius:6; color:Qt.rgba(251/255,191/255,36/255,0.2); border.color:"#fbbf24"; border.width:1
                         Column { anchors.centerIn:parent; spacing:2
-                            Text { text:"Page Offset"; color:"#fbbf24"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.pgOff+" (bits 11–0)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"Page Offset"; color:"#fbbf24"; font.pixelSize:9; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.pgOff+" (bits 11–0)"; color:Qt.rgba(255,255,255,0.6); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                 }
@@ -665,11 +665,11 @@ ScrollView {
                     }
                     Rectangle { width:(parent.width-12)/2; height:addrCol.implicitHeight+28; radius:10; color:Qt.rgba(0,0,0,0.2); border.color:Qt.rgba(16,185,129,0.3); border.width:1
                         Column { id:addrCol; anchors.top:parent.top; anchors.topMargin:14; anchors.left:parent.left; anchors.leftMargin:14; anchors.right:parent.right; anchors.rightMargin:14; spacing:8
-                            Text { text:"Virtual Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.vaHex; color:"#a78bfa"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                            Text { text:"↓  3-level walk  ↓"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:10; anchors.horizontalCenter:parent }
-                            Text { text:"Physical Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent }
-                            Text { text:sv39Sim.physAddr; color:"#10b981"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                            Text { text:"Virtual Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.vaHex; color:"#a78bfa"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"↓  3-level walk  ↓"; color:Qt.rgba(255,255,255,0.2); font.pixelSize:10; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:"Physical Address"; color:Qt.rgba(255,255,255,0.3); font.pixelSize:10; anchors.horizontalCenter:parent.horizontalCenter }
+                            Text { text:sv39Sim.physAddr; color:"#10b981"; font.pixelSize:16; font.bold:true; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         }
                     }
                 }
@@ -691,5 +691,39 @@ ScrollView {
             }
         }
 
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#10b981"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  MEMORY TRANSLATION"
+                color: "#10b981"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("MemoryTranslationQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  KERNEL ADDRESS SPACE"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("KernelSpacePage.qml")
+            }
+        }
     }
 }

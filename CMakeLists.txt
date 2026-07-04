@@ -50,6 +50,23 @@ qt_add_qml_module(appxv6ui
         BufferCachePage.qml
         LoggingPage.qml
         InodesPage.qml
+        QuizPage.qml
+        KernelGuardQuizPage.qml
+        ProcessForkQuizPage.qml
+        OsArchitectureQuizPage.qml
+        CpuPrivilegeQuizPage.qml
+        TrapsOverviewQuizPage.qml
+        MemoryTranslationQuizPage.qml
+        KernelSpaceQuizPage.qml
+        UserSpaceQuizPage.qml
+        ContextSwitchQuizPage.qml
+        RoundRobinQuizPage.qml
+        LocksQuizPage.qml
+        PipesQuizPage.qml
+        FsOverviewQuizPage.qml
+        BufferCacheQuizPage.qml
+        LoggingQuizPage.qml
+        InodesQuizPage.qml
         NavigationLogic.js
     RESOURCES
         test.png

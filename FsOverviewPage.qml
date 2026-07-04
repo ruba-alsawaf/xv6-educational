@@ -69,8 +69,8 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(59,130,246,0.15); border.color: Qt.rgba(59,130,246,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"12"; color:"#3b82f6"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(59,130,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"12"; color:"#3b82f6"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(59,130,246,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -177,8 +177,8 @@ ScrollView {
                                 border.color:scrollRoot.diskColors[index]; border.width:isSel?2:1
                                 Behavior on color{ColorAnimation{duration:120}}
                                 Column { anchors.centerIn:parent; spacing:2
-                                    Text{text:scrollRoot.diskBlocks[index].split("\n")[0];color:scrollRoot.diskColors[index];font.bold:true;font.pixelSize:9;font.letterSpacing:0.3;anchors.horizontalCenter:parent}
-                                    Text{text:scrollRoot.diskBlocks[index].split("\n")[1];color:Qt.rgba(255,255,255,0.35);font.pixelSize:7;anchors.horizontalCenter:parent}
+                                    Text{text:scrollRoot.diskBlocks[index].split("\n")[0];color:scrollRoot.diskColors[index];font.bold:true;font.pixelSize:9;font.letterSpacing:0.3;anchors.horizontalCenter:parent.horizontalCenter}
+                                    Text{text:scrollRoot.diskBlocks[index].split("\n")[1];color:Qt.rgba(255,255,255,0.35);font.pixelSize:7;anchors.horizontalCenter:parent.horizontalCenter}
                                 }
                             }
                             MouseArea{anchors.fill:parent;cursorShape:Qt.PointingHandCursor;onClicked:scrollRoot.selDisk=(scrollRoot.selDisk===index?-1:index)}
@@ -317,6 +317,40 @@ ScrollView {
                     text:"CORE SUMMARY: xv6 filesystem = 7 layers: FD→Pathname→Directory→Inode→Logging→Buffer Cache→Disk. Disk layout: boot | superblock | log | inodes | bitmap | data. open() call path: namei→iget/ilock→filealloc→fdalloc. Data blocks: 12 direct + 1 indirect (128 blocks) per inode = max 140 pages. Logging ensures crash safety."
                     color:"#ffffff"; wrapMode:Text.WordWrap; font.family:"Segoe UI"; font.bold:true; font.pixelSize:12; font.letterSpacing:0.2
                 }
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#84cc16"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  FS OVERVIEW"
+                color: "#84cc16"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("FsOverviewQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  BUFFER CACHE"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("BufferCachePage.qml")
             }
         }
     }

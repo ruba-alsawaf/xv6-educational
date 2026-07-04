@@ -99,8 +99,8 @@ ScrollView {
                     color: Qt.rgba(249,115,22,0.15); border.color: Qt.rgba(249,115,22,0.4); border.width: 1
                     Column {
                         anchors.centerIn: parent; spacing: 1
-                        Text { text:"05"; color:"#f97316"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(249,115,22,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"05"; color:"#f97316"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(249,115,22,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column {
@@ -607,8 +607,8 @@ ScrollView {
                             border.color:active?modelData.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
                             Behavior on color{ColorAnimation{duration:120}}
                             Column { id:trapPillCol; anchors.centerIn:parent; spacing:2
-                                Text { text:modelData.icon+" "+modelData.name; color:active?modelData.color:"#ffffff"; font.pixelSize:11; font.bold:true; anchors.horizontalCenter:parent }
-                                Text { text:"scause="+modelData.scause; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent }
+                                Text { text:modelData.icon+" "+modelData.name; color:active?modelData.color:"#ffffff"; font.pixelSize:11; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter }
+                                Text { text:"scause="+modelData.scause; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                             MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:trapSim.selTrap=index }
                         }
@@ -669,5 +669,39 @@ ScrollView {
             }
         }
 
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#f97316"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  TRAPS OVERVIEW"
+                color: "#f97316"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("TrapsOverviewQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            border.color: "#8b5cf6"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "→  MEMORY TRANSLATION"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("MemoryTranslationPage.qml")
+            }
+        }
     }
 }

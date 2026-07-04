@@ -76,8 +76,8 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(16,185,129,0.15); border.color: Qt.rgba(16,185,129,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"15"; color:"#10b981"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent }
-                        Text { text:"LESSON"; color:Qt.rgba(16,185,129,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent }
+                        Text { text:"15"; color:"#10b981"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"LESSON"; color:Qt.rgba(16,185,129,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
                 Column { anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -177,7 +177,7 @@ ScrollView {
                                 width:130;height:52;radius:9
                                 color:sel?Qt.rgba(parseInt(modelData[2].slice(1,3),16)/255,parseInt(modelData[2].slice(3,5),16)/255,parseInt(modelData[2].slice(5,7),16)/255,0.15):Qt.rgba(255,255,255,0.03)
                                 border.color:sel?modelData[2]:Qt.rgba(255,255,255,0.1); border.width:sel?1.5:1
-                                Column{anchors.centerIn:parent;spacing:4;Text{text:modelData[0];color:sel?modelData[2]:"#fff";font.bold:true;font.pixelSize:10;anchors.horizontalCenter:parent}Text{width:parent.parent.width-16;text:modelData[1];color:Qt.rgba(255,255,255,0.4);font.pixelSize:8;wrapMode:Text.WordWrap;anchors.horizontalCenter:parent}}
+                                Column{anchors.centerIn:parent;spacing:4;Text{text:modelData[0];color:sel?modelData[2]:"#fff";font.bold:true;font.pixelSize:10;anchors.horizontalCenter:parent.horizontalCenter}Text{width:parent.parent.width-16;text:modelData[1];color:Qt.rgba(255,255,255,0.4);font.pixelSize:8;wrapMode:Text.WordWrap;anchors.horizontalCenter:parent.horizontalCenter}}
                                 MouseArea{anchors.fill:parent;cursorShape:Qt.PointingHandCursor;onClicked:scrollRoot.selType=index}
                             }}
                         }
@@ -331,8 +331,8 @@ ScrollView {
                             color:active?Qt.rgba(139/255,92/255,246/255,0.15):Qt.rgba(255,255,255,0.03)
                             border.color:active?modelData.color:Qt.rgba(255,255,255,0.07); border.width:active?2:1
                             Column { anchors.centerIn:parent; spacing:2
-                                Text { text:modelData.name; color:active?modelData.color:Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; anchors.horizontalCenter:parent; width:parent.parent.width-4; wrapMode:Text.WordWrap; horizontalAlignment:Text.AlignHCenter }
-                                Text { text:modelData.bytes; color:Qt.rgba(255,255,255,0.2); font.pixelSize:7; anchors.horizontalCenter:parent }
+                                Text { text:modelData.name; color:active?modelData.color:Qt.rgba(255,255,255,0.4); font.pixelSize:8; font.bold:true; anchors.horizontalCenter:parent.horizontalCenter; width:parent.parent.width-4; wrapMode:Text.WordWrap; horizontalAlignment:Text.AlignHCenter }
+                                Text { text:modelData.bytes; color:Qt.rgba(255,255,255,0.2); font.pixelSize:7; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                             MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor; onClicked:inodeSim.selField=index }
                         }
@@ -370,8 +370,8 @@ ScrollView {
                     ]
                         delegate: Rectangle { height:38; width:(parent.width-32)/5; radius:9; color:Qt.rgba(255,255,255,0.03); border.color:modelData.color; border.width:1
                             Column { anchors.centerIn:parent; spacing:3
-                                Text { text:modelData.val; color:modelData.color; font.bold:true; font.pixelSize:12; anchors.horizontalCenter:parent }
-                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; anchors.horizontalCenter:parent }
+                                Text { text:modelData.val; color:modelData.color; font.bold:true; font.pixelSize:12; anchors.horizontalCenter:parent.horizontalCenter }
+                                Text { text:modelData.label; color:Qt.rgba(255,255,255,0.3); font.pixelSize:9; anchors.horizontalCenter:parent.horizontalCenter }
                             }
                         }
                     }
@@ -387,6 +387,40 @@ ScrollView {
                 anchors.fill:parent; anchors.margins:15; spacing:15
                 Text{text:"🌟";font.pixelSize:22;Layout.alignment:Qt.AlignVCenter}
                 Text{Layout.fillWidth:true;Layout.alignment:Qt.AlignVCenter;text:"CORE SUMMARY: Inode lifecycle: iget (ref++) → ilock (sleeplock + load disk) → use → iunlock → iput (ref--; if ref==0 && nlink==0 → truncate + free). bmap() resolves logical block# to physical: 0–11 direct (addrs[]), 12–267 single-indirect (addrs[12]→256-entry block). Directories = files of struct dirent[]. Path resolution: namex walks components left-to-right, calls dirlookup per segment, returns final inode.";color:"#ffffff";wrapMode:Text.WordWrap;font.family:"Segoe UI";font.bold:true;font.pixelSize:12;font.letterSpacing:0.2}
+            }
+        }
+
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            border.color: "#a3e635"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  INODES & PATHS"
+                color: "#a3e635"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("InodesQuizPage.qml")
+            }
+        }
+        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: nextBtn.containsMouse ? Qt.rgba(6,182,212/255,0.22) : Qt.rgba(6,182,212/255,0.10)
+            border.color: "#06b6d4"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 12
+                Text { text: "↩  SYSTEM CALLS  (restart)"; color: "#06b6d4"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+            }
+            MouseArea {
+                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                onClicked: scrollRoot.requestNavigate("KernelGuardPage.qml")
             }
         }
     }
