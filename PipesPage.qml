@@ -12,6 +12,7 @@ ScrollView {
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     signal requestNavigate(string pageSource)
+    signal attendanceChanged()
 
     // ── Pipe ring-buffer simulation ───────────────────────────────────
     property int  pipeWritePos: 0
@@ -112,7 +113,7 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(236,72,153,0.15); border.color: Qt.rgba(236,72,153,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"11"; color:"#ec4899"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"12"; color:"#ec4899"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         Text { text:"LESSON"; color:Qt.rgba(236,72,153,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
@@ -447,10 +448,45 @@ ScrollView {
             }
         }
 
+
+        // ── MARK AS ATTENDED BUTTON ──────────────────────────────────────
+        Rectangle {
+            id: attendBtn
+            width: parent.width; height: 52; radius: 14
+            property bool done: false
+            Component.onCompleted: {
+                var user = dbManager.getCurrentUser()
+                done = dbManager.isAttended(user, "PipesPage.qml")
+            }
+            color: done ? Qt.rgba(16,185,129,0.12) : (attendMouse.containsMouse ? Qt.rgba(16,185,129,0.18) : Qt.rgba(16,185,129,0.07))
+            border.color: done ? "#10b981" : Qt.rgba(16,185,129,0.4); border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 10
+                Text { text: attendBtn.done ? "✅" : "☑"; font.pixelSize: 18; anchors.verticalCenter: parent.verticalCenter }
+                Text {
+                    text: attendBtn.done ? "Lesson marked as attended" : "Mark as Attended"
+                    color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            MouseArea {
+                id: attendMouse; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.ArrowCursor : Qt.PointingHandCursor
+                onClicked: {
+                    if (!attendBtn.done) {
+                        var user = dbManager.getCurrentUser()
+                        dbManager.markAttended(user, "PipesPage.qml")
+                        attendBtn.done = true
+                        scrollRoot.attendanceChanged()
+                    }
+                }
+            }
+        }
         // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 52; radius: 14
-            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            color: !attendBtn.done ? Qt.rgba(255,255,255,0.02) : (quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04))
             border.color: "#6366f1"; border.width: 1
             Behavior on color { ColorAnimation { duration: 180 } }
             Text {
@@ -461,8 +497,8 @@ ScrollView {
             }
             MouseArea {
                 id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("PipesQuizPage.qml")
+                cursorShape: attendBtn.done ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+                onClicked: if (attendBtn.done) scrollRoot.requestNavigate("PipesQuizPage.qml")
             }
         }
         // ── NEXT LESSON BUTTON ───────────────────────────────────────────
@@ -473,7 +509,7 @@ ScrollView {
             Behavior on color { ColorAnimation { duration: 180 } }
             Row {
                 anchors.centerIn: parent; spacing: 12
-                Text { text: "→  FS OVERVIEW"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: "→  FS OVERVIEW"; color: attendBtn.done ? "#8b5cf6" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
             }
             MouseArea {
                 id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor

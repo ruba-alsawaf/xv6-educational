@@ -50,6 +50,7 @@ qt_add_qml_module(appxv6ui
         BufferCachePage.qml
         LoggingPage.qml
         InodesPage.qml
+        ProfilePage.qml
         QuizPage.qml
         KernelGuardQuizPage.qml
         ProcessForkQuizPage.qml
@@ -77,15 +78,7 @@ qt_add_qml_module(appxv6ui
         SOURCES CoreEngineBackend.cpp
 )
 
-# الإعدادات الخاصة بأنظمة التشغيل (Windows / macOS)
-set_target_properties(appxv6ui PROPERTIES
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-    MACOSX_BUNDLE TRUE
-    WIN32_EXECUTABLE TRUE
-)
-
-# 5. ربط جميع مكتبات Qt برمجياً بملف التنفيذ النهائي (بما فيها الـ Network)
+# 5. ربط مكتبات Qt بالمشروع (هذا ما كان ناقصاً)
 target_link_libraries(appxv6ui
     PRIVATE
         Qt6::Quick
@@ -94,10 +87,8 @@ target_link_libraries(appxv6ui
         Qt6::Network
 )
 
-# إعدادات التثبيت (Installation)
-include(GNUInstallDirs)
-install(TARGETS appxv6ui
-    BUNDLE DESTINATION .
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# الإعدادات الخاصة بأنظمة التشغيل (Windows / macOS)
+set_target_properties(appxv6ui PROPERTIES
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
+    

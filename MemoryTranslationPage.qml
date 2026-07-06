@@ -12,6 +12,7 @@ ScrollView {
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     signal requestNavigate(string pageSource)
+    signal attendanceChanged()
 
     property int  activeTL:    0
     property int  selectedVA:  0
@@ -617,13 +618,14 @@ ScrollView {
                             {label:"VPN[0]", opts:[1,2,5,255], prop:"vpn0", color:"#10b981"},
                             {label:"Offset", opts:[0,4,4095,2048], prop:"pgOff", color:"#fbbf24"}
                         ]
-                        delegate: Column { spacing:6; width:(parent.width-36)/4
-                            Text { text:modelData.label; color:modelData.color; font.pixelSize:10; font.bold:true }
+                        delegate: Column { id: sectionCol; spacing:6; width:(parent.width-36)/4
+                            property var sectionData: modelData
+                            Text { text:sectionCol.sectionData.label; color:sectionCol.sectionData.color; font.pixelSize:10; font.bold:true }
                             Row { spacing:4
-                                Repeater { model:modelData.opts
+                                Repeater { model:sectionCol.sectionData.opts
                                     delegate: Rectangle {
                                         property bool active: {
-                                            switch(modelData.prop){
+                                            switch(sectionCol.sectionData.prop){
                                                 case "vpn2": return sv39Sim.vpn2===modelData
                                                 case "vpn1": return sv39Sim.vpn1===modelData
                                                 case "vpn0": return sv39Sim.vpn0===modelData
@@ -632,11 +634,11 @@ ScrollView {
                                         }
                                         width:34; height:28; radius:7
                                         color:active?Qt.rgba(6/255,182/255,212/255,0.2):Qt.rgba(255,255,255,0.04)
-                                        border.color:active?modelData.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
-                                        Text { anchors.centerIn:parent; text:""+modelData; color:active?modelData.color:Qt.rgba(255,255,255,0.5); font.pixelSize:9; font.family:"Consolas" }
+                                        border.color:active?sectionCol.sectionData.color:Qt.rgba(255,255,255,0.1); border.width:active?1.5:1
+                                        Text { anchors.centerIn:parent; text:""+modelData; color:active?sectionCol.sectionData.color:Qt.rgba(255,255,255,0.5); font.pixelSize:9; font.family:"Consolas" }
                                         MouseArea { anchors.fill:parent; cursorShape:Qt.PointingHandCursor
                                             onClicked: {
-                                                switch(modelData.prop){
+                                                switch(sectionCol.sectionData.prop){
                                                     case "vpn2": sv39Sim.vpn2=modelData; break
                                                     case "vpn1": sv39Sim.vpn1=modelData; break
                                                     case "vpn0": sv39Sim.vpn0=modelData; break
@@ -692,22 +694,57 @@ ScrollView {
         }
 
 
+
+        // ── MARK AS ATTENDED BUTTON ──────────────────────────────────────
+        Rectangle {
+            id: attendBtn
+            width: parent.width; height: 52; radius: 14
+            property bool done: false
+            Component.onCompleted: {
+                var user = dbManager.getCurrentUser()
+                done = dbManager.isAttended(user, "MemoryTranslationPage.qml")
+            }
+            color: done ? Qt.rgba(16,185,129,0.12) : (attendMouse.containsMouse ? Qt.rgba(16,185,129,0.18) : Qt.rgba(16,185,129,0.07))
+            border.color: done ? "#10b981" : Qt.rgba(16,185,129,0.4); border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 10
+                Text { text: attendBtn.done ? "✅" : "☑"; font.pixelSize: 18; anchors.verticalCenter: parent.verticalCenter }
+                Text {
+                    text: attendBtn.done ? "Lesson marked as attended" : "Mark as Attended"
+                    color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            MouseArea {
+                id: attendMouse; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.ArrowCursor : Qt.PointingHandCursor
+                onClicked: {
+                    if (!attendBtn.done) {
+                        var user = dbManager.getCurrentUser()
+                        dbManager.markAttended(user, "MemoryTranslationPage.qml")
+                        attendBtn.done = true
+                        scrollRoot.attendanceChanged()
+                    }
+                }
+            }
+        }
         // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 52; radius: 14
-            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            color: !attendBtn.done ? Qt.rgba(255,255,255,0.02) : (quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04))
             border.color: "#10b981"; border.width: 1
             Behavior on color { ColorAnimation { duration: 180 } }
             Text {
                 anchors.centerIn: parent
                 text: "QUIZ  →  MEMORY TRANSLATION"
-                color: "#10b981"; font.bold: true; font.pixelSize: 13
+                color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13
                 font.family: "Segoe UI"; font.letterSpacing: 0.4
             }
             MouseArea {
                 id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("MemoryTranslationQuizPage.qml")
+                cursorShape: attendBtn.done ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+                onClicked: if (attendBtn.done) scrollRoot.requestNavigate("MemoryTranslationQuizPage.qml")
             }
         }
         // ── NEXT LESSON BUTTON ───────────────────────────────────────────
@@ -718,7 +755,7 @@ ScrollView {
             Behavior on color { ColorAnimation { duration: 180 } }
             Row {
                 anchors.centerIn: parent; spacing: 12
-                Text { text: "→  KERNEL ADDRESS SPACE"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: "→  KERNEL ADDRESS SPACE"; color: attendBtn.done ? "#8b5cf6" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
             }
             MouseArea {
                 id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor

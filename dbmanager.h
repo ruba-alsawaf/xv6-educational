@@ -37,6 +37,14 @@ public:
     Q_INVOKABLE QString getCurrentUser();
     Q_INVOKABLE void logout();
 
+    // الحضور
+    Q_INVOKABLE void markAttended(const QString &username, const QString &lessonName);
+    Q_INVOKABLE bool isAttended(const QString &username, const QString &lessonName);
+    Q_INVOKABLE QVariantList getAttendedLessons(const QString &username);
+
+    // تغيير كلمة السر
+    Q_INVOKABLE bool changePassword(const QString &username, const QString &oldPassword, const QString &newPassword);
+
 
 private:
     QSqlDatabase m_db;       // كائن الاتصال بقاعدة البيانات

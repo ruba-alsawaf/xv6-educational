@@ -12,6 +12,7 @@ ScrollView {
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     signal requestNavigate(string pageSource)
+    signal attendanceChanged()
 
     property int  openCard:    0
     property int  trapType:    0
@@ -618,7 +619,7 @@ ScrollView {
                 // Detail cards
                 Rectangle {
                     width:parent.width; height:trapDetail.implicitHeight+24; radius:10
-                    color:Qt.rgba(0,0,0,0.2); border.color:parent.cur.color; border.width:1
+                    color:Qt.rgba(0,0,0,0.2); border.color:trapSim.cur.color; border.width:1
                     Column {
                         id:trapDetail
                         anchors.top:parent.top; anchors.topMargin:14
@@ -670,22 +671,57 @@ ScrollView {
         }
 
 
+
+        // ── MARK AS ATTENDED BUTTON ──────────────────────────────────────
+        Rectangle {
+            id: attendBtn
+            width: parent.width; height: 52; radius: 14
+            property bool done: false
+            Component.onCompleted: {
+                var user = dbManager.getCurrentUser()
+                done = dbManager.isAttended(user, "TrapsOverviewPage.qml")
+            }
+            color: done ? Qt.rgba(16,185,129,0.12) : (attendMouse.containsMouse ? Qt.rgba(16,185,129,0.18) : Qt.rgba(16,185,129,0.07))
+            border.color: done ? "#10b981" : Qt.rgba(16,185,129,0.4); border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 10
+                Text { text: attendBtn.done ? "✅" : "☑"; font.pixelSize: 18; anchors.verticalCenter: parent.verticalCenter }
+                Text {
+                    text: attendBtn.done ? "Lesson marked as attended" : "Mark as Attended"
+                    color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            MouseArea {
+                id: attendMouse; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.ArrowCursor : Qt.PointingHandCursor
+                onClicked: {
+                    if (!attendBtn.done) {
+                        var user = dbManager.getCurrentUser()
+                        dbManager.markAttended(user, "TrapsOverviewPage.qml")
+                        attendBtn.done = true
+                        scrollRoot.attendanceChanged()
+                    }
+                }
+            }
+        }
         // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 52; radius: 14
-            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            color: !attendBtn.done ? Qt.rgba(255,255,255,0.02) : (quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04))
             border.color: "#f97316"; border.width: 1
             Behavior on color { ColorAnimation { duration: 180 } }
             Text {
                 anchors.centerIn: parent
                 text: "QUIZ  →  TRAPS OVERVIEW"
-                color: "#f97316"; font.bold: true; font.pixelSize: 13
+                color: attendBtn.done ? "#f97316" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13
                 font.family: "Segoe UI"; font.letterSpacing: 0.4
             }
             MouseArea {
                 id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("TrapsOverviewQuizPage.qml")
+                cursorShape: attendBtn.done ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+                onClicked: if (attendBtn.done) scrollRoot.requestNavigate("TrapsOverviewQuizPage.qml")
             }
         }
         // ── NEXT LESSON BUTTON ───────────────────────────────────────────
@@ -696,7 +732,7 @@ ScrollView {
             Behavior on color { ColorAnimation { duration: 180 } }
             Row {
                 anchors.centerIn: parent; spacing: 12
-                Text { text: "→  MEMORY TRANSLATION"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: "→  MEMORY TRANSLATION"; color: attendBtn.done ? "#8b5cf6" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
             }
             MouseArea {
                 id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor

@@ -71,6 +71,9 @@ void DbManager::initDatabase()
     query.exec("CREATE INDEX IF NOT EXISTS idx_proc_stats_session ON proc_stats(session_id)");
     query.exec("CREATE INDEX IF NOT EXISTS idx_mem_events_session_timestamp ON mem_events(session_id, timestamp)");
 
+    // جدول الحضور
+    query.exec("CREATE TABLE IF NOT EXISTS Attendance (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, lesson_name TEXT, UNIQUE(username, lesson_name))");
+
     // إنشاء المستخدم الافتراضي إن لم يكن موجوداً
     query.exec("SELECT COUNT(*) FROM Students WHERE username = 'student1'");
     if (query.next() && query.value(0).toInt() == 0) {
@@ -344,6 +347,52 @@ QString DbManager::getCurrentUser() {
 void DbManager::logout() {
     m_currentUser = ""; // مسح اسم المستخدم الحالي بأمان
     qDebug() << "🚪 User logged out successfully.";
+}
+
+void DbManager::markAttended(const QString &username, const QString &lessonName) {
+    if (!m_db.isOpen()) return;
+    QSqlQuery q(m_db);
+    q.prepare("INSERT OR IGNORE INTO Attendance (username, lesson_name) VALUES (?, ?)");
+    q.addBindValue(username);
+    q.addBindValue(lessonName);
+    if (!q.exec()) qWarning() << "❌ markAttended failed:" << q.lastError().text();
+    else qDebug() << "✅ Attended:" << username << lessonName;
+}
+
+bool DbManager::isAttended(const QString &username, const QString &lessonName) {
+    if (!m_db.isOpen()) return false;
+    QSqlQuery q(m_db);
+    q.prepare("SELECT COUNT(*) FROM Attendance WHERE username = ? AND lesson_name = ?");
+    q.addBindValue(username);
+    q.addBindValue(lessonName);
+    if (q.exec() && q.next()) return q.value(0).toInt() > 0;
+    return false;
+}
+
+QVariantList DbManager::getAttendedLessons(const QString &username) {
+    QVariantList list;
+    if (!m_db.isOpen()) return list;
+    QSqlQuery q(m_db);
+    q.prepare("SELECT lesson_name FROM Attendance WHERE username = ? ORDER BY id ASC");
+    q.addBindValue(username);
+    if (q.exec()) while (q.next()) list.append(q.value(0).toString());
+    return list;
+}
+
+bool DbManager::changePassword(const QString &username, const QString &oldPassword, const QString &newPassword) {
+    if (!m_db.isOpen()) return false;
+    QSqlQuery q(m_db);
+    q.prepare("SELECT password FROM Students WHERE username = ?");
+    q.addBindValue(username);
+    if (q.exec() && q.next()) {
+        if (q.value(0).toString() != oldPassword) return false;
+        QSqlQuery upd(m_db);
+        upd.prepare("UPDATE Students SET password = ? WHERE username = ?");
+        upd.addBindValue(newPassword);
+        upd.addBindValue(username);
+        return upd.exec();
+    }
+    return false;
 }
 
 QVariantMap DbManager::getLiveMemoryMetrics()

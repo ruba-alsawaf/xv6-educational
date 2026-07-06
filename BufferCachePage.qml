@@ -12,6 +12,7 @@ ScrollView {
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     signal requestNavigate(string pageSource)
+    signal attendanceChanged()
 
     property int  openCard:      0
     property int  selectedOp:    0
@@ -28,41 +29,8 @@ ScrollView {
     Timer {
         interval: 22; running: true; repeat: true
         onTriggered: scrollRoot.cacheDot = (scrollRoot.cacheDot + 0.004) % 1.0
-
-        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
-        Rectangle {
-            width: parent.width; height: 52; radius: 14
-            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
-            border.color: "#22d3ee"; border.width: 1
-            Behavior on color { ColorAnimation { duration: 180 } }
-            Text {
-                anchors.centerIn: parent
-                text: "QUIZ  →  BUFFER CACHE"
-                color: "#22d3ee"; font.bold: true; font.pixelSize: 13
-                font.family: "Segoe UI"; font.letterSpacing: 0.4
-            }
-            MouseArea {
-                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("BufferCacheQuizPage.qml")
-            }
-        }
-        // ── NEXT LESSON BUTTON ───────────────────────────────────────────
-        Rectangle {
-            width: parent.width; height: 52; radius: 14
-            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
-            border.color: "#8b5cf6"; border.width: 1
-            Behavior on color { ColorAnimation { duration: 180 } }
-            Row {
-                anchors.centerIn: parent; spacing: 12
-                Text { text: "→  LOGGING"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
-            }
-            MouseArea {
-                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("LoggingPage.qml")
-            }
-        }
     }
+
 
     // ── Operation descriptions ────────────────────────────────────────
     property var opNames: ["bread(dev, blockno)","bwrite(buf)","brelse(buf)","bpin(buf)","bunpin(buf)","bget(dev, blockno)"]
@@ -105,7 +73,7 @@ ScrollView {
                     width: 52; height: 52; radius: 12; anchors.verticalCenter: parent.verticalCenter
                     color: Qt.rgba(251,191,36,0.15); border.color: Qt.rgba(251,191,36,0.4); border.width: 1
                     Column { anchors.centerIn: parent; spacing: 1
-                        Text { text:"13"; color:"#fbbf24"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
+                        Text { text:"14"; color:"#fbbf24"; font.bold:true; font.pixelSize:20; font.family:"Consolas"; anchors.horizontalCenter:parent.horizontalCenter }
                         Text { text:"LESSON"; color:Qt.rgba(251,191,36,0.5); font.pixelSize:7; font.letterSpacing:1; anchors.horizontalCenter:parent.horizontalCenter }
                     }
                 }
@@ -419,18 +387,71 @@ blk="+entry.block):"—"; color:entry?Qt.rgba(255,255,255,0.75):Qt.rgba(255,255,
             }
         }
 
+        // ── MARK AS ATTENDED BUTTON ──────────────────────────────────────
+        Rectangle {
+            id: attendBtn
+            width: parent.width; height: 52; radius: 14
+            property bool done: false
+            Component.onCompleted: {
+                var user = dbManager.getCurrentUser()
+                done = dbManager.isAttended(user, "BufferCachePage.qml")
+            }
+            color: done ? Qt.rgba(16,185,129,0.12) : (attendMouse.containsMouse ? Qt.rgba(16,185,129,0.18) : Qt.rgba(16,185,129,0.07))
+            border.color: done ? "#10b981" : Qt.rgba(16,185,129,0.4); border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 10
+                Text { text: attendBtn.done ? "✅" : "☑"; font.pixelSize: 18; anchors.verticalCenter: parent.verticalCenter }
+                Text {
+                    text: attendBtn.done ? "Lesson marked as attended" : "Mark as Attended"
+                    color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            MouseArea {
+                id: attendMouse; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.ArrowCursor : Qt.PointingHandCursor
+                onClicked: {
+                    if (!attendBtn.done) {
+                        var user = dbManager.getCurrentUser()
+                        dbManager.markAttended(user, "BufferCachePage.qml")
+                        attendBtn.done = true
+                        scrollRoot.attendanceChanged()
+                    }
+                }
+            }
+        }
+        // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
+        Rectangle {
+            width: parent.width; height: 52; radius: 14
+            color: !attendBtn.done ? Qt.rgba(255,255,255,0.02) : (quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04))
+            border.color: "#22d3ee"; border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Text {
+                anchors.centerIn: parent
+                text: "QUIZ  →  BUFFER CACHE"
+                color: "#22d3ee"; font.bold: true; font.pixelSize: 13
+                font.family: "Segoe UI"; font.letterSpacing: 0.4
+            }
+            MouseArea {
+                id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+                onClicked: if (attendBtn.done) scrollRoot.requestNavigate("BufferCacheQuizPage.qml")
+            }
+        }
+
         // ── NEXT LESSON BUTTON ───────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 52; radius: 14
-            color: nextBtn.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
+            color: nextBtn2.containsMouse ? Qt.rgba(139,92,246/255,0.22) : Qt.rgba(139,92,246/255,0.10)
             border.color: "#8b5cf6"; border.width: 1
             Behavior on color { ColorAnimation { duration: 180 } }
             Row {
                 anchors.centerIn: parent; spacing: 12
-                Text { text: "→  LOGGING"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: "→  LOGGING"; color: attendBtn.done ? "#8b5cf6" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
             }
             MouseArea {
-                id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
+                id: nextBtn2; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                 onClicked: scrollRoot.requestNavigate("LoggingPage.qml")
             }
         }

@@ -12,6 +12,7 @@ ScrollView {
     ScrollBar.vertical.policy: ScrollBar.AsNeeded
 
     signal requestNavigate(string pageSource)
+    signal attendanceChanged()
 
     // ── State machine simulation ─────────────────────────────────────
     // 0=UNUSED, 1=USED, 2=SLEEPING, 3=RUNNABLE, 4=RUNNING, 5=ZOMBIE
@@ -302,7 +303,7 @@ ScrollView {
 
                     // Phase label
                     var pLabels=["Process A executing user code","timer interrupt → yield() called","sched() — validates, calls swtch()","swtch() saves A's context, loads scheduler's","scheduler() loops, finds Process B RUNNABLE","swtch() into B — B resumes from where it left off"]
-                    ctx.fillStyle="rgba("+pC[0]+","+pC[1]+","+pC[2]+",0.85)"; ctx.font="bold 10px Segoe UI"; ctx.textAlign="center"
+                    ctx.fillStyle="rgba("+pC[0]+","+pC[1]+","+pC[2]+",0.85)"; ctx.font="bold 10px 'Segoe UI'"; ctx.textAlign="center"
                     ctx.fillText(pLabels[phase], w/2, h*0.87)
                 }
                 function roundRect2(c,x,y,w2,h2,r){
@@ -599,10 +600,45 @@ ScrollView {
             }
         }
 
+
+        // ── MARK AS ATTENDED BUTTON ──────────────────────────────────────
+        Rectangle {
+            id: attendBtn
+            width: parent.width; height: 52; radius: 14
+            property bool done: false
+            Component.onCompleted: {
+                var user = dbManager.getCurrentUser()
+                done = dbManager.isAttended(user, "ContextSwitchPage.qml")
+            }
+            color: done ? Qt.rgba(16,185,129,0.12) : (attendMouse.containsMouse ? Qt.rgba(16,185,129,0.18) : Qt.rgba(16,185,129,0.07))
+            border.color: done ? "#10b981" : Qt.rgba(16,185,129,0.4); border.width: 1
+            Behavior on color { ColorAnimation { duration: 180 } }
+            Row {
+                anchors.centerIn: parent; spacing: 10
+                Text { text: attendBtn.done ? "✅" : "☑"; font.pixelSize: 18; anchors.verticalCenter: parent.verticalCenter }
+                Text {
+                    text: attendBtn.done ? "Lesson marked as attended" : "Mark as Attended"
+                    color: attendBtn.done ? "#10b981" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"
+                    anchors.verticalCenter: parent.verticalCenter
+                }
+            }
+            MouseArea {
+                id: attendMouse; anchors.fill: parent; hoverEnabled: true
+                cursorShape: attendBtn.done ? Qt.ArrowCursor : Qt.PointingHandCursor
+                onClicked: {
+                    if (!attendBtn.done) {
+                        var user = dbManager.getCurrentUser()
+                        dbManager.markAttended(user, "ContextSwitchPage.qml")
+                        attendBtn.done = true
+                        scrollRoot.attendanceChanged()
+                    }
+                }
+            }
+        }
         // ── TAKE QUIZ BUTTON ────────────────────────────────────────────
         Rectangle {
             width: parent.width; height: 52; radius: 14
-            color: quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04)
+            color: !attendBtn.done ? Qt.rgba(255,255,255,0.02) : (quizNavBtn.containsMouse ? Qt.rgba(255,255,255,0.10) : Qt.rgba(255,255,255,0.04))
             border.color: "#3b82f6"; border.width: 1
             Behavior on color { ColorAnimation { duration: 180 } }
             Text {
@@ -613,8 +649,8 @@ ScrollView {
             }
             MouseArea {
                 id: quizNavBtn; anchors.fill: parent; hoverEnabled: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: scrollRoot.requestNavigate("ContextSwitchQuizPage.qml")
+                cursorShape: attendBtn.done ? Qt.PointingHandCursor : Qt.ForbiddenCursor
+                onClicked: if (attendBtn.done) scrollRoot.requestNavigate("ContextSwitchQuizPage.qml")
             }
         }
         // ── NEXT LESSON BUTTON ───────────────────────────────────────────
@@ -625,7 +661,7 @@ ScrollView {
             Behavior on color { ColorAnimation { duration: 180 } }
             Row {
                 anchors.centerIn: parent; spacing: 12
-                Text { text: "→  ROUND-ROBIN"; color: "#8b5cf6"; font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
+                Text { text: "→  ROUND-ROBIN"; color: attendBtn.done ? "#8b5cf6" : Qt.rgba(255,255,255,0.25); font.bold: true; font.pixelSize: 13; font.family: "Segoe UI"; font.letterSpacing: 0.4; anchors.verticalCenter: parent.verticalCenter }
             }
             MouseArea {
                 id: nextBtn; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
