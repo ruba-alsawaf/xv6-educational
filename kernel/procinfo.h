@@ -29,4 +29,13 @@ struct proc_stats {
   uint64 total_exited;
 };
 
+struct lock_info {
+  char lock_name[32]; // اسم القفل
+  int  pid;           // رقم العملية اللي ماسكته
+  uint hold_time;     // وقت الحجز
+  uint acq_count;
+  char proc_name[16];
+  int  cpu_id;
+  uint contention;
+};
 #endif

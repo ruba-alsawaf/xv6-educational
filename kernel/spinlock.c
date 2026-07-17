@@ -7,6 +7,9 @@
 #include "riscv.h"
 #include "proc.h"
 #include "defs.h"
+#define MAX_LOCKS 128
+struct spinlock *all_locks[MAX_LOCKS];
+int num_locks = 0;
 
 void
 initlock(struct spinlock *lk, char *name)
@@ -14,6 +17,14 @@ initlock(struct spinlock *lk, char *name)
   lk->name = name;
   lk->locked = 0;
   lk->cpu = 0;
+  lk->acq_count = 0;
+  lk->contention = 0;
+  lk->cpu_id = -1;
+  lk->proc_name[0] = '\0';
+  if(num_locks < MAX_LOCKS) {
+    all_locks[num_locks] = lk;
+    num_locks++;
+  }
 }
 
 // Acquire the lock.
@@ -25,6 +36,9 @@ acquire(struct spinlock *lk)
   if(holding(lk))
     panic("acquire");
 
+  if (lk->locked) {
+    lk->contention++;
+  }
   // On RISC-V, sync_lock_test_and_set turns into an atomic swap:
   //   a5 = 1
   //   s1 = &lk->locked
@@ -40,6 +54,18 @@ acquire(struct spinlock *lk)
 
   // Record info about lock acquisition for holding() and debugging.
   lk->cpu = mycpu();
+  lk->acq_count++; 
+  lk->start_time = r_time();
+
+  lk->cpu_id = cpuid();
+  // -- الأسطر الجديدة --
+  if(myproc() != 0) {
+    lk->pid = myproc()->pid;
+    safestrcpy(lk->proc_name, myproc()->name, sizeof(lk->proc_name));
+  } else {
+    lk->pid = -1;
+    safestrcpy(lk->proc_name, "kernel", sizeof(lk->proc_name));
+  }
 }
 
 // Release the lock.
@@ -50,7 +76,7 @@ release(struct spinlock *lk)
     panic("release");
 
   lk->cpu = 0;
-
+  lk->last_hold_time = (uint)(r_time() - lk->start_time);
   // Tell the C compiler and the CPU to not move loads or stores
   // past this point, to ensure that all the stores in the critical
   // section are visible to other CPUs before the lock is released,

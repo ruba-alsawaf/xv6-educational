@@ -61,3 +61,4 @@ int schedread(struct sched_event *out, int max);
 int memread(struct mem_event *out, int max);
 int getcpuinfo(struct cpu_info *cpus, int ncpu);
 int getprocstats(struct proc_stats *stats);
+int getlockinfo(struct lock_info *locks, int max_locks);

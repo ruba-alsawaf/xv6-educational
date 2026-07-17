@@ -160,8 +160,8 @@ UPROGS=\
 	$U/_shrinktest \
 	$U/_faulttest \
 	$U/_infinite \
-	$U/_fsexport
-
+	$U/_fsexport\
+	$U/_lockinfo\
 
 
 fs.img: mkfs/mkfs README $(UPROGS)

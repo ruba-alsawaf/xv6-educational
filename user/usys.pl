@@ -48,3 +48,4 @@ entry("schedread");
 entry("memread");
 entry("getcpuinfo");
 entry("getprocstats");
+entry("getlockinfo");

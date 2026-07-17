@@ -135,3 +135,8 @@ getprocstats:
  li a7, SYS_getprocstats
  ecall
  ret
+.global getlockinfo
+getlockinfo:
+ li a7, SYS_getlockinfo
+ ecall
+ ret

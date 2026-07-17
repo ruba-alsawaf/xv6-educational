@@ -107,7 +107,7 @@ extern uint64 sys_schedread(void);
 extern uint64 sys_memread(void);
 extern uint64 sys_getcpuinfo(void);
 extern uint64 sys_getprocstats(void);
-
+extern uint64 sys_getlockinfo(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -139,7 +139,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_memread]   sys_memread,
 [SYS_getcpuinfo] sys_getcpuinfo,
 [SYS_getprocstats] sys_getprocstats,
-
+[SYS_getlockinfo]   sys_getlockinfo,
 
 };
 

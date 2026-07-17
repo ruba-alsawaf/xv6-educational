@@ -26,3 +26,4 @@
 #define SYS_memread 25
 #define SYS_getcpuinfo 26
 #define SYS_getprocstats 27
+#define SYS_getlockinfo 28

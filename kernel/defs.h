@@ -8,6 +8,7 @@ struct spinlock;
 struct sleeplock;
 struct stat;
 struct superblock;
+
 #include "cslog.h"
 
 
@@ -138,6 +139,8 @@ void            initlock(struct spinlock*, char*);
 void            release(struct spinlock*);
 void            push_off(void);
 void            pop_off(void);
+extern struct spinlock *all_locks[];
+extern int num_locks;
 
 // sleeplock.c
 void            acquiresleep(struct sleeplock*);

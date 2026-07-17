@@ -589,6 +589,52 @@ sys_getcpuinfo(void)
 }
 
 uint64
+sys_getlockinfo(void)
+{
+  uint64 addr;
+  int max_locks;
+  struct lock_info info;
+
+  argaddr(0, &addr);
+  argint(1, &max_locks);
+
+  if(max_locks <= 0) return 0;
+  if(max_locks > num_locks) max_locks = num_locks;
+
+  for(int i = 0; i < max_locks; i++) {
+    struct spinlock *lk = all_locks[i];
+    
+    // تصفير الصندوق بالكامل قبل التعبئة لتجنب أي بيانات عشوائية
+    memset(&info, 0, sizeof(info));
+
+    // 1. البيانات الأساسية
+    safestrcpy(info.lock_name, lk->name, sizeof(info.lock_name));
+    info.pid = lk->pid;
+    info.acq_count = lk->acq_count;
+    
+    // 2. الإضافات الاحترافية الجديدة للـ Profiling
+    info.cpu_id = lk->cpu_id;
+    info.contention = lk->contention;
+    safestrcpy(info.proc_name, lk->proc_name, sizeof(info.proc_name));
+
+    // 3. المنطق الذكي لوقت الحجز (Live vs Last Known State)
+    if(lk->locked == 1) {
+      // إذا القفل مشغول حالياً: نحسب وقت الانتظار المباشر
+      info.hold_time = (uint)(r_time() - lk->start_time); 
+    } else {
+      // إذا القفل مفكوك: نعرض مدة آخر حجز تم عليه
+      info.hold_time = lk->last_hold_time; 
+    }
+
+    // نسخ البيانات إلى مساحة المستخدم (User-space)
+    if(copyout(myproc()->pagetable, addr + (i * sizeof(struct lock_info)), (char *)&info, sizeof(info)) < 0)
+      return -1;
+  }
+  
+  return max_locks;
+}
+
+uint64
 sys_getprocstats(void)
 {
   uint64 addr;

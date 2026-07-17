@@ -11,6 +11,7 @@ from collections import defaultdict
 
 LOG_PATH = "qemu.log"
 DB_PATH = "events.db"
+
 SESSION_ID = str(uuid.uuid4())
 def extract_json(line: str, marker: str) -> dict | None:
     """Extract JSON object from line starting with marker"""
