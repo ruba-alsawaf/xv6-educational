@@ -41,7 +41,7 @@ static void print_lock_event(const struct lock_info *lk) {
 
     append_str(buf, &pos, "LOCK_EV {\"name\":\"");
     append_str(buf, &pos, lk->lock_name);
-    append_str(buf, &pos, ",\"last_pid\":");
+    append_str(buf, &pos, "\",\"last_pid\":");       // صلحنا علامة التنصيص هون
     append_int(buf, &pos, lk->pid);
     append_str(buf, &pos, ",\"proc_name\":\"");
     append_str(buf, &pos, lk->proc_name);
@@ -53,7 +53,7 @@ static void print_lock_event(const struct lock_info *lk) {
     append_uint(buf, &pos, lk->acq_count);
     append_str(buf, &pos, ",\"contention\":");
     append_uint(buf, &pos, lk->contention);
-    append_str(buf, &pos, "\"}\n");
+    append_str(buf, &pos, "}\n");                   // شلنا علامة التنصيص الزايدة من هون
 
     write(1, buf, pos);
 }
