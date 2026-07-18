@@ -135,6 +135,7 @@ Window {
                                     SidebarItem { width: parent.width; itemLabel: "CPU Scheduling"; iconSrc: "/icons/CPUSchedulingLogo.svg"; accentColor: "#06b6d4"; isSelected: root.currentPage === "CpuSchedulingPage.qml"; onNav: doNavigate("CpuSchedulingPage.qml") }
                                     SidebarItem { width: parent.width; itemLabel: "Memory Management"; iconSrc: "/icons/MemoryManagmentLogo.svg"; accentColor: "#06b6d4"; isSelected: root.currentPage === "MemoryManagementPage.qml"; onNav: doNavigate("MemoryManagementPage.qml") }
                                     SidebarItem { width: parent.width; itemLabel: "File System"; iconSrc: "/icons/FileSystemLogo.svg"; accentColor: "#06b6d4"; isSelected: root.currentPage === "FileSystem.qml"; onNav: doNavigate("FileSystem.qml") }
+                                    SidebarItem { width: parent.width; itemLabel: "Lock Monitor"; iconSrc: "/icons/FileSystemLogo.svg"; accentColor: "#f43f5e"; isSelected: root.currentPage === "LockMonitorPage.qml"; onNav: doNavigate("LockMonitorPage.qml") }
                                 }
                             }
 

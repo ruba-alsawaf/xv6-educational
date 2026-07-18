@@ -16,13 +16,31 @@ Item {
         property string subtitle2
         property real percent: 0
         property color valueColor: "#58a6ff"
+        property color titleColor: Qt.rgba(255, 255, 255, 0.5)
+        property color accentColor: "#58a6ff"
 
         radius: 16
         color: Qt.rgba(255, 255, 255, 0.04)
-        border.color: Qt.rgba(255, 255, 255, 0.08)
+        border.color: Qt.rgba(
+            parseInt(accentColor.toString().slice(1,3), 16)/255,
+            parseInt(accentColor.toString().slice(3,5), 16)/255,
+            parseInt(accentColor.toString().slice(5,7), 16)/255, 0.22)
 
         Layout.fillWidth: true
         Layout.preferredHeight: 140
+
+        // accent top strip
+        Rectangle {
+            anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+            height: 3; radius: 16
+            gradient: Gradient {
+                orientation: Gradient.Horizontal
+                GradientStop { position: 0.0; color: "transparent" }
+                GradientStop { position: 0.3; color: parent.parent.accentColor }
+                GradientStop { position: 0.7; color: parent.parent.accentColor }
+                GradientStop { position: 1.0; color: "transparent" }
+            }
+        }
 
         ColumnLayout {
             anchors.fill: parent
@@ -31,7 +49,7 @@ Item {
 
             Text {
                 text: parent.parent.title
-                color: Qt.rgba(255, 255, 255, 0.5)
+                color: parent.parent.titleColor
                 font { family: "Segoe UI"; bold: true; pixelSize: 11; letterSpacing: 1 }
             }
 
@@ -123,6 +141,7 @@ Item {
                     subtitle2: "● " + backend.freeBuffers + " Free"
                     percent: backend.usagePercent
                     valueColor: "#ffffff"
+                    titleColor: "#fbbf24"; accentColor: "#fbbf24"
                 }
 
                 DashboardCard {
@@ -131,6 +150,7 @@ Item {
                     subtitle1: "Overall Hit Rate"
                     valueColor: "#58a6ff"
                     percent: parseFloat(backend.hitRate)
+                    titleColor: "#58a6ff"; accentColor: "#58a6ff"
                 }
 
                 DashboardCard {
@@ -139,6 +159,7 @@ Item {
                     subtitle1: "● " + backend.usedInodes + " Locked"
                     subtitle2: "● " + backend.freeInodes + " Free"
                     valueColor: "#ffffff"
+                    titleColor: "#a78bfa"; accentColor: "#a78bfa"
                 }
 
                 DashboardCard {
@@ -147,6 +168,7 @@ Item {
                     subtitle1: "Outstanding: " + backend.outstanding
                     subtitle2: "Committing: " + backend.committing
                     valueColor: "#3fb950"
+                    titleColor: "#10b981"; accentColor: "#10b981"
                 }
             }
 
@@ -160,11 +182,11 @@ Item {
                 Rectangle {
                     Layout.fillWidth: true; Layout.fillHeight: true
                     Layout.preferredWidth: 1.2
-                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(255, 255, 255, 0.06)
+                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(251/255,191/255,36/255,0.2)
 
                     ColumnLayout {
                         anchors.fill: parent; anchors.margins: 14; spacing: 10
-                        Text { text: "2. BUFFER CACHE VISUALIZER"; color: Qt.rgba(255, 255, 255, 0.6); font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
+                        Text { text: "2. BUFFER CACHE VISUALIZER"; color: "#fbbf24"; font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
 
                         GridView {
                             Layout.fillWidth: true; Layout.fillHeight: true
@@ -193,11 +215,11 @@ Item {
                 Rectangle {
                     Layout.fillWidth: true; Layout.fillHeight: true
                     Layout.preferredWidth: 1.0
-                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(255, 255, 255, 0.06)
+                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(16/255,185/255,129/255,0.2)
 
                     ColumnLayout {
                         anchors.fill: parent; anchors.margins: 14
-                        Text { text: "3. DIRECTORY TREE"; color: Qt.rgba(255, 255, 255, 0.6); font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
+                        Text { text: "3. DIRECTORY TREE"; color: "#10b981"; font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
                         ListView {
                             Layout.fillWidth: true; Layout.fillHeight: true
                             model: backend.directoryTreeModel
@@ -222,11 +244,11 @@ Item {
                 Rectangle {
                     Layout.fillWidth: true; Layout.fillHeight: true
                     Layout.preferredWidth: 1.5
-                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(255, 255, 255, 0.06)
+                    color: Qt.rgba(255, 255, 255, 0.03); radius: 14; border.color: Qt.rgba(6/255,182/255,212/255,0.2)
 
                     ColumnLayout {
                         anchors.fill: parent; anchors.margins: 14; spacing: 8
-                        Text { text: "4. FILE DESCRIPTOR TABLE (PID 15)"; color: Qt.rgba(255, 255, 255, 0.6); font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
+                        Text { text: "4. FILE DESCRIPTOR TABLE (PID 15)"; color: "#06b6d4"; font { family: "Segoe UI"; bold: true; pixelSize: 12 } }
 
                         // Header Table
                         RowLayout {
@@ -279,7 +301,7 @@ Item {
                         Layout.fillWidth: true
                         Text {
                             text: "5. FILE SYSTEM EVENT TIMELINE (GANTT CHART)"
-                            color: Qt.rgba(255, 255, 255, 0.6)
+                            color: "#a78bfa"
                             font { family: "Segoe UI"; bold: true; pixelSize: 12 }
                         }
                         Item { Layout.fillWidth: true }
@@ -366,14 +388,14 @@ Item {
             Layout.fillHeight: true
             radius: 16
             color: Qt.rgba(255, 255, 255, 0.04)
-            border.color: Qt.rgba(255, 255, 255, 0.08)
+            border.color: Qt.rgba(244/255,63/255,94/255,0.22)
 
             ColumnLayout {
                 anchors.fill: parent; anchors.margins: 16; spacing: 12
 
                 Text {
                     text: "6. TECHNICAL INSPECTOR"
-                    color: Qt.rgba(255, 255, 255, 0.6)
+                    color: "#f43f5e"
                     font { family: "Segoe UI"; bold: true; pixelSize: 12; letterSpacing: 0.5 }
                 }
 

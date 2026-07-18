@@ -35,6 +35,19 @@ Rectangle {
             height: parent.height
             color: Qt.rgba(255, 255, 255, 0.08)
             radius: 20
+            border.color: Qt.rgba(167/255,139/255,250/255,0.25); border.width: 1
+            // ── purple accent top strip ──
+            Rectangle {
+                anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                height: 3; radius: 20
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.3; color: "#a78bfa" }
+                    GradientStop { position: 0.7; color: "#8b5cf6" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
+            }
 
             // Title Bar
             Rectangle {
@@ -60,7 +73,7 @@ Rectangle {
                             weight: Font.Bold
                             letterSpacing: 1
                         }
-                        color: "#ffffff"
+                        color: "#a78bfa"
                     }
                 }
             }
@@ -177,6 +190,19 @@ Rectangle {
             color: Qt.rgba(255, 255, 255, 0.08)
             radius: 20
             clip: true // Keep the grid within the rounded corners
+            border.color: Qt.rgba(167/255,139/255,250/255,0.25); border.width: 1
+            // ── indigo accent top strip ──
+            Rectangle {
+                anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                height: 3; radius: 20; z: 1
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.3; color: "#8b5cf6" }
+                    GradientStop { position: 0.7; color: "#a78bfa" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
+            }
 
             // Title Bar
             Rectangle {
@@ -200,7 +226,7 @@ Rectangle {
                             weight: Font.Bold
                             letterSpacing: 1
                         }
-                        color: "#ffffff"
+                        color: "#8b5cf6"
                     }
                 }
             }

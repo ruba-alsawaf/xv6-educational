@@ -13,7 +13,7 @@
 CoreEngineBackend::CoreEngineBackend(QObject *parent)
     : QObject(parent)
 {
-    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db = QSqlDatabase::addDatabase("QSQLITE", "CoreEngineConnection");
 
 
     m_db.setDatabaseName(
@@ -170,6 +170,7 @@ QString CoreEngineBackend::inspectorText() const
 }
 QVariantList CoreEngineBackend::directoryTreeModel() const { return m_directoryTreeModel; }
 QVariantList CoreEngineBackend::fdTableModel() const { return m_fdTableModel; }
+QVariantList CoreEngineBackend::lockMetricsModel() const { return m_lockMetricsModel; }
 
 void CoreEngineBackend::refreshData()
 {
@@ -327,6 +328,31 @@ void CoreEngineBackend::refreshData()
         }
     }
     m_fdTableModel = newFdModel;
+
+    // 9. Lock metrics — latest row per lock_name
+    QVariantList newLockMetrics;
+    QString lockSql =
+        "SELECT lock_name, last_pid, proc_name, cpu_id, last_hold_time, acq_count, contention "
+        "FROM lock_metrics "
+        "WHERE id IN (SELECT MAX(id) FROM lock_metrics GROUP BY lock_name) "
+        "ORDER BY lock_name";
+    if(query.exec(lockSql)) {
+        while(query.next()) {
+            QVariantMap item;
+            item["name"]           = query.value(0).toString();
+            item["last_pid"]       = query.value(1).toInt();
+            item["proc_name"]      = query.value(2).toString();
+            item["cpu_id"]         = query.value(3).toInt();
+            item["last_hold_time"] = query.value(4).toLongLong();
+            item["acq_count"]      = query.value(5).toLongLong();
+            item["contention"]     = query.value(6).toLongLong();
+            newLockMetrics.append(item);
+        }
+    } else {
+        qDebug() << "lock_metrics ERROR:" << query.lastError().text();
+    }
+    m_lockMetricsModel = newLockMetrics;
+    qDebug() << "lockMetrics size =" << m_lockMetricsModel.size();
 
     emit dataChanged();
     qDebug() << "bufferModel size =" << m_bufferModel.size();

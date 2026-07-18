@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>X_RAY Laptop Mockup — Printable</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #e8e8e8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    gap: 40px;
+  }
+
+  .print-hint {
+    background: #1a1a2e;
+    color: #06b6d4;
+    padding: 12px 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    border: 1px solid rgba(6,182,212,0.3);
+  }
+  .print-hint span { color: #d4a0b8; }
+
+  /* ─── SHEET ──────────────────────────────────────────────────────────── */
+  .sheet {
+    width: 297mm;
+    height: 210mm;
+    background: #fff;
+    display: flex;
+    position: relative;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+  }
+
+  /* ─── CUT MARKS ──────────────────────────────────────────────────────── */
+  .cut-mark {
+    position: absolute;
+    background: #999;
+  }
+  .cut-h { width: 8mm; height: 0.3mm; }
+  .cut-v { width: 0.3mm; height: 8mm; }
+
+  /* corners */
+  .tl-h { top: 5mm; left: 0; }
+  .tl-v { top: 0; left: 5mm; }
+  .tr-h { top: 5mm; right: 0; }
+  .tr-v { top: 0; right: 5mm; }
+  .bl-h { bottom: 5mm; left: 0; }
+  .bl-v { bottom: 0; left: 5mm; }
+  .br-h { bottom: 5mm; right: 0; }
+  .br-v { bottom: 0; right: 5mm; }
+
+  /* ─── CENTER FOLD LINE ───────────────────────────────────────────────── */
+  .fold-line {
+    position: absolute;
+    left: 50%;
+    top: 5mm; bottom: 5mm;
+    width: 0;
+    border-left: 1.2px dashed #bbb;
+    z-index: 10;
+  }
+  .fold-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 3px 8px;
+    font-size: 7pt;
+    color: #999;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 11;
+    border-radius: 3px;
+  }
+
+  /* ─── PANEL BASE ─────────────────────────────────────────────────────── */
+  .panel {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     BACK PANEL (left side — lid exterior)
+  ════════════════════════════════════════════════════════════════════════ */
+  .panel-back {
+    background: #08080f;
+  }
+
+  /* Diagonal grid lines */
+  .panel-back::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 18px,
+        rgba(6,182,212,0.04) 18px,
+        rgba(6,182,212,0.04) 19px
+      );
+  }
+
+  /* Top-left corner glow */
+  .back-glow-tl {
+    position: absolute;
+    width: 120mm; height: 120mm; border-radius: 60mm;
+    top: -40mm; left: -40mm;
+    background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%);
+  }
+  /* Bottom-right glow */
+  .back-glow-br {
+    position: absolute;
+    width: 100mm; height: 100mm; border-radius: 50mm;
+    bottom: -30mm; right: -10mm;
+    background: radial-gradient(circle, rgba(212,160,185,0.10) 0%, transparent 70%);
+  }
+
+  /* Center logo area */
+  .back-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+
+  /* X icon ring */
+  .x-ring {
+    width: 36mm; height: 36mm; border-radius: 18mm;
+    border: 0.6mm solid rgba(6,182,212,0.5);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    margin-bottom: 6mm;
+  }
+  .x-ring::before {
+    content: '';
+    position: absolute;
+    width: 28mm; height: 28mm; border-radius: 14mm;
+    border: 0.4mm solid rgba(212,160,185,0.4);
+  }
+  /* X drawn with two pseudo lines */
+  .x-icon {
+    position: relative;
+    width: 16mm; height: 16mm;
+  }
+  .x-icon::before, .x-icon::after {
+    content: '';
+    position: absolute;
+    width: 100%; height: 1mm;
+    top: 50%; left: 0;
+    background: linear-gradient(90deg, #06b6d4, #d4a0b8);
+    border-radius: 0.5mm;
+    transform-origin: center;
+  }
+  .x-icon::before { transform: translateY(-50%) rotate(45deg); }
+  .x-icon::after  { transform: translateY(-50%) rotate(-45deg); }
+
+  .back-title {
+    font-size: 36pt;
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, #06b6d4 0%, #d4a0b8 50%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 3mm;
+  }
+
+  .back-subtitle {
+    font-size: 7pt;
+    color: rgba(6,182,212,0.55);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .back-subtitle span { display: inline-block; width: 10mm; height: 0.3mm; background: rgba(6,182,212,0.35); }
+
+  /* Thin scan line */
+  .back-scanline {
+    position: absolute;
+    left: 0; right: 0;
+    height: 0.3mm;
+    background: linear-gradient(90deg, transparent, #06b6d4 30%, #d4a0b8 70%, transparent);
+    opacity: 0.4;
+    top: 38%;
+  }
+
+  /* Corner deco dots */
+  .corner-dot {
+    position: absolute;
+    width: 1.5mm; height: 1.5mm; border-radius: 50%;
+  }
+  .cd-tl { top: 8mm; left: 8mm; background: rgba(6,182,212,0.5); }
+  .cd-tr { top: 8mm; right: 8mm; background: rgba(212,160,185,0.5); }
+  .cd-bl { bottom: 8mm; left: 8mm; background: rgba(167,139,250,0.5); }
+  .cd-br { bottom: 8mm; right: 8mm; background: rgba(6,182,212,0.5); }
+
+  /* Frame edge detail */
+  .back-frame {
+    position: absolute;
+    inset: 6mm;
+    border: 0.3mm solid rgba(255,255,255,0.05);
+    border-radius: 4mm;
+    pointer-events: none;
+  }
+
+  /* ════════════════════════════════════════════════════════════════════════
+     FRONT PANEL (right side — screen face)
+  ════════════════════════════════════════════════════════════════════════ */
+  .panel-front {
+    background: #060610;
+  }
+
+  /* Diagonal scan animation replaced by static diagonal lines */
+  .panel-front::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 22px,
+        rgba(167,139,250,0.03) 22px,
+        rgba(167,139,250,0.03) 23px
+      );
+  }
+
+  .front-glow-left {
+    position: absolute;
+    width: 80mm; height: 140mm; border-radius: 40mm;
+    left: -20mm; top: 50%; transform: translateY(-50%);
+    background: radial-gradient(circle, rgba(6,182,212,0.09) 0%, transparent 70%);
+  }
+  .front-glow-right {
+    position: absolute;
+    width: 70mm; height: 100mm; border-radius: 35mm;
+    right: -10mm; bottom: -20mm;
+    background: radial-gradient(circle, rgba(212,160,185,0.08) 0%, transparent 70%);
+  }
+
+  /* ── Screen bezel ──────────────────────────────────────────────────── */
+  .screen-bezel {
+    position: absolute;
+    inset: 10mm 12mm;
+    border: 0.5mm solid rgba(255,255,255,0.08);
+    border-radius: 3mm;
+    overflow: hidden;
+    background: #070714;
+  }
+
+  /* Horizontal scan line */
+  .screen-scanline {
+    position: absolute;
+    left: 0; right: 0; height: 0.4mm;
+    background: linear-gradient(90deg, transparent, rgba(6,182,212,0.5) 30%, rgba(212,160,185,0.6) 70%, transparent);
+    top: 42%;
+    opacity: 0.5;
+  }
+
+  /* INTERACTIVE OS EXPLORER badge */
+  .screen-badge {
+    position: absolute;
+    top: 7mm; left: 9mm;
+    display: flex; align-items: center; gap: 3mm;
+  }
+  .badge-dot {
+    width: 2mm; height: 2mm; border-radius: 1mm;
+    background: #06b6d4;
+  }
+  .badge-text {
+    font-size: 5.5pt; font-weight: 600;
+    color: rgba(6,182,212,0.65);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* LEFT brand area */
+  .screen-left {
+    position: absolute;
+    left: 9mm; top: 18mm; bottom: 18mm;
+    width: 68mm;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 0;
+  }
+
+  .screen-title {
+    font-size: 34pt;
+    font-weight: 900;
+    letter-spacing: 5px;
+    line-height: 1;
+    background: linear-gradient(135deg, #06b6d4 0%, #d4a0b8 55%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4mm;
+  }
+
+  .screen-tagline-1 {
+    font-size: 7pt;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.7;
+    margin-bottom: 1.5mm;
+  }
+  .screen-tagline-2 {
+    font-size: 6.5pt;
+    font-style: italic;
+    color: rgba(255,255,255,0.25);
+    line-height: 1.7;
+  }
+
+  /* Divider */
+  .screen-divider {
+    position: absolute;
+    left: 80mm; top: 15mm; bottom: 15mm;
+    width: 0.3mm;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(6,182,212,0.3) 30%,
+      rgba(212,160,185,0.45) 50%,
+      rgba(6,182,212,0.3) 70%,
+      transparent
+    );
+  }
+
+  /* RIGHT login area */
+  .screen-right {
+    position: absolute;
+    left: 84mm; right: 5mm;
+    top: 18mm; bottom: 18mm;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 0;
+  }
+
+  .login-heading {
+    font-size: 10pt;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 3px;
+    margin-bottom: 1mm;
+  }
+  .login-sub {
+    font-size: 6pt;
+    color: rgba(255,255,255,0.28);
+    margin-bottom: 7mm;
+    letter-spacing: 0.3px;
+  }
+
+  .field-label {
+    font-size: 5.5pt;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 2mm;
+  }
+  .field-label.user { color: rgba(6,182,212,0.65); }
+  .field-label.pass { color: rgba(212,160,185,0.65); }
+
+  .field-input {
+    width: 100%;
+    height: 8mm;
+    margin-bottom: 1.5mm;
+    display: flex; align-items: center;
+    padding-left: 3mm;
+  }
+  .field-placeholder {
+    font-size: 7pt;
+    color: rgba(255,255,255,0.18);
+  }
+  .field-underline {
+    height: 0.35mm;
+    margin-bottom: 6mm;
+    background: linear-gradient(90deg, rgba(6,182,212,0.25), rgba(255,255,255,0.08) 80%);
+    border-radius: 0.2mm;
+  }
+  .field-underline.pass {
+    background: linear-gradient(90deg, rgba(212,160,185,0.25), rgba(255,255,255,0.08) 80%);
+  }
+
+  .signin-btn {
+    width: 100%;
+    height: 10mm;
+    border: 0.4mm solid rgba(6,182,212,0.4);
+    border-radius: 2mm;
+    background: rgba(6,182,212,0.1);
+    display: flex; align-items: center; justify-content: center;
+    gap: 3mm;
+    margin-top: 2mm;
+  }
+  .signin-text {
+    font-size: 7pt; font-weight: 700;
+    color: #ffffff; letter-spacing: 2.5px;
+  }
+  .signin-arrow {
+    font-size: 9pt; color: #06b6d4;
+  }
+
+  .screen-footer {
+    position: absolute;
+    bottom: 4mm; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 4mm;
+  }
+  .footer-line { flex: 1; height: 0.2mm; background: rgba(255,255,255,0.07); }
+  .footer-text { font-size: 5pt; color: rgba(255,255,255,0.12); letter-spacing: 1px; }
+
+  /* ─── LABELS OUTSIDE ─────────────────────────────────────────────────── */
+  .outside-labels {
+    position: absolute;
+    width: 100%;
+    display: flex;
+    pointer-events: none;
+  }
+  .label-back, .label-front {
+    width: 50%;
+    text-align: center;
+    font-size: 7pt;
+    color: #aaa;
+    letter-spacing: 1px;
+    padding-top: 3px;
+  }
+
+  /* ─── PRINT STYLES ───────────────────────────────────────────────────── */
+  @media print {
+    body { background: #fff; padding: 0; gap: 0; }
+    .print-hint { display: none; }
+    .sheet {
+      width: 297mm; height: 210mm;
+      box-shadow: none;
+      page-break-after: avoid;
+    }
+    @page { size: A4 landscape; margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="print-hint">
+  🖨 Press <span>Ctrl + P</span> → Paper: <span>A4</span> → Orientation: <span>Landscape</span> → Margins: <span>None</span> → Print
+</div>
+
+<div class="sheet">
+
+  <!-- Cut marks -->
+  <div class="cut-mark cut-h tl-h"></div>
+  <div class="cut-mark cut-v tl-v"></div>
+  <div class="cut-mark cut-h tr-h"></div>
+  <div class="cut-mark cut-v tr-v"></div>
+  <div class="cut-mark cut-h bl-h"></div>
+  <div class="cut-mark cut-v bl-v"></div>
+  <div class="cut-mark cut-h br-h"></div>
+  <div class="cut-mark cut-v br-v"></div>
+
+  <!-- Fold line -->
+  <div class="fold-line"></div>
+  <div class="fold-label">▲ FOLD ▲</div>
+
+  <!-- ══════════════════════════════════════════════════
+       BACK PANEL — Laptop lid exterior
+  ══════════════════════════════════════════════════ -->
+  <div class="panel panel-back">
+    <div class="back-glow-tl"></div>
+    <div class="back-glow-br"></div>
+    <div class="back-scanline"></div>
+    <div class="back-frame"></div>
+
+    <!-- Corner dots -->
+    <div class="corner-dot cd-tl"></div>
+    <div class="corner-dot cd-tr"></div>
+    <div class="corner-dot cd-bl"></div>
+    <div class="corner-dot cd-br"></div>
+
+    <!-- Center logo -->
+    <div class="back-center">
+      <div class="x-ring">
+        <div class="x-icon"></div>
+      </div>
+      <div class="back-title">X_RAY</div>
+      <div class="back-subtitle">
+        <span></span>
+        xv6 Interactive Explorer
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       FRONT PANEL — Screen face
+  ══════════════════════════════════════════════════ -->
+  <div class="panel panel-front">
+    <div class="front-glow-left"></div>
+    <div class="front-glow-right"></div>
+
+    <div class="screen-bezel">
+      <div class="screen-scanline"></div>
+
+      <!-- Badge top-left -->
+      <div class="screen-badge">
+        <div class="badge-dot"></div>
+        <div class="badge-text">Interactive OS Explorer</div>
+      </div>
+
+      <!-- Left brand -->
+      <div class="screen-left">
+        <div class="screen-title">X_RAY</div>
+        <div class="screen-tagline-1">Start your operating system learning journey</div>
+        <div class="screen-tagline-2">the way it was always meant to be — interactive.</div>
+      </div>
+
+      <!-- Divider -->
+      <div class="screen-divider"></div>
+
+      <!-- Right login -->
+      <div class="screen-right">
+        <div class="login-heading">STUDENT ACCESS</div>
+        <div class="login-sub">Sign in to continue</div>
+
+        <div class="field-label user">Username</div>
+        <div class="field-input"><span class="field-placeholder">Enter username</span></div>
+        <div class="field-underline"></div>
+
+        <div class="field-label pass">Password</div>
+        <div class="field-input"><span class="field-placeholder">Enter password</span></div>
+        <div class="field-underline pass"></div>
+
+        <div class="signin-btn">
+          <span class="signin-text">SIGN IN</span>
+          <span class="signin-arrow">→</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="screen-footer">
+        <div class="footer-line"></div>
+        <div class="footer-text">AUTHORIZED PERSONNEL ONLY</div>
+        <div class="footer-line"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Outside labels (screen only, not printed) -->
+<div style="display:flex; width:297mm; margin-top:6px;">
+  <div style="width:50%; text-align:center; font-size:11px; color:#888;">← غطاء الخلف (Back Lid)</div>
+  <div style="width:50%; text-align:center; font-size:11px; color:#888;">وجه الشاشة (Screen Face) →</div>
+</div>
+
+</body>
+</html>

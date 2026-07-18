@@ -3,6 +3,7 @@
 #include <QQmlContext>  // موديول مهم للربط بين C++ و QML
 #include "dbmanager.h"
 #include "chatbotclient.h" // 💡 استدعاء هيدر الشات بوت الجديد من فرع chat-bot-ui
+#include "CoreEngineBackend.h"
 
 int main(int argc, char *argv[])
 {
@@ -13,10 +14,12 @@ int main(int argc, char *argv[])
     // 1. إنشاء الكائنات البرمجية وإعداد الاتصال بالداتابيز
     DbManager dbManager;
     ChatBotClient chatBotClient; // 💡 كائن الشات بوت الجديد
+    CoreEngineBackend coreEngineBackend;
 
     // 2. تمرير الكائنات إلى الـ QML بأسماء مستعارة (Context Properties)
     engine.rootContext()->setContextProperty("dbManager", &dbManager);
     engine.rootContext()->setContextProperty("chatBotClient", &chatBotClient); // 💡 ربط الشات بوت بالواجهات
+    engine.rootContext()->setContextProperty("backend", &coreEngineBackend);
 
     // 3. إعدادات محرك الـ QML والتحقق من سلامة تحميل الملفات
     QObject::connect(

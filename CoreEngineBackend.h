@@ -41,6 +41,7 @@ class CoreEngineBackend : public QObject
 
     Q_PROPERTY(QVariantList directoryTreeModel READ directoryTreeModel NOTIFY dataChanged)
     Q_PROPERTY(QVariantList fdTableModel READ fdTableModel NOTIFY dataChanged)
+    Q_PROPERTY(QVariantList lockMetricsModel READ lockMetricsModel NOTIFY dataChanged)
 
 public:
     explicit CoreEngineBackend(QObject *parent = nullptr);
@@ -73,6 +74,7 @@ public:
 
     QVariantList directoryTreeModel() const;
     QVariantList fdTableModel() const;
+    QVariantList lockMetricsModel() const;
 
 signals:
     void dataChanged();
@@ -109,6 +111,7 @@ private:
 
     QVariantList m_directoryTreeModel;
     QVariantList m_fdTableModel;
+    QVariantList m_lockMetricsModel;
 
 };
 

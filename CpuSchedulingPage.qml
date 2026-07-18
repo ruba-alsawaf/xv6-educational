@@ -43,6 +43,20 @@ Rectangle {
                 height: parent.height
                 color: Qt.rgba(255, 255, 255, 0.08)
                 radius: 20
+                border.color: Qt.rgba(6/255,182/255,212/255,0.22); border.width: 1
+
+                // ── cyan accent top strip ──
+                Rectangle {
+                    anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                    height: 3; radius: 20
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop { position: 0.0;  color: "transparent" }
+                        GradientStop { position: 0.3;  color: "#06b6d4" }
+                        GradientStop { position: 0.7;  color: "#06b6d4" }
+                        GradientStop { position: 1.0;  color: "transparent" }
+                    }
+                }
 
                 Rectangle {
                     id: systemDashboardTitle
@@ -52,7 +66,7 @@ Rectangle {
                         Text {
                             text: "PROCESSOR OVERVIEW"
                             font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold; letterSpacing: 1 }
-                            color: "#ffffff"
+                            color: "#06b6d4"
                         }
                     }
                 }
@@ -94,6 +108,19 @@ Rectangle {
             Rectangle {
                 id: usageBoard
                 width: (parent.width - parent.spacing) / 2; height: parent.height; color: Qt.rgba(255, 255, 255, 0.08); radius: 20
+                border.color: Qt.rgba(6/255,182/255,212/255,0.22); border.width: 1
+                // ── cyan accent top strip ──
+                Rectangle {
+                    anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                    height: 3; radius: 20
+                    gradient: Gradient {
+                        orientation: Gradient.Horizontal
+                        GradientStop { position: 0.0; color: "transparent" }
+                        GradientStop { position: 0.3; color: "#06b6d4" }
+                        GradientStop { position: 0.7; color: "#06b6d4" }
+                        GradientStop { position: 1.0; color: "transparent" }
+                    }
+                }
                 Row {
                     anchors { fill: parent; margins: 20 } spacing: 15
 
@@ -138,7 +165,7 @@ Rectangle {
                         width: (parent.width - parent.spacing) / 2; height: parent.height; radius: 12; color: Qt.rgba(0, 0, 0, 0.3)
                         Column {
                             anchors.centerIn: parent; spacing: 8
-                            Text { text: "PROCESS STATES"; color: "#ffffff"; font { family: "Segoe UI"; pixelSize: 14; weight: Font.Bold } }
+                            Text { text: "PROCESS STATES"; color: "#a78bfa"; font { family: "Segoe UI"; pixelSize: 14; weight: Font.Bold } }
                             Repeater {
                                 model: [
                                     { label: "RUNNING", count: cpuSchedulingPage.processStatesData.running.toString(), dotColor: "#10b981", textColor: "#34d399" },
@@ -166,6 +193,19 @@ Rectangle {
         Rectangle {
             id: schedulingRec
             width: parent.width; height: (parent.height - parent.spacing) * 2 / 3; color: Qt.rgba(255, 255, 255, 0.08); radius: 20
+            border.color: Qt.rgba(139/255,92/255,246/255,0.22); border.width: 1
+            // ── purple accent top strip ──
+            Rectangle {
+                anchors.top: parent.top; anchors.left: parent.left; anchors.right: parent.right
+                height: 3; radius: 20
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0.0; color: "transparent" }
+                    GradientStop { position: 0.3; color: "#8b5cf6" }
+                    GradientStop { position: 0.7; color: "#8b5cf6" }
+                    GradientStop { position: 1.0; color: "transparent" }
+                }
+            }
 
             property real playheadProgress: 0.0
             property real playheadAlpha: 1.0
@@ -186,7 +226,7 @@ Rectangle {
                     Text {
                         text: "PROCESS SCHEDULING TIMELINE"
                         font { family: "Segoe UI"; pixelSize: 13; weight: Font.Bold; letterSpacing: 1 }
-                        color: "#ffffff"
+                        color: "#8b5cf6"
                     }
                 }
             }

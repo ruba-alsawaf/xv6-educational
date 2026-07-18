@@ -68,6 +68,7 @@ qt_add_qml_module(appxv6ui
         BufferCacheQuizPage.qml
         LoggingQuizPage.qml
         InodesQuizPage.qml
+        LockMonitorPage.qml
         NavigationLogic.js
     RESOURCES
         test.png
