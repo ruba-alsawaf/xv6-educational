@@ -107,3 +107,27 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+uint64
+sys_schedread(void)
+{
+  // الكود الخاص بكِ هنا
+  return 0; 
+}
+
+uint64
+sys_getcpuinfo(void)
+{
+  return 0;
+}
+
+uint64
+sys_getprocstats(void)
+{
+  return 0;
+}
+
+uint64
+sys_getlockinfo(void)
+{
+  return 0;
+}

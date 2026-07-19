@@ -58,7 +58,7 @@ static void print_fs_event(const struct fs_event *e) {
     append_str(buf, &pos, ",\"block\":");
     append_int(buf, &pos, e->blockno);
     append_str(buf, &pos, ",\"size\":");         
-    append_uint(buf, &pos, e->i_size);
+    append_uint(buf, &pos, e->size);
     append_str(buf, &pos, ",\"name\":\"");
     append_str(buf, &pos, e->name);
     append_str(buf, &pos, "\"}\n");

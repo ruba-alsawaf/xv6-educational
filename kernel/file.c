@@ -38,17 +38,17 @@ static void file_report(
 
     safestrcpy(e.op_name, op, sizeof(e.op_name));
 
-    // تم التعديل هنا: استخدام قسم file من الـ union
-    e.file.file_type = f->type;
+    // إزالة .file والوصول للحقول مباشرة
+    e.file_type = f->type;
 
-    e.file.readable = f->readable;
-    e.file.writable = f->writable;
+    e.readable = f->readable;
+    e.writable = f->writable;
 
-    e.file.file_ref = f->ref;
-    e.file.old_file_ref = old_ref;
+    e.file_ref = f->ref;
+    e.old_file_ref = old_ref;
 
-    e.file.file_off = f->off;
-    e.file.old_file_off = old_off;
+    e.file_off = f->off;
+    e.old_file_off = old_off;
 
     safestrcpy(e.details, details, sizeof(e.details));
 
@@ -71,13 +71,6 @@ filealloc(void)
   for(f = ftable.file; f < ftable.file + NFILE; f++){
     if(f->ref == 0){
       f->ref = 1;
-      file_report(
-    "FILE_ALLOC",
-    f,
-    0,
-    0,
-    "Allocated file structure"
-);
       release(&ftable.lock);
       return f;
     }
@@ -95,13 +88,14 @@ filedup(struct file *f)
     panic("filedup");
   int old_ref = f->ref;
   f->ref++;
+  
   file_report(
-    "FILE_DUP",
+    "FILEDUP",
     f,
     old_ref,
     f->off,
-    "Duplicated file descriptor"
-);
+    "Duplicated file reference"
+  );
   release(&ftable.lock);
   return f;
 }
@@ -116,17 +110,30 @@ fileclose(struct file *f)
   if(f->ref < 1)
     panic("fileclose");
   int old_ref = f->ref;
+  int old_off = f->off;
+  
+  
   if(--f->ref > 0){
     file_report(
-    "FILE_CLOSE",
-    f,
-    old_ref,
-    f->off,
-    "Closing file"
-);
+      "FILECLOSE",
+      f,
+      old_ref,
+      old_off,
+      "Closing file descriptor"
+    );
     release(&ftable.lock);
     return;
   }
+  
+  // في حال رغبنا بالتقرير عند الإغلاق النهائي والتصفير:
+  file_report(
+    "FILE_FREE",
+    f,
+    old_ref,
+    old_off,
+    "File structure fully freed"
+  );
+
   ff = *f;
   f->ref = 0;
   f->type = FD_NONE;
@@ -162,8 +169,8 @@ filestat(struct file *f, uint64 addr)
 
 // Read from file f.
 // addr is a user virtual address.
-int
-fileread(struct file *f, uint64 addr, int n)
+
+int fileread(struct file *f, int fd, uint64 addr, int n)
 {
   int r = 0;
 
@@ -182,7 +189,7 @@ fileread(struct file *f, uint64 addr, int n)
 
     if((r = readi(f->ip, 1, addr, f->off, n)) > 0)
    
-    f->off += r;
+   { f->off += r;}
     file_report(
     "FILE_READ",
     f,
@@ -200,8 +207,8 @@ fileread(struct file *f, uint64 addr, int n)
 
 // Write to file f.
 // addr is a user virtual address.
-int
-filewrite(struct file *f, uint64 addr, int n)
+
+int filewrite(struct file *f, int fd, uint64 addr, int n)
 {
   int r, ret = 0;
 
@@ -255,3 +262,4 @@ filewrite(struct file *f, uint64 addr, int n)
 
   return ret;
 }
+
